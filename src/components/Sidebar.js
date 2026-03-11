@@ -1,58 +1,92 @@
 import React, { useState, useRef } from 'react';
 import { getCurrentStreak } from '../utils/streaks';
-import { HABIT_COLORS } from '../App';
+import { HABIT_COLORS } from '../utils/constants';
+import EmojiPicker from './EmojiPicker';
 
-export default function Sidebar({ open, habits, completions, onAdd, onDelete, onEdit, onReorder, onShowStats }) {
-  const [newName,      setNewName]      = useState('');
+const DAYS_SHORT = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+const DAYS_FULL  = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+function DaySelector({ value, onChange }) {
+  const toggle = (i) => {
+    const next = value.includes(i) ? value.filter(d => d !== i) : [...value, i].sort((a, b) => a - b);
+    if (next.length > 0) onChange(next);
+  };
+  return (
+    <div className="day-selector">
+      {DAYS_SHORT.map((d, i) => (
+        <button
+          key={i}
+          type="button"
+          className={`day-btn ${value.includes(i) ? 'on' : ''}`}
+          onClick={() => toggle(i)}
+          title={DAYS_FULL[i]}
+        >
+          {d}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+export default function Sidebar({ open, habits, completions, onAdd, onDelete, onEdit, onReorder, onShowStats, onShowTemplates }) {
+  const [newName,       setNewName]       = useState('');
+  const [newIcon,       setNewIcon]       = useState('⭐');
+  const [showNewEmoji,  setShowNewEmoji]  = useState(false);
+  const [newDays,       setNewDays]       = useState([0,1,2,3,4,5,6]);
+  const [newReminder,   setNewReminder]   = useState('');
+  const [showNewAdv,    setShowNewAdv]    = useState(false);
+
   const [editingId,    setEditingId]    = useState(null);
-  const [editingName,  setEditingName]  = useState('');
-  const [editingColor, setEditingColor] = useState('');
+  const [editName,     setEditName]     = useState('');
+  const [editColor,    setEditColor]    = useState('');
+  const [editIcon,     setEditIcon]     = useState('');
+  const [editDays,     setEditDays]     = useState([0,1,2,3,4,5,6]);
+  const [editReminder, setEditReminder] = useState('');
+  const [showEditEmoji, setShowEditEmoji] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState(null);
 
-  // Drag state
   const dragIndex    = useRef(null);
   const [dragOverIndex, setDragOverIndex] = useState(null);
   const [isDragging,    setIsDragging]    = useState(false);
 
-  /* ── CRUD ──────────────────────────────────────────────── */
+  /* ── Add ─────────────────────────────────────────────────── */
   const handleAdd = () => {
     const t = newName.trim();
-    if (t) { onAdd(t); setNewName(''); }
+    if (!t) return;
+    onAdd(t, undefined, newIcon, newDays.length === 7 ? undefined : newDays, newReminder || null);
+    setNewName(''); setNewIcon('⭐'); setNewDays([0,1,2,3,4,5,6]); setNewReminder(''); setShowNewAdv(false);
   };
 
+  /* ── Edit ────────────────────────────────────────────────── */
   const startEdit = (habit) => {
     setEditingId(habit.id);
-    setEditingName(habit.name);
-    setEditingColor(habit.color);
+    setEditName(habit.name);
+    setEditColor(habit.color);
+    setEditIcon(habit.icon || '⭐');
+    setEditDays(habit.days || [0,1,2,3,4,5,6]);
+    setEditReminder(habit.reminderTime || '');
+    setShowEditEmoji(false);
   };
-
   const confirmEdit = () => {
-    const t = editingName.trim();
-    if (t) onEdit(editingId, t, editingColor);
-    setEditingId(null); setEditingName(''); setEditingColor('');
+    const t = editName.trim();
+    if (t) onEdit(editingId, t, editColor, editIcon, editDays, editReminder || null);
+    setEditingId(null);
   };
-  const cancelEdit = () => { setEditingId(null); setEditingName(''); setEditingColor(''); };
+  const cancelEdit = () => setEditingId(null);
 
-  const handleKeyDown = (e, onEnter, onEsc) => {
-    if (e.key === 'Enter') onEnter();
-    if (e.key === 'Escape' && onEsc) onEsc();
-  };
-
+  /* ── Delete ──────────────────────────────────────────────── */
   const handleDelete = (id) => {
     if (deleteConfirm === id) { onDelete(id); setDeleteConfirm(null); }
     else { setDeleteConfirm(id); setTimeout(() => setDeleteConfirm(null), 2500); }
   };
 
-  /* ── Drag ──────────────────────────────────────────────── */
+  /* ── Drag ────────────────────────────────────────────────── */
   const handleDragStart = (e, index) => {
-    dragIndex.current = index;
-    setIsDragging(true);
+    dragIndex.current = index; setIsDragging(true);
     e.dataTransfer.effectAllowed = 'move';
-    e.dataTransfer.setDragImage(e.currentTarget, 12, 18);
   };
   const handleDragOver = (e, index) => {
-    e.preventDefault();
-    e.dataTransfer.dropEffect = 'move';
+    e.preventDefault(); e.dataTransfer.dropEffect = 'move';
     if (dragOverIndex !== index) setDragOverIndex(index);
   };
   const handleDrop = (e, index) => {
@@ -68,15 +102,23 @@ export default function Sidebar({ open, habits, completions, onAdd, onDelete, on
   return (
     <aside className={`sidebar ${open ? 'open' : 'closed'}`}>
       <div className="sidebar-inner">
-        <div className="sidebar-label">Habits</div>
+        <div className="sidebar-top-bar">
+          <span className="sidebar-label">Habits</span>
+          <button className="sidebar-library-btn" onClick={onShowTemplates} title="Habit Library">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+              <path d="M2 3h4v10H2zM6 3h4v10H6zM10 3h4v10h-4z" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round"/>
+            </svg>
+            Library
+          </button>
+        </div>
 
         <div className={`habit-list ${isDragging ? 'is-dragging' : ''}`}>
           {habits.length === 0 && (
-            <div className="sidebar-empty">No habits yet.<br />Add one below to start.</div>
+            <div className="sidebar-empty">No habits yet.<br />Add one below or browse the library.</div>
           )}
 
           {habits.map((habit, index) => {
-            const streak = getCurrentStreak(habit.id, completions);
+            const streak = getCurrentStreak(habit.id, completions, habit);
             return (
               <div
                 key={habit.id}
@@ -93,28 +135,56 @@ export default function Sidebar({ open, habits, completions, onAdd, onDelete, on
               >
                 {editingId === habit.id ? (
                   <div className="habit-edit-col">
-                    {/* Color picker */}
-                    <div className="color-picker-row">
-                      {HABIT_COLORS.map(c => (
-                        <button
-                          key={c}
-                          className={`color-swatch ${editingColor === c ? 'selected' : ''}`}
-                          style={{ backgroundColor: c }}
-                          onMouseDown={() => setEditingColor(c)}
-                          type="button"
-                        />
-                      ))}
+                    {/* Emoji + color row */}
+                    <div className="edit-icon-color-row">
+                      <button
+                        type="button"
+                        className="edit-emoji-btn"
+                        onClick={() => setShowEditEmoji(v => !v)}
+                      >
+                        {editIcon}
+                      </button>
+                      <div className="color-picker-row">
+                        {HABIT_COLORS.map(c => (
+                          <button
+                            key={c}
+                            className={`color-swatch ${editColor === c ? 'selected' : ''}`}
+                            style={{ backgroundColor: c }}
+                            onMouseDown={() => setEditColor(c)}
+                            type="button"
+                          />
+                        ))}
+                      </div>
                     </div>
+                    {showEditEmoji && (
+                      <EmojiPicker selected={editIcon} onSelect={e => { setEditIcon(e); setShowEditEmoji(false); }} />
+                    )}
                     <div className="habit-edit-row">
                       <input
                         className="habit-edit-input"
-                        value={editingName}
+                        value={editName}
                         autoFocus
-                        onChange={e => setEditingName(e.target.value)}
+                        onChange={e => setEditName(e.target.value)}
                         onBlur={confirmEdit}
-                        onKeyDown={e => handleKeyDown(e, confirmEdit, cancelEdit)}
+                        onKeyDown={e => { if (e.key === 'Enter') confirmEdit(); if (e.key === 'Escape') cancelEdit(); }}
                       />
                       <button className="icon-btn confirm-btn" onMouseDown={confirmEdit} title="Save">✓</button>
+                    </div>
+                    <div className="edit-days-row">
+                      <span className="edit-days-label">Schedule</span>
+                      <DaySelector value={editDays} onChange={setEditDays} />
+                    </div>
+                    <div className="edit-reminder-row">
+                      <span className="edit-days-label">Reminder</span>
+                      <input
+                        type="time"
+                        className="reminder-input"
+                        value={editReminder}
+                        onChange={e => setEditReminder(e.target.value)}
+                      />
+                      {editReminder && (
+                        <button type="button" className="reminder-clear" onClick={() => setEditReminder('')}>✕</button>
+                      )}
                     </div>
                   </div>
                 ) : (
@@ -130,10 +200,16 @@ export default function Sidebar({ open, habits, completions, onAdd, onDelete, on
                       </svg>
                     </span>
 
-                    {/* Colored dot */}
-                    <span className="habit-color-dot" style={{ backgroundColor: habit.color }} />
+                    <span className="habit-icon-badge" style={{ color: habit.color }}>
+                      {habit.icon || <span className="habit-color-dot" style={{ backgroundColor: habit.color }} />}
+                    </span>
 
-                    <span className="habit-item-name">{habit.name}</span>
+                    <div className="habit-item-main">
+                      <span className="habit-item-name">{habit.name}</span>
+                      {habit.days && habit.days.length < 7 && (
+                        <span className="habit-schedule-pill">{habit.days.length}×/wk</span>
+                      )}
+                    </div>
 
                     {streak > 0 && (
                       <span className="habit-streak-pill" title={`${streak}-day streak`}>
@@ -165,15 +241,59 @@ export default function Sidebar({ open, habits, completions, onAdd, onDelete, on
           })}
         </div>
 
+        {/* ── Add habit area ── */}
         <div className="add-habit-area">
-          <input
-            className="add-habit-input"
-            placeholder="Add a habit..."
-            value={newName}
-            onChange={e => setNewName(e.target.value)}
-            onKeyDown={e => handleKeyDown(e, handleAdd)}
-            maxLength={40}
-          />
+          <div className="add-habit-top-row">
+            <button
+              type="button"
+              className="new-habit-emoji-btn"
+              onClick={() => setShowNewEmoji(v => !v)}
+              title="Pick icon"
+            >
+              {newIcon}
+            </button>
+            <input
+              className="add-habit-input"
+              placeholder="New habit name..."
+              value={newName}
+              onChange={e => setNewName(e.target.value)}
+              onKeyDown={e => e.key === 'Enter' && handleAdd()}
+              maxLength={40}
+            />
+          </div>
+          {showNewEmoji && (
+            <EmojiPicker selected={newIcon} onSelect={e => { setNewIcon(e); setShowNewEmoji(false); }} />
+          )}
+
+          <button
+            className="add-adv-toggle"
+            type="button"
+            onClick={() => setShowNewAdv(v => !v)}
+          >
+            {showNewAdv ? '▲ Less options' : '▼ Schedule & reminder'}
+          </button>
+
+          {showNewAdv && (
+            <div className="new-habit-adv">
+              <div className="edit-days-row">
+                <span className="edit-days-label">Days</span>
+                <DaySelector value={newDays} onChange={setNewDays} />
+              </div>
+              <div className="edit-reminder-row">
+                <span className="edit-days-label">Remind</span>
+                <input
+                  type="time"
+                  className="reminder-input"
+                  value={newReminder}
+                  onChange={e => setNewReminder(e.target.value)}
+                />
+                {newReminder && (
+                  <button type="button" className="reminder-clear" onClick={() => setNewReminder('')}>✕</button>
+                )}
+              </div>
+            </div>
+          )}
+
           <button
             className={`add-btn-full ${newName.trim() ? 'active' : ''}`}
             onClick={handleAdd}

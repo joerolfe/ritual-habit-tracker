@@ -1,9 +1,12 @@
 import React, { useMemo, useEffect } from 'react';
 import { completionColor } from './MonthView';
 import { getCurrentStreak, getLongestStreak } from '../utils/streaks';
+import { STREAK_BADGES } from '../utils/achievements';
 
-export default function HabitStatsModal({ habit, completions, onClose }) {
-  // Close on Escape
+const DAY_FULL = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+const MONTH_SHORT = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+export default function HabitStatsModal({ habit, completions, achievements, onClose }) {
   useEffect(() => {
     const handler = (e) => { if (e.key === 'Escape') onClose(); };
     window.addEventListener('keydown', handler);
@@ -24,36 +27,86 @@ export default function HabitStatsModal({ habit, completions, onClose }) {
       k => completions[k] && k.startsWith(`${habit.id}|`)
     ).length;
 
-    // 15-week heatmap (cols = weeks, rows = days Sun-Sat)
-    const weeks = [];
+    // ── 52-week heatmap (GitHub-style) ──────────────────────
     const today = new Date();
-    for (let w = 14; w >= 0; w--) {
+    today.setHours(0,0,0,0);
+    // We'll show 52 weeks, starting from the Sunday 52 weeks ago
+    const startSunday = new Date(today);
+    startSunday.setDate(today.getDate() - (52 * 7) + (7 - today.getDay()));
+
+    const weeksData = [];
+    let cursor = new Date(startSunday);
+    while (cursor <= today) {
       const week = [];
-      for (let day = 6; day >= 0; day--) {
-        const date = new Date(today);
-        date.setDate(today.getDate() - (w * 7 + day));
+      for (let d = 0; d < 7; d++) {
+        const date = new Date(cursor);
+        date.setDate(cursor.getDate() + d);
+        if (date > today) { week.push(null); continue; }
         const key = `${habit.id}|${date.getFullYear()}|${date.getMonth()}|${date.getDate()}`;
-        week.push({ done: !!completions[key], date });
+        week.push({ done: !!completions[key], date: new Date(date) });
       }
-      weeks.push(week);
+      weeksData.push(week);
+      cursor.setDate(cursor.getDate() + 7);
+    }
+
+    // ── Best day of week ──────────────────────────────────────
+    const dayCount = [0,0,0,0,0,0,0];
+    const dayTotal = [0,0,0,0,0,0,0];
+    Object.keys(completions).forEach(key => {
+      if (!key.startsWith(`${habit.id}|`)) return;
+      const [, ky, km, kd] = key.split('|');
+      const date = new Date(+ky, +km, +kd);
+      const dow = date.getDay();
+      dayTotal[dow]++;
+      if (completions[key]) dayCount[dow]++;
+    });
+    const dayRates = dayTotal.map((t, i) => t > 0 ? Math.round((dayCount[i] / t) * 100) : 0);
+    const bestDay  = dayRates.indexOf(Math.max(...dayRates));
+    const worstDay = dayRates.indexOf(Math.min(...dayRates.filter(r => r > 0)));
+
+    // ── Perfect weeks ──────────────────────────────────────────
+    let perfectWeeks = 0;
+    for (let wi = 0; wi < weeksData.length; wi++) {
+      const wk = weeksData[wi].filter(Boolean);
+      if (wk.length === 7 && wk.every(c => c.done)) perfectWeeks++;
     }
 
     return {
       total,
       thisMonthPct: Math.round((thisMonthDone / daysInMonth) * 100),
-      currentStreak: getCurrentStreak(habit.id, completions),
-      longestStreak: getLongestStreak(habit.id, completions),
-      weeks,
+      currentStreak: getCurrentStreak(habit.id, completions, habit),
+      longestStreak: getLongestStreak(habit.id, completions, habit),
+      weeksData,
+      dayRates,
+      bestDay,
+      worstDay: dayRates.filter(r => r > 0).length > 1 ? worstDay : -1,
+      perfectWeeks,
     };
   }, [habit, completions]);
 
+  // Month labels for heatmap
+  const monthLabels = useMemo(() => {
+    const labels = [];
+    let lastMonth = -1;
+    stats.weeksData.forEach((week, wi) => {
+      const first = week.find(Boolean);
+      if (first && first.date.getMonth() !== lastMonth) {
+        labels.push({ wi, label: MONTH_SHORT[first.date.getMonth()] });
+        lastMonth = first.date.getMonth();
+      }
+    });
+    return labels;
+  }, [stats.weeksData]);
+
   return (
     <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-panel" onClick={e => e.stopPropagation()}>
+      <div className="modal-panel stats-panel" onClick={e => e.stopPropagation()}>
 
         {/* Header */}
         <div className="modal-header">
-          <div className="modal-color-dot" style={{ backgroundColor: habit.color }} />
+          <span className="modal-habit-icon" style={{ color: habit.color }}>
+            {habit.icon || <span className="modal-color-dot" style={{ backgroundColor: habit.color }} />}
+          </span>
           <h2 className="modal-habit-name">{habit.name}</h2>
           <button className="modal-close" onClick={onClose}>×</button>
         </div>
@@ -80,24 +133,82 @@ export default function HabitStatsModal({ habit, completions, onClose }) {
             <span className="modal-stat-value">{stats.longestStreak}</span>
             <span className="modal-stat-label">Best Streak</span>
           </div>
+          <div className="modal-stat">
+            <span className="modal-stat-value">{stats.perfectWeeks}</span>
+            <span className="modal-stat-label">Perfect Weeks</span>
+          </div>
+          <div className="modal-stat">
+            <span className="modal-stat-value" style={{ color: '#30d158' }}>
+              {stats.bestDay >= 0 ? DAY_FULL[stats.bestDay].slice(0,3) : '—'}
+            </span>
+            <span className="modal-stat-label">Best Day</span>
+          </div>
         </div>
 
-        {/* 15-week heatmap */}
-        <div className="modal-section-label">Last 15 Weeks</div>
-        <div className="modal-heatmap">
-          {stats.weeks.map((week, wi) => (
-            <div key={wi} className="heatmap-col">
-              {week.map((cell, di) => (
+        {/* Badges */}
+        {STREAK_BADGES.length > 0 && (
+          <div className="stats-badges-row">
+            {STREAK_BADGES.map(b => {
+              const earned = !!achievements?.[`${habit.id}_${b.id}`];
+              return (
+                <div key={b.id} className={`stats-badge ${earned ? 'earned' : 'locked'}`} title={b.desc}>
+                  <span>{earned ? b.icon : '🔒'}</span>
+                  <span className="stats-badge-label">{b.label}</span>
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {/* 52-week heatmap */}
+        <div className="modal-section-label">Last 52 Weeks</div>
+        <div className="heatmap-wrap">
+          <div className="heatmap-month-labels">
+            {monthLabels.map((ml, i) => (
+              <span key={i} className="heatmap-month-label" style={{ left: `${ml.wi * 13}px` }}>
+                {ml.label}
+              </span>
+            ))}
+          </div>
+          <div className="heatmap-52">
+            {stats.weeksData.map((week, wi) => (
+              <div key={wi} className="heatmap-col">
+                {week.map((cell, di) =>
+                  cell === null ? (
+                    <div key={di} className="heatmap-cell empty" />
+                  ) : (
+                    <div
+                      key={di}
+                      className="heatmap-cell"
+                      title={`${cell.date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}${cell.done ? ' ✓' : ''}`}
+                      style={{
+                        backgroundColor: cell.done ? habit.color : 'var(--elevated)',
+                        opacity: cell.done ? 0.85 : 0.3,
+                      }}
+                    />
+                  )
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Day-of-week breakdown */}
+        <div className="modal-section-label">Day of Week</div>
+        <div className="dow-bars">
+          {['S','M','T','W','T','F','S'].map((d, i) => (
+            <div key={i} className="dow-col">
+              <div className="dow-bar-track">
                 <div
-                  key={di}
-                  className="heatmap-cell"
-                  title={cell.date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                  className="dow-bar-fill"
                   style={{
-                    backgroundColor: cell.done ? habit.color : 'var(--elevated)',
-                    opacity: cell.done ? 0.85 : 0.35,
+                    height: `${stats.dayRates[i]}%`,
+                    backgroundColor: i === stats.bestDay ? '#30d158' : i === stats.worstDay ? '#ff453a' : habit.color,
                   }}
                 />
-              ))}
+              </div>
+              <span className="dow-label">{d}</span>
+              <span className="dow-pct">{stats.dayRates[i] > 0 ? `${stats.dayRates[i]}%` : ''}</span>
             </div>
           ))}
         </div>

@@ -18,9 +18,21 @@
       "sizes": "512x512"
     }
   ],
-  "start_url": ".",
+  "start_url": "/",
+  "scope": "/",
   "display": "standalone",
-  "orientation": "landscape",
-  "theme_color": "#0a0a0f",
-  "background_color": "#0a0a0f"
+  "orientation": "portrait",
+  "theme_color": "#000000",
+  "background_color": "#000000",
+  "shortcuts": [
+    {
+      "name": "Today",
+      "short_name": "Today",
+      "description": "Open today's habits",
+      "url": "/?view=today",
+      "icons": [{ "src": "logo192.png", "sizes": "192x192" }]
+    }
+  ],
+  "categories": ["health", "lifestyle", "productivity"],
+  "description": "Build powerful daily habits with streaks, analytics, and gamification."
 }

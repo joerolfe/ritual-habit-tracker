@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run:*)",
+      "Bash(timeout /t 1 /nobreak)",
+      "Bash(npx react-scripts:*)",
+      "Bash(timeout 20 npm start)",
+      "Bash(node -e \"require\\(''./src/App.css''\\)\")"
+    ]
+  }
+}
