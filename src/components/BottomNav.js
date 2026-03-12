@@ -2,11 +2,11 @@ import React from 'react';
 
 export default function BottomNav({ view, onSetView, onHabits, onProfile, habitsActive, profileActive }) {
   const items = [
-    { id: 'today',   label: 'Today',   icon: <TodayIcon /> },
-    { id: 'month',   label: 'Month',   icon: <MonthIcon /> },
-    { id: 'year',    label: 'Year',    icon: <YearIcon /> },
-    { id: 'habits',  label: 'Habits',  icon: <HabitsIcon /> },
-    { id: 'profile', label: 'Profile', icon: <ProfileIcon /> },
+    { id: 'today',    label: 'Today',    icon: <TodayIcon /> },
+    { id: 'goals',    label: 'Goals',    icon: <GoalsIcon /> },
+    { id: 'insights', label: 'Insights', icon: <InsightsIcon /> },
+    { id: 'habits',   label: 'Habits',   icon: <HabitsIcon /> },
+    { id: 'profile',  label: 'Profile',  icon: <ProfileIcon /> },
   ];
 
   const active = (id) => {
@@ -43,15 +43,16 @@ function TodayIcon() {
     </svg>
   );
 }
-function MonthIcon() {
+function GoalsIcon() {
   return (
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-      <rect x="3" y="4" width="18" height="17" rx="2" stroke="currentColor" strokeWidth="1.7"/>
-      <path d="M3 9h18M8 2v4M16 2v4" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round"/>
+      <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.7"/>
+      <circle cx="12" cy="12" r="5" stroke="currentColor" strokeWidth="1.7"/>
+      <circle cx="12" cy="12" r="2" fill="currentColor"/>
     </svg>
   );
 }
-function YearIcon() {
+function InsightsIcon() {
   return (
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
       <rect x="2"  y="14" width="4" height="7" rx="1" fill="currentColor" opacity=".45"/>

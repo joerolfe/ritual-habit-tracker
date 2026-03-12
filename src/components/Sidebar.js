@@ -6,6 +6,9 @@ import EmojiPicker from './EmojiPicker';
 const DAYS_SHORT = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
 const DAYS_FULL  = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
+const CATEGORIES = ['fitness', 'mindfulness', 'health', 'learning', 'lifestyle'];
+const CAT_LABELS = { fitness: 'Fitness', mindfulness: 'Mindfulness', health: 'Health', learning: 'Learning', lifestyle: 'Lifestyle' };
+
 function DaySelector({ value, onChange }) {
   const toggle = (i) => {
     const next = value.includes(i) ? value.filter(d => d !== i) : [...value, i].sort((a, b) => a - b);
@@ -28,12 +31,17 @@ function DaySelector({ value, onChange }) {
   );
 }
 
-export default function Sidebar({ open, habits, completions, onAdd, onDelete, onEdit, onReorder, onShowStats, onShowTemplates }) {
+export default function Sidebar({
+  open, habits, completions,
+  onAdd, onDelete, onEdit, onReorder, onShowStats, onShowTemplates,
+  onArchive, archivedHabits, onRestore,
+}) {
   const [newName,       setNewName]       = useState('');
   const [newIcon,       setNewIcon]       = useState('⭐');
   const [showNewEmoji,  setShowNewEmoji]  = useState(false);
   const [newDays,       setNewDays]       = useState([0,1,2,3,4,5,6]);
   const [newReminder,   setNewReminder]   = useState('');
+  const [newCategory,   setNewCategory]   = useState('');
   const [showNewAdv,    setShowNewAdv]    = useState(false);
 
   const [editingId,    setEditingId]    = useState(null);
@@ -42,8 +50,12 @@ export default function Sidebar({ open, habits, completions, onAdd, onDelete, on
   const [editIcon,     setEditIcon]     = useState('');
   const [editDays,     setEditDays]     = useState([0,1,2,3,4,5,6]);
   const [editReminder, setEditReminder] = useState('');
+  const [editCategory, setEditCategory] = useState('');
   const [showEditEmoji, setShowEditEmoji] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState(null);
+
+  const [categoryFilter, setCategoryFilter] = useState('all');
+  const [archivedExpanded, setArchivedExpanded] = useState(false);
 
   const dragIndex    = useRef(null);
   const [dragOverIndex, setDragOverIndex] = useState(null);
@@ -53,8 +65,8 @@ export default function Sidebar({ open, habits, completions, onAdd, onDelete, on
   const handleAdd = () => {
     const t = newName.trim();
     if (!t) return;
-    onAdd(t, undefined, newIcon, newDays.length === 7 ? undefined : newDays, newReminder || null);
-    setNewName(''); setNewIcon('⭐'); setNewDays([0,1,2,3,4,5,6]); setNewReminder(''); setShowNewAdv(false);
+    onAdd(t, undefined, newIcon, newDays.length === 7 ? undefined : newDays, newReminder || null, newCategory || null);
+    setNewName(''); setNewIcon('⭐'); setNewDays([0,1,2,3,4,5,6]); setNewReminder(''); setNewCategory(''); setShowNewAdv(false);
   };
 
   /* ── Edit ────────────────────────────────────────────────── */
@@ -65,11 +77,12 @@ export default function Sidebar({ open, habits, completions, onAdd, onDelete, on
     setEditIcon(habit.icon || '⭐');
     setEditDays(habit.days || [0,1,2,3,4,5,6]);
     setEditReminder(habit.reminderTime || '');
+    setEditCategory(habit.category || '');
     setShowEditEmoji(false);
   };
   const confirmEdit = () => {
     const t = editName.trim();
-    if (t) onEdit(editingId, t, editColor, editIcon, editDays, editReminder || null);
+    if (t) onEdit(editingId, t, editColor, editIcon, editDays, editReminder || null, editCategory || null);
     setEditingId(null);
   };
   const cancelEdit = () => setEditingId(null);
@@ -99,6 +112,13 @@ export default function Sidebar({ open, habits, completions, onAdd, onDelete, on
     dragIndex.current = null; setDragOverIndex(null); setIsDragging(false);
   };
 
+  /* ── Filter ──────────────────────────────────────────────── */
+  const filteredHabits = categoryFilter === 'all'
+    ? habits
+    : habits.filter(h => h.category === categoryFilter);
+
+  const archived = archivedHabits || [];
+
   return (
     <aside className={`sidebar ${open ? 'open' : 'closed'}`}>
       <div className="sidebar-inner">
@@ -112,25 +132,44 @@ export default function Sidebar({ open, habits, completions, onAdd, onDelete, on
           </button>
         </div>
 
+        {/* ── Category filter tabs ── */}
+        <div className="sidebar-cat-tabs">
+          <button
+            className={`sidebar-cat-tab ${categoryFilter === 'all' ? 'active' : ''}`}
+            onClick={() => setCategoryFilter('all')}
+          >All</button>
+          {CATEGORIES.map(c => (
+            <button
+              key={c}
+              className={`sidebar-cat-tab ${categoryFilter === c ? 'active' : ''}`}
+              onClick={() => setCategoryFilter(c)}
+            >{CAT_LABELS[c]}</button>
+          ))}
+        </div>
+
         <div className={`habit-list ${isDragging ? 'is-dragging' : ''}`}>
-          {habits.length === 0 && (
+          {filteredHabits.length === 0 && habits.length === 0 && (
             <div className="sidebar-empty">No habits yet.<br />Add one below or browse the library.</div>
           )}
+          {filteredHabits.length === 0 && habits.length > 0 && (
+            <div className="sidebar-empty">No habits in this category.</div>
+          )}
 
-          {habits.map((habit, index) => {
+          {filteredHabits.map((habit, index) => {
             const streak = getCurrentStreak(habit.id, completions, habit);
+            const realIndex = habits.indexOf(habit);
             return (
               <div
                 key={habit.id}
                 className={[
                   'habit-item',
-                  dragOverIndex === index && dragIndex.current !== index ? 'drag-over' : '',
-                  dragIndex.current === index ? 'dragging' : '',
+                  dragOverIndex === realIndex && dragIndex.current !== realIndex ? 'drag-over' : '',
+                  dragIndex.current === realIndex ? 'dragging' : '',
                 ].join(' ')}
                 draggable={editingId !== habit.id}
-                onDragStart={e => handleDragStart(e, index)}
-                onDragOver={e => handleDragOver(e, index)}
-                onDrop={e => handleDrop(e, index)}
+                onDragStart={e => handleDragStart(e, realIndex)}
+                onDragOver={e => handleDragOver(e, realIndex)}
+                onDrop={e => handleDrop(e, realIndex)}
                 onDragEnd={handleDragEnd}
               >
                 {editingId === habit.id ? (
@@ -154,6 +193,13 @@ export default function Sidebar({ open, habits, completions, onAdd, onDelete, on
                             type="button"
                           />
                         ))}
+                        <input
+                          type="color"
+                          className="color-picker-custom"
+                          value={editColor || '#ffffff'}
+                          onChange={e => setEditColor(e.target.value)}
+                          title="Custom color"
+                        />
                       </div>
                     </div>
                     {showEditEmoji && (
@@ -185,6 +231,17 @@ export default function Sidebar({ open, habits, completions, onAdd, onDelete, on
                       {editReminder && (
                         <button type="button" className="reminder-clear" onClick={() => setEditReminder('')}>✕</button>
                       )}
+                    </div>
+                    <div className="edit-reminder-row">
+                      <span className="edit-days-label">Category</span>
+                      <select
+                        className="reminder-input"
+                        value={editCategory}
+                        onChange={e => setEditCategory(e.target.value)}
+                      >
+                        <option value="">None</option>
+                        {CATEGORIES.map(c => <option key={c} value={c}>{CAT_LABELS[c]}</option>)}
+                      </select>
                     </div>
                   </div>
                 ) : (
@@ -226,6 +283,15 @@ export default function Sidebar({ open, habits, completions, onAdd, onDelete, on
                         </svg>
                       </button>
                       <button className="icon-btn edit-btn" onClick={() => startEdit(habit)} title="Edit">✎</button>
+                      {onArchive && (
+                        <button
+                          className="icon-btn archive-btn"
+                          onClick={() => onArchive(habit.id)}
+                          title="Archive"
+                        >
+                          📦
+                        </button>
+                      )}
                       <button
                         className={`icon-btn delete-btn ${deleteConfirm === habit.id ? 'confirm' : ''}`}
                         onClick={() => handleDelete(habit.id)}
@@ -291,6 +357,17 @@ export default function Sidebar({ open, habits, completions, onAdd, onDelete, on
                   <button type="button" className="reminder-clear" onClick={() => setNewReminder('')}>✕</button>
                 )}
               </div>
+              <div className="edit-reminder-row">
+                <span className="edit-days-label">Category</span>
+                <select
+                  className="reminder-input"
+                  value={newCategory}
+                  onChange={e => setNewCategory(e.target.value)}
+                >
+                  <option value="">None</option>
+                  {CATEGORIES.map(c => <option key={c} value={c}>{CAT_LABELS[c]}</option>)}
+                </select>
+              </div>
             </div>
           )}
 
@@ -302,6 +379,36 @@ export default function Sidebar({ open, habits, completions, onAdd, onDelete, on
             {newName.trim() ? `Add "${newName.trim()}"` : '+ New habit'}
           </button>
         </div>
+
+        {/* ── Archived section ── */}
+        {archived.length > 0 && (
+          <div className="sidebar-archived-section">
+            <button
+              className="archived-toggle-btn"
+              onClick={() => setArchivedExpanded(v => !v)}
+            >
+              <span>📦 Archived ({archived.length})</span>
+              <span>{archivedExpanded ? '▲' : '▼'}</span>
+            </button>
+            {archivedExpanded && (
+              <div className="archived-list">
+                {archived.map(habit => (
+                  <div key={habit.id} className="archived-item">
+                    <span className="habit-icon-badge" style={{ color: habit.color }}>{habit.icon}</span>
+                    <span className="archived-item-name">{habit.name}</span>
+                    <button
+                      className="restore-btn"
+                      onClick={() => onRestore && onRestore(habit.id)}
+                      title="Restore"
+                    >
+                      ↩ Restore
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
 
         <div className="sidebar-footer">
           <div className="sidebar-footer-text">

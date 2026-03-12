@@ -4,6 +4,11 @@ import { getCurrentStreak, getOverallStreak, isStreakAtRisk } from '../utils/str
 import { getLevelInfo } from '../utils/achievements';
 import Confetti from './Confetti';
 import NotesModal from './NotesModal';
+import MoodWidget from './MoodWidget';
+import WaterWidget from './WaterWidget';
+import SleepWidget from './SleepWidget';
+import GratitudeWidget from './GratitudeWidget';
+import ScreenTimeWidget from './ScreenTimeWidget';
 
 const QUOTES = [
   { text: "We are what we repeatedly do. Excellence is not an act, but a habit.", author: "Aristotle" },
@@ -70,6 +75,8 @@ function ProgressRing({ pct, size = 144, stroke = 10 }) {
 export default function TodayView({
   habits, completions, intentions, notes, shields, isCompleted,
   onToggle, onSetIntention, onAddNote, onUseShield, currentUser,
+  moods, water, sleep, gratitude, screenTime, screenGoal,
+  onSetMood, onSetWater, onSetSleep, onSetGratitude, onSetScreenTime, onSetScreenGoal,
 }) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const today = useMemo(() => new Date(), []);
@@ -168,6 +175,24 @@ export default function TodayView({
         {levelInfo.nextXp && (
           <span className="level-strip-next">{levelInfo.nextXp - levelInfo.xp} XP to {levelInfo.nextTitle}</span>
         )}
+      </div>
+
+      {/* ── Wellness widgets ── */}
+      <MoodWidget dateKey={dateKey} moods={moods || {}} onSetMood={onSetMood} />
+
+      <div className="today-widgets-row">
+        <WaterWidget dateKey={dateKey} water={water || {}} onSetWater={onSetWater} />
+        <SleepWidget dateKey={dateKey} sleep={sleep || {}} onSetSleep={onSetSleep} />
+      </div>
+
+      <div className="today-widgets-row">
+        <ScreenTimeWidget
+          dateKey={dateKey}
+          screenTime={screenTime || {}}
+          screenGoal={screenGoal}
+          onSetScreenTime={onSetScreenTime}
+          onSetScreenGoal={onSetScreenGoal}
+        />
       </div>
 
       {/* ── Top: ring + intention ── */}
@@ -345,6 +370,9 @@ export default function TodayView({
           ))
         )}
       </div>
+
+      {/* ── Gratitude widget ── */}
+      <GratitudeWidget dateKey={dateKey} gratitude={gratitude || {}} onSetGratitude={onSetGratitude} />
 
       {/* Notes modal */}
       {notesHabit && (

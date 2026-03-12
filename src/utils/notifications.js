@@ -54,6 +54,76 @@ export function cancelReminder(habitId) {
   }
 }
 
+// In-memory timers for streak rescue and morning brief
+const _streakTimer = { id: null };
+const _briefTimer  = { id: null };
+
+export function scheduleStreakRescue(habits, completions) {
+  if (_streakTimer.id) { clearTimeout(_streakTimer.id); _streakTimer.id = null; }
+  if (getPermission() !== 'granted') return;
+
+  const now  = new Date();
+  const fire = new Date();
+  fire.setHours(21, 0, 0, 0);
+  if (fire <= now) fire.setDate(fire.getDate() + 1);
+  const ms = fire - now;
+
+  _streakTimer.id = setTimeout(() => {
+    const today = new Date();
+    const y = today.getFullYear(), m = today.getMonth(), d = today.getDate();
+    const atRisk = habits.filter(h => {
+      // Has completions on some previous days (streak > 0) but not today
+      const todayKey = `${h.id}|${y}|${m}|${d}`;
+      if (completions[todayKey]) return false;
+      // Check if had yesterday
+      const yesterday = new Date(today);
+      yesterday.setDate(d - 1);
+      const yy = yesterday.getFullYear(), ym = yesterday.getMonth(), yd = yesterday.getDate();
+      return !!completions[`${h.id}|${yy}|${ym}|${yd}`];
+    });
+    if (atRisk.length > 0) {
+      try {
+        new Notification('🔥 Don\'t break your streak!', {
+          body: `${atRisk.length} habit${atRisk.length !== 1 ? 's' : ''} still need to be done today.`,
+          icon: '/logo192.png',
+          tag: 'ritual_streak_rescue',
+          renotify: true,
+        });
+      } catch {}
+    }
+    scheduleStreakRescue(habits, completions);
+  }, ms);
+}
+
+export function scheduleMorningBrief(habits, briefTime) {
+  if (_briefTimer.id) { clearTimeout(_briefTimer.id); _briefTimer.id = null; }
+  if (getPermission() !== 'granted') return;
+
+  const time = briefTime || '08:00';
+  const [h, min] = time.split(':').map(Number);
+  const now  = new Date();
+  const fire = new Date();
+  fire.setHours(h, min, 0, 0);
+  if (fire <= now) fire.setDate(fire.getDate() + 1);
+  const ms = fire - now;
+
+  _briefTimer.id = setTimeout(() => {
+    const today = new Date();
+    const todayHabits = habits.filter(hab => !hab.days || hab.days.length === 7 || hab.days.includes(today.getDay()));
+    if (todayHabits.length > 0) {
+      try {
+        new Notification('☀️ Morning Brief', {
+          body: `Today: ${todayHabits.map(h => `${h.icon} ${h.name}`).join(', ')}`,
+          icon: '/logo192.png',
+          tag: 'ritual_morning_brief',
+          renotify: true,
+        });
+      } catch {}
+    }
+    scheduleMorningBrief(habits, briefTime);
+  }, ms);
+}
+
 export function formatTime(time24) {
   if (!time24) return '';
   const [h, m] = time24.split(':').map(Number);
