@@ -19,6 +19,7 @@ import FocusTimer from './components/FocusTimer';
 import WeeklyReview, { shouldShowWeeklyReview } from './components/WeeklyReview';
 import ExportModal from './components/ExportModal';
 import HealthView from './components/HealthView';
+import TrackerView from './components/TrackerView';
 import AICoachView from './components/AICoachView';
 import JournalView from './components/JournalView';
 import ProfileView from './components/ProfileView';
@@ -842,6 +843,41 @@ function App() {
               stacks={habitStacks}
               onAddBonusXP={addBonusXP}
               onNavigate={(v) => { setView(v); setMobileHabits(false); setMobileProfile(false); }}
+            />
+            </motion.div>
+          )}
+          {view === 'tracker' && (
+            <motion.div key="tracker" className="view-motion"
+              initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.22, ease: [0.4, 0, 0.2, 1] }}>
+            <TrackerView
+              habits={habits}
+              completions={completions}
+              isCompleted={isCompleted}
+              onToggle={toggleCompletion}
+              year={currentYear}
+              month={currentMonth}
+              onPrevMonth={prevMonth}
+              onNextMonth={nextMonth}
+              onYearChange={setCurrentYear}
+              onSelectMonth={(m) => { setCurrentMonth(m); }}
+              onAddHabit={addHabit}
+              onEditHabit={editHabit}
+              onDeleteHabit={deleteHabit}
+              goals={goals}
+              challenges={challenges}
+              moods={moods}
+              water={water}
+              sleep={sleep}
+              onAddGoal={addGoal}
+              onEditGoal={editGoal}
+              onDeleteGoal={deleteGoal}
+              onCompleteGoal={completeGoal}
+              onAddChallenge={addChallenge}
+              onEditChallenge={editChallenge}
+              onDeleteChallenge={deleteChallenge}
+              onToggleChallenge={toggleChallengeDay}
+              onAddBonusXP={addBonusXP}
             />
             </motion.div>
           )}

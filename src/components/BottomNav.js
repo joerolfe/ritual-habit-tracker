@@ -2,7 +2,7 @@ import React from 'react';
 
 const TABS = [
   { id: 'today',   label: 'Home',    icon: <HomeIcon /> },
-  { id: 'goals',   label: 'Goals',   icon: <GoalsIcon /> },
+  { id: 'tracker', label: 'Tracker', icon: <TrackerIcon /> },
   { id: 'health',  label: 'Health',  icon: <HealthIcon /> },
   { id: 'journal', label: 'Journal', icon: <JournalIcon /> },
   { id: 'profile', label: 'Profile', icon: <ProfileIcon /> },
@@ -37,12 +37,13 @@ function HomeIcon() {
     </svg>
   );
 }
-function GoalsIcon() {
+function TrackerIcon() {
   return (
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-      <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.7"/>
-      <circle cx="12" cy="12" r="5" stroke="currentColor" strokeWidth="1.7"/>
-      <circle cx="12" cy="12" r="2" fill="currentColor"/>
+      <rect x="3" y="4" width="18" height="16" rx="2" stroke="currentColor" strokeWidth="1.7"/>
+      <path d="M3 9h18" stroke="currentColor" strokeWidth="1.7"/>
+      <path d="M8 4v5M16 4v5" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round"/>
+      <path d="M7 13h2v2H7zM11 13h2v2h-2zM15 13h2v2h-2zM7 17h2v2H7zM11 17h2v2h-2z" fill="currentColor" opacity="0.6"/>
     </svg>
   );
 }

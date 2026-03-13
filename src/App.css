@@ -6478,8 +6478,8 @@ input.sleep-time-input:focus { box-shadow: 0 0 0 2px #00BCD4 !important; }
   white-space: nowrap;
 }
 .bnav-pill-btn.active {
-  color: #C8A96E;
-  background: rgba(200,169,110,0.12);
+  color: #00BCD4;
+  background: rgba(0,188,212,0.12);
 }
 .bnav-pill-btn:active { opacity: 0.7; }
 .bnav-pill-icon {
@@ -7112,3 +7112,237 @@ input.sleep-time-input:focus { box-shadow: 0 0 0 2px #00BCD4 !important; }
 .tv-ql-screen-input-wrap { display: flex; flex-direction: column; gap: 6px; }
 .tv-ql-screen-input-wrap label { font-size: 13px; color: #888888; }
 
+
+/* ══════════════════════════════════════════════════════════════════════════
+   HEALTH SECTION — PILL TAB BAR + MOBILE SCROLL FIXES
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* Container fills the view panel and scrolls internally */
+.health-view-container {
+  display: flex !important;
+  flex-direction: column !important;
+  height: 100% !important;
+  overflow: hidden !important;
+  background: #000000 !important;
+}
+
+/* Pill-shaped tab bar — scrollable on mobile, no underlines */
+.health-main-tabs {
+  display: flex !important;
+  flex-direction: row !important;
+  gap: 8px !important;
+  padding: 14px 16px 12px !important;
+  overflow-x: auto !important;
+  overflow-y: visible !important;
+  flex-wrap: nowrap !important;
+  flex-shrink: 0 !important;
+  border-bottom: none !important;
+  background: #000000 !important;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 20 !important;
+}
+.health-main-tabs::-webkit-scrollbar { display: none !important; }
+
+/* Each tab = pill button */
+.health-main-tab {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 5px !important;
+  padding: 8px 16px !important;
+  border-radius: 24px !important;
+  border: 1px solid rgba(255,255,255,0.12) !important;
+  border-bottom: 1px solid rgba(255,255,255,0.12) !important;
+  background: #111111 !important;
+  color: rgba(255,255,255,0.45) !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  white-space: nowrap !important;
+  flex-shrink: 0 !important;
+  cursor: pointer !important;
+  transition: background 0.18s, color 0.18s, border-color 0.18s !important;
+  letter-spacing: 0.01em !important;
+}
+.health-main-tab:active { opacity: 0.8 !important; }
+.health-main-tab.active {
+  background: #00BCD4 !important;
+  color: #000000 !important;
+  border-color: #00BCD4 !important;
+  font-weight: 700 !important;
+}
+.health-main-tab-icon  { font-size: 15px !important; line-height: 1 !important; }
+.health-main-tab-label { font-size: 13px !important; letter-spacing: 0.01em !important; }
+
+/* Content area: fills remaining height and scrolls vertically */
+.health-tab-content {
+  flex: 1 !important;
+  min-height: 0 !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  -webkit-overflow-scrolling: touch !important;
+  background: #000000 !important;
+  padding-bottom: calc(80px + env(safe-area-inset-bottom, 0px)) !important;
+}
+.health-tab-content::-webkit-scrollbar { display: none !important; }
+
+/* Sub-view roots — ensure they don't clip content */
+.health-tab-content > div {
+  box-sizing: border-box !important;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   GLOBAL SCROLL FIX — all views scrollable on mobile
+   Strategy: view-motion becomes the scroll container on mobile.
+   Today-view and health-tab-content keep their own internal scroll.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 900px) {
+  /*
+   * Layout stack on mobile:
+   *   .main-content (flex col, overflow:hidden) → clips everything tall
+   *     .view-motion (display:contents — transparent)
+   *       <ViewRoot> — Goals/Journal/Profile have no scroll → get clipped
+   *
+   * Fix: make .main-content the vertical scroll container.
+   * Today-view and health-tab-content already have overflow-y:auto,
+   * so they scroll internally at a fixed height — not via main-content.
+   */
+
+  .main-content {
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    -webkit-overflow-scrolling: touch !important;
+    padding-bottom: calc(88px + env(safe-area-inset-bottom, 0px)) !important;
+    scrollbar-width: none !important;
+  }
+  .main-content::-webkit-scrollbar { display: none !important; }
+
+  /* Keep view-motion transparent */
+  .view-motion {
+    display: contents !important;
+  }
+
+  /*
+   * Today and Health manage their own scroll — give them a fixed height
+   * so main-content doesn't try to scroll them too.
+   */
+  .today-view {
+    height: calc(100dvh - 52px) !important;
+    min-height: unset !important;
+    flex: none !important;
+    overflow-y: auto !important;
+  }
+
+  .health-view-container {
+    height: calc(100dvh - 52px) !important;
+    min-height: unset !important;
+    overflow: hidden !important;
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   MOBILE — Month / Year / Insights access + responsive fixes
+   ══════════════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 900px) {
+
+  /* View-toggle strip hidden on mobile — Tracker tab in bottom nav instead */
+  .header-center { display: none !important; }
+
+  /* ── Month view ────────────────────────────────────────────────────────── */
+  .month-view {
+    height: auto !important;
+    min-height: 100% !important;
+  }
+
+  .month-header {
+    padding: 16px 12px 8px !important;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  /* Shrink habit name column so more day columns are visible */
+  .names-col {
+    min-width: 100px !important;
+    max-width: 110px !important;
+  }
+  .name-cell-text {
+    font-size: 11px !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 90px;
+  }
+
+  /* Compact day columns */
+  .day-col {
+    min-width: 28px !important;
+    width: 28px !important;
+  }
+  .day-num  { font-size: 9px !important; }
+  .day-abbr { font-size: 9px !important; }
+  .day-pct  { font-size: 9px !important; }
+  .grid-cell {
+    width: 24px !important;
+    height: 24px !important;
+  }
+
+  /* grid-outer fills main-content and scrolls both axes */
+  .grid-outer {
+    flex: 1 !important;
+    overflow: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  /* Month title smaller */
+  .month-title { font-size: 18px !important; }
+  .month-year  { font-size: 15px !important; }
+
+  /* ── Year overview ─────────────────────────────────────────────────────── */
+  .year-overview {
+    height: auto !important;
+    min-height: 100% !important;
+    padding-bottom: 100px !important;
+  }
+
+  .year-header {
+    padding: 16px 16px 8px !important;
+  }
+  .year-title { font-size: 26px !important; }
+
+  /* Already has 2-col at ≤800px, keep that + reduce gap/padding */
+  .year-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 8px !important;
+    padding: 0 12px !important;
+  }
+
+  .year-stats-row {
+    padding: 8px 16px !important;
+    gap: 12px !important;
+  }
+
+  .month-card {
+    padding: 10px !important;
+    border-radius: 12px !important;
+  }
+  .month-card-name { font-size: 12px !important; }
+  .month-card-pct  { font-size: 11px !important; }
+
+  /* Mini heatmap dots smaller */
+  .mini-dot {
+    width: 4px !important;
+    height: 4px !important;
+    border-radius: 1px !important;
+  }
+
+  /* ── InsightsView (inline-styled, just ensure it can scroll) ─────────── */
+  /* InsightsView root has minHeight:100vh and no fixed height — it will
+     scroll via .main-content which is now overflow-y:auto on mobile.
+     No extra CSS needed beyond ensuring the view can reach it. */
+}
