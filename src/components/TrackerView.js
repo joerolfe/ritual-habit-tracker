@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import EmojiPicker from 'emoji-picker-react';
 import MonthView from './MonthView';
 import YearOverview from './YearOverview';
 import GoalsView from './GoalsView';
@@ -10,10 +11,6 @@ const HABIT_COLORS = [
   '#ff6b35','#74c0fc',
 ];
 
-const QUICK_EMOJIS = [
-  '⭐','🏃','💧','📚','🧘','💪','🥗','😴',
-  '✍️','🎯','🎸','💰','🌱','🧠','❤️','🔥',
-];
 
 const DAYS_SHORT = ['S','M','T','W','T','F','S'];
 
@@ -96,21 +93,28 @@ function HabitModal({ habit, onSave, onClose, onDelete }) {
           <button onClick={onClose} style={{ background: 'none', border: 'none', color: T.muted, fontSize: 22, cursor: 'pointer', padding: '0 4px' }}>✕</button>
         </div>
 
-        {/* Emoji row */}
+        {/* Emoji picker */}
         <div style={{ fontSize: 12, color: T.muted, marginBottom: 8, fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase' }}>Icon</div>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 18 }}>
-          {QUICK_EMOJIS.map(e => (
-            <button
-              key={e}
-              onClick={() => setIcon(e)}
-              style={{
-                width: 44, height: 44, borderRadius: 12, border: '2px solid',
-                borderColor: icon === e ? T.teal : 'transparent',
-                background: icon === e ? 'rgba(0,188,212,0.15)' : T.inner,
-                fontSize: 22, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
-              }}
-            >{e}</button>
-          ))}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
+          <div style={{
+            width: 52, height: 52, borderRadius: 14, background: T.inner,
+            border: `2px solid ${T.teal}`, display: 'flex', alignItems: 'center',
+            justifyContent: 'center', fontSize: 28, flexShrink: 0,
+          }}>
+            {icon}
+          </div>
+          <span style={{ fontSize: 13, color: T.muted }}>Selected icon — browse all below</span>
+        </div>
+        <div style={{ marginBottom: 18 }}>
+          <EmojiPicker
+            onEmojiClick={(data) => setIcon(data.emoji)}
+            theme="dark"
+            width="100%"
+            height={320}
+            searchPlaceholder="Search emoji…"
+            skinTonesDisabled
+            previewConfig={{ showPreview: false }}
+          />
         </div>
 
         {/* Name */}
