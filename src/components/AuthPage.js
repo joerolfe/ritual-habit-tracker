@@ -1,4 +1,12 @@
 import React, { useState } from 'react';
+import {
+  isConfigured as isSupabaseConfigured,
+  supabaseSignUp,
+  supabaseSignIn,
+  supabaseSignOut,
+} from '../utils/supabase';
+
+// ── localStorage fallback (used when Supabase is not configured) ──────────────
 
 const STORAGE_KEYS = {
   users:   'ritual_users',
@@ -14,9 +22,8 @@ function saveUsers(users) {
   localStorage.setItem(STORAGE_KEYS.users, JSON.stringify(users));
 }
 
-function hashPassword(password) {
-  // Simple deterministic obfuscation — not real security, frontend-only demo
-  return btoa(unescape(encodeURIComponent(password)));
+function hashPassword(p) {
+  return btoa(unescape(encodeURIComponent(p)));
 }
 
 export function saveSession(user) {
@@ -30,18 +37,22 @@ export function loadSession() {
 
 export function clearSession() {
   localStorage.removeItem(STORAGE_KEYS.session);
+  // also sign out from Supabase if configured
+  supabaseSignOut().catch(() => {});
 }
 
+// ── Component ──────────────────────────────────────────────────────────────────
+
 export default function AuthPage({ initialMode = 'login', onAuth, onGuest, onBack }) {
-  const [mode,     setMode]     = useState(initialMode); // 'login' | 'signup'
+  const [mode,     setMode]     = useState(initialMode);
   const [name,     setName]     = useState('');
   const [email,    setEmail]    = useState('');
   const [password, setPassword] = useState('');
   const [error,    setError]    = useState('');
   const [loading,  setLoading]  = useState(false);
+  const [info,     setInfo]     = useState('');
 
-  const clearForm = () => { setName(''); setEmail(''); setPassword(''); setError(''); };
-
+  const clearForm = () => { setName(''); setEmail(''); setPassword(''); setError(''); setInfo(''); };
   const switchMode = (m) => { setMode(m); clearForm(); };
 
   const validate = () => {
@@ -51,15 +62,40 @@ export default function AuthPage({ initialMode = 'login', onAuth, onGuest, onBac
     return null;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const err = validate();
     if (err) { setError(err); return; }
 
     setLoading(true);
     setError('');
+    setInfo('');
 
-    // Simulate async delay
+    // ── Supabase path ───────────────────────────────────────────────────────
+    if (isSupabaseConfigured()) {
+      try {
+        let user;
+        if (mode === 'signup') {
+          user = await supabaseSignUp(email.trim(), password, name.trim());
+          if (!user) {
+            // Supabase may require email confirmation
+            setInfo('Check your email to confirm your account, then sign in.');
+            setLoading(false);
+            return;
+          }
+        } else {
+          user = await supabaseSignIn(email.trim(), password);
+        }
+        saveSession(user);
+        onAuth(user);
+      } catch (ex) {
+        setError(ex.message || 'Authentication failed.');
+      }
+      setLoading(false);
+      return;
+    }
+
+    // ── localStorage fallback ───────────────────────────────────────────────
     setTimeout(() => {
       const users = loadUsers();
       const hash  = hashPassword(password);
@@ -87,7 +123,6 @@ export default function AuthPage({ initialMode = 'login', onAuth, onGuest, onBac
         saveSession(session);
         onAuth(session);
       }
-
       setLoading(false);
     }, 400);
   };
@@ -103,6 +138,10 @@ export default function AuthPage({ initialMode = 'login', onAuth, onGuest, onBac
 
       <div className="auth-card">
         <div className="auth-brand">Ritual</div>
+
+        {isSupabaseConfigured() && (
+          <div className="auth-cloud-badge">☁️ Cloud sync enabled</div>
+        )}
 
         <div className="auth-tabs">
           <button className={`auth-tab ${mode === 'login'  ? 'active' : ''}`} onClick={() => switchMode('login')}>Sign in</button>
@@ -154,6 +193,7 @@ export default function AuthPage({ initialMode = 'login', onAuth, onGuest, onBac
           </div>
 
           {error && <div className="auth-error">{error}</div>}
+          {info  && <div className="auth-info">{info}</div>}
 
           <button
             className={`auth-submit ${loading ? 'loading' : ''}`}

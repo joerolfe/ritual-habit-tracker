@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import './App.css';
 import Sidebar from './components/Sidebar';
 import MonthView from './components/MonthView';
@@ -16,32 +17,51 @@ import GoalsView from './components/GoalsView';
 import InsightsView from './components/InsightsView';
 import FocusTimer from './components/FocusTimer';
 import WeeklyReview, { shouldShowWeeklyReview } from './components/WeeklyReview';
+import ExportModal from './components/ExportModal';
+import HealthView from './components/HealthView';
+import AICoachView from './components/AICoachView';
+import JournalView from './components/JournalView';
+import ProfileView from './components/ProfileView';
 import { computeAchievements } from './utils/achievements';
 import { scheduleAllReminders, requestPermission, scheduleStreakRescue, scheduleMorningBrief } from './utils/notifications';
 import { getOverallStreak } from './utils/streaks';
 import { HABIT_COLORS } from './utils/constants';
+import { isConfigured as isSupabaseConfigured, syncUp, syncDown, subscribeToSync, unsubscribeFromSync } from './utils/supabase';
+import { parseNaturalLanguage } from './utils/nlParser';
 
 const STORAGE_KEYS = {
-  habits:        'ritual_habits',
-  completions:   'ritual_completions',
-  intentions:    'ritual_intentions',
-  notes:         'ritual_notes',
-  shields:       'ritual_shields',
-  achievements:  'ritual_achievements',
-  onboarded:     'ritual_onboarded',
-  milestones:    'ritual_milestones',
-  moods:         'ritual_moods',
-  water:         'ritual_water',
-  sleep:         'ritual_sleep',
-  gratitude:     'ritual_gratitude',
-  goals:         'ritual_goals',
-  challenges:    'ritual_challenges',
-  weeklyReviews: 'ritual_reviews',
-  archivedHabits:'ritual_archived',
-  theme:         'ritual_theme',
-  briefTime:     'ritual_brief_time',
-  screenTime:    'ritual_screen',
-  screenGoal:    'ritual_screen_goal',
+  habits:           'ritual_habits',
+  completions:      'ritual_completions',
+  intentions:       'ritual_intentions',
+  notes:            'ritual_notes',
+  shields:          'ritual_shields',
+  achievements:     'ritual_achievements',
+  onboarded:        'ritual_onboarded',
+  milestones:       'ritual_milestones',
+  moods:            'ritual_moods',
+  water:            'ritual_water',
+  sleep:            'ritual_sleep',
+  gratitude:        'ritual_gratitude',
+  goals:            'ritual_goals',
+  challenges:       'ritual_challenges',
+  weeklyReviews:    'ritual_reviews',
+  archivedHabits:   'ritual_archived',
+  theme:            'ritual_theme',
+  briefTime:        'ritual_brief_time',
+  screenTime:       'ritual_screen',
+  screenGoal:       'ritual_screen_goal',
+  journal:          'ritual_journal',
+  // Health suite
+  nutrition:        'ritual_nutrition',
+  nutritionGoals:   'ritual_nutrition_goals',
+  workouts:         'ritual_workouts',
+  bodyMeasurements: 'ritual_body',
+  wellbeing:        'ritual_wellbeing',
+  period:           'ritual_period',
+  habitStacks:      'ritual_habit_stacks',
+  recipes:          'ritual_recipes',
+  mealPlans:        'ritual_meal_plans',
+  bonusXP:          'ritual_bonus_xp',
 };
 
 export { HABIT_COLORS };
@@ -112,6 +132,26 @@ function App() {
   const [screenTime,     setScreenTime]     = useState(() => load(STORAGE_KEYS.screenTime, {}));
   const [screenGoal,     setScreenGoal]     = useState(() => load(STORAGE_KEYS.screenGoal, 3));
 
+  const [journal,          setJournal]          = useState(() => load(STORAGE_KEYS.journal, {}));
+
+  // ── Health suite state ────────────────────────────────────────────────────
+  const [nutrition,        setNutrition]        = useState(() => load(STORAGE_KEYS.nutrition, {}));
+  const [nutritionGoals,   setNutritionGoals]   = useState(() => load(STORAGE_KEYS.nutritionGoals, { calories: 2000, protein: 150, carbs: 200, fat: 65 }));
+  const [workouts,         setWorkouts]         = useState(() => load(STORAGE_KEYS.workouts, []));
+  const [bodyMeasurements, setBodyMeasurements] = useState(() => load(STORAGE_KEYS.bodyMeasurements, []));
+  const [wellbeing,        setWellbeing]        = useState(() => load(STORAGE_KEYS.wellbeing, {}));
+  const [period,           setPeriod]           = useState(() => load(STORAGE_KEYS.period, {}));
+
+  const [habitStacks,  setHabitStacks]  = useState(() => load('ritual_habit_stacks', []));
+  const [recipes,      setRecipes]      = useState(() => load('ritual_recipes', []));
+  const [mealPlans,    setMealPlans]    = useState(() => load('ritual_meal_plans', {}));
+  const [bonusXP,      setBonusXP]      = useState(() => load('ritual_bonus_xp', 0));
+
+  // ── NL Logger UI state ────────────────────────────────────────────────────
+  const [showNLLog,    setShowNLLog]    = useState(false);
+  const [nlInput,      setNLInput]      = useState('');
+  const [nlParsed,     setNLParsed]     = useState(null);
+
   // ── UI state ──────────────────────────────────────────────────────────────
   const [currentMonth, setCurrentMonth] = useState(today.getMonth());
   const [currentYear,  setCurrentYear]  = useState(today.getFullYear());
@@ -123,6 +163,10 @@ function App() {
   const [showPremium,      setShowPremium]      = useState(false);
   const [showFocusTimer,   setShowFocusTimer]   = useState(false);
   const [showWeeklyReview, setShowWeeklyReview] = useState(false);
+  const [showExport,       setShowExport]       = useState(false);
+  const [isPremium,        setIsPremium]        = useState(() => { // eslint-disable-line
+    try { return JSON.parse(localStorage.getItem('ritual_premium') || 'false'); } catch { return false; }
+  });
 
   // ── Persistence ───────────────────────────────────────────────────────────
   useEffect(() => { localStorage.setItem(STORAGE_KEYS.habits,        JSON.stringify(habits));        }, [habits]);
@@ -143,6 +187,17 @@ function App() {
   useEffect(() => { localStorage.setItem(STORAGE_KEYS.theme,         JSON.stringify(theme));         }, [theme]);
   useEffect(() => { localStorage.setItem(STORAGE_KEYS.screenTime,    JSON.stringify(screenTime));    }, [screenTime]);
   useEffect(() => { localStorage.setItem(STORAGE_KEYS.screenGoal,    JSON.stringify(screenGoal));    }, [screenGoal]);
+  useEffect(() => { localStorage.setItem(STORAGE_KEYS.journal,          JSON.stringify(journal));          }, [journal]);
+  useEffect(() => { localStorage.setItem(STORAGE_KEYS.nutrition,        JSON.stringify(nutrition));        }, [nutrition]);
+  useEffect(() => { localStorage.setItem(STORAGE_KEYS.nutritionGoals,   JSON.stringify(nutritionGoals));   }, [nutritionGoals]);
+  useEffect(() => { localStorage.setItem(STORAGE_KEYS.workouts,         JSON.stringify(workouts));         }, [workouts]);
+  useEffect(() => { localStorage.setItem(STORAGE_KEYS.bodyMeasurements, JSON.stringify(bodyMeasurements)); }, [bodyMeasurements]);
+  useEffect(() => { localStorage.setItem(STORAGE_KEYS.wellbeing,        JSON.stringify(wellbeing));        }, [wellbeing]);
+  useEffect(() => { localStorage.setItem(STORAGE_KEYS.period,           JSON.stringify(period));           }, [period]);
+  useEffect(() => { localStorage.setItem('ritual_habit_stacks', JSON.stringify(habitStacks)); }, [habitStacks]);
+  useEffect(() => { localStorage.setItem('ritual_recipes',      JSON.stringify(recipes));     }, [recipes]);
+  useEffect(() => { localStorage.setItem('ritual_meal_plans',   JSON.stringify(mealPlans));   }, [mealPlans]);
+  useEffect(() => { localStorage.setItem('ritual_bonus_xp',     JSON.stringify(bonusXP));     }, [bonusXP]);
 
   // ── Theme ─────────────────────────────────────────────────────────────────
   useEffect(() => {
@@ -163,6 +218,31 @@ function App() {
       });
     }
   }, [habits, completions, briefTime]);
+
+  // ── Electron keyboard shortcuts ──────────────────────────────────────────
+  useEffect(() => {
+    if (!window.electronAPI) return;
+    window.electronAPI.onShortcut((key) => {
+      if (key === 'journal')     setView('journal');
+      if (key === 'new-habit')   setSidebarOpen(true);
+      if (key === 'focus-timer') setShowFocusTimer(true);
+    });
+    return () => window.electronAPI.removeShortcutListener();
+  }, []);
+
+  // ── Supabase realtime sync ────────────────────────────────────────────────
+  useEffect(() => {
+    if (!currentUser || !isSupabaseConfigured()) return;
+    const channel = subscribeToSync(currentUser.id, (row) => {
+      if (row.habits)        setHabits(ensureHabitDefaults(row.habits));
+      if (row.completions)   setCompletions(row.completions);
+      if (row.goals)         setGoals(row.goals);
+      if (row.sleep_data)    setSleep(row.sleep_data);
+      if (row.moods)         setMoods(row.moods);
+      if (row.water)         setWater(row.water);
+    });
+    return () => unsubscribeFromSync(channel);
+  }, [currentUser]); // eslint-disable-line
 
   // ── Achievement & shield computation ─────────────────────────────────────
   useEffect(() => {
@@ -191,6 +271,45 @@ function App() {
     }
   }, []); // eslint-disable-line
 
+  // ── Supabase: pull data on login ──────────────────────────────────────────
+  useEffect(() => {
+    if (!currentUser || !isSupabaseConfigured()) return;
+    syncDown(currentUser.id).then(data => {
+      if (!data) return;
+      if (data.habits?.length)         setHabits(ensureHabitDefaults(data.habits));
+      if (data.completions)             setCompletions(data.completions);
+      if (data.notes)                   setNotes(data.notes);
+      if (data.moods)                   setMoods(data.moods);
+      if (data.water)                   setWater(data.water);
+      if (data.sleep_data)              setSleep(data.sleep_data);
+      if (data.gratitude)               setGratitude(data.gratitude);
+      if (data.goals?.length)           setGoals(data.goals);
+      if (data.challenges?.length)      setChallenges(data.challenges);
+      if (data.archived_habits?.length) setArchivedHabits(data.archived_habits);
+      if (typeof data.shields === 'number') setShields(data.shields);
+      if (data.milestones?.length)      setMilestones(data.milestones);
+      if (data.achievements)            setAchievements(prev => ({ ...prev, ...data.achievements }));
+      if (data.weekly_reviews)          setWeeklyReviews(data.weekly_reviews);
+      if (data.intentions)              setIntentions(data.intentions);
+    });
+  }, [currentUser?.id]); // eslint-disable-line
+
+  // ── Supabase: push data on change (debounced 3s) ──────────────────────────
+  const syncTimer = useRef(null);
+  useEffect(() => {
+    if (!currentUser || !isSupabaseConfigured()) return;
+    clearTimeout(syncTimer.current);
+    syncTimer.current = setTimeout(() => {
+      syncUp(currentUser.id, {
+        habits, completions, notes, moods, water,
+        sleep_data: sleep, gratitude, goals, challenges,
+        archived_habits: archivedHabits, shields, milestones,
+        achievements, weekly_reviews: weeklyReviews, intentions,
+      });
+    }, 3000);
+    return () => clearTimeout(syncTimer.current);
+  }, [habits, completions, notes, moods, water, sleep, gratitude, goals, challenges, archivedHabits, shields, milestones, achievements, weeklyReviews, intentions]); // eslint-disable-line
+
   // Close user menu on outside click
   useEffect(() => {
     if (!showUserMenu) return;
@@ -210,6 +329,16 @@ function App() {
   const handleGuest  = useCallback(() => { setCurrentUser(null); setScreen('app'); }, []);
   const handleSignOut = useCallback(() => {
     clearSession(); setCurrentUser(null); setShowUserMenu(false); setScreen('landing');
+  }, []);
+
+  // GDPR: delete all local data + sign out
+  const handleDeleteAccount = useCallback(() => {
+    if (!window.confirm('This will permanently delete all your local data. This cannot be undone. Continue?')) return;
+    Object.values(STORAGE_KEYS).forEach(k => localStorage.removeItem(k));
+    localStorage.removeItem('ritual_premium');
+    clearSession();
+    setCurrentUser(null);
+    setScreen('landing');
   }, []);
   const openLogin  = useCallback(() => { setAuthMode('login');  setScreen('auth'); }, []);
   const openSignup = useCallback(() => { setAuthMode('signup'); setScreen('auth'); }, []);
@@ -241,8 +370,9 @@ function App() {
     setShields(s => Math.max(0, s - 1));
   }, [shields]);
 
-  const addHabit = useCallback((name, color, icon, days, reminderTime, category) => {
+  const addHabit = useCallback((name, color, icon, days, reminderTime, category, why, difficulty, frequency, frequencyTarget) => {
     setHabits(prev => {
+      if (!isPremium && prev.length >= 5) { setShowPremium(true); return prev; }
       const c = color || HABIT_COLORS[prev.length % HABIT_COLORS.length];
       return [...prev, {
         id: `h${Date.now()}`,
@@ -252,10 +382,14 @@ function App() {
         days: days || [0,1,2,3,4,5,6],
         reminderTime: reminderTime || null,
         category: category || null,
+        why: why || null,
+        difficulty: difficulty || null,
+        frequency: frequency || null,
+        frequencyTarget: frequencyTarget || null,
         createdAt: Date.now(),
       }];
     });
-  }, []);
+  }, [isPremium]);
 
   const addHabitFromTemplate = useCallback((template) => {
     setHabits(prev => [...prev, {
@@ -274,10 +408,10 @@ function App() {
     setHabits(prev => prev.filter(h => h.id !== id));
   }, []);
 
-  const editHabit = useCallback((id, name, color, icon, days, reminderTime, category) => {
+  const editHabit = useCallback((id, name, color, icon, days, reminderTime, category, why, difficulty, frequency, frequencyTarget) => {
     setHabits(prev => prev.map(h =>
       h.id === id
-        ? { ...h, name, ...(color ? { color } : {}), icon: icon || h.icon, days: days || h.days, reminderTime: reminderTime !== undefined ? reminderTime : h.reminderTime, category: category !== undefined ? category : h.category }
+        ? { ...h, name, ...(color ? { color } : {}), icon: icon || h.icon, days: days || h.days, reminderTime: reminderTime !== undefined ? reminderTime : h.reminderTime, category: category !== undefined ? category : h.category, why: why !== undefined ? why : h.why, difficulty: difficulty !== undefined ? difficulty : h.difficulty, frequency: frequency !== undefined ? frequency : h.frequency, frequencyTarget: frequencyTarget !== undefined ? frequencyTarget : h.frequencyTarget }
         : h
     ));
   }, []);
@@ -354,6 +488,34 @@ function App() {
     setScreenGoal(goal);
   }, []);
 
+  const handleSetJournal = useCallback((dateKey, text) => {
+    setJournal(prev => text ? { ...prev, [dateKey]: text } : Object.fromEntries(Object.entries(prev).filter(([k]) => k !== dateKey)));
+  }, []);
+
+  // ── NL Log handler ────────────────────────────────────────────────────────
+  const handleNLConfirm = useCallback(() => {
+    if (!nlParsed) return;
+    const workout = {
+      id:        `w${Date.now()}`,
+      date:      new Date().toISOString(),
+      name:      nlParsed.name || nlParsed.type,
+      type:      nlParsed.type || 'Other',
+      exercises: nlParsed.exercises || [],
+      duration:  nlParsed.duration || 0,
+      calories:  nlParsed.duration ? Math.round(nlParsed.duration * 7) : 0,
+      distance:  nlParsed.distance,
+      distanceUnit: nlParsed.distanceUnit,
+      pace:      nlParsed.pace,
+      startTime: Date.now(),
+      endTime:   Date.now(),
+      createdAt: Date.now(),
+    };
+    setWorkouts(prev => [...prev, workout]);
+    setShowNLLog(false);
+    setNLInput('');
+    setNLParsed(null);
+  }, [nlParsed]);
+
   // ── Goals handlers ────────────────────────────────────────────────────────
   const addGoal = useCallback((data) => {
     setGoals(prev => [...prev, { id: `g${Date.now()}`, ...data, completed: false, createdAt: Date.now() }]);
@@ -397,6 +559,54 @@ function App() {
     setWeeklyReviews(prev => ({ ...prev, [weekKey]: data }));
   }, []);
 
+  // ── Health suite handlers ─────────────────────────────────────────────────
+  const handleSetNutrition = useCallback((dateKey, meals) => {
+    setNutrition(prev => ({ ...prev, [dateKey]: meals }));
+  }, []);
+
+  const handleSetNutritionGoals = useCallback((goals) => {
+    setNutritionGoals(goals);
+  }, []);
+
+  const addWorkout = useCallback((workout) => {
+    setWorkouts(prev => [...prev, { id: `w${Date.now()}`, ...workout, createdAt: Date.now() }]);
+  }, []);
+
+  const updateWorkout = useCallback((id, data) => {
+    setWorkouts(prev => prev.map(w => w.id === id ? { ...w, ...data } : w));
+  }, []);
+
+  const deleteWorkout = useCallback((id) => {
+    setWorkouts(prev => prev.filter(w => w.id !== id));
+  }, []);
+
+  const addMeasurement = useCallback((measurement) => {
+    setBodyMeasurements(prev => [...prev, { id: `m${Date.now()}`, ...measurement, createdAt: Date.now() }]);
+  }, []);
+
+  const handleSetWellbeing = useCallback((dateKey, data) => {
+    setWellbeing(prev => ({ ...prev, [dateKey]: data }));
+  }, []);
+
+  const handleSetPeriod = useCallback((data) => {
+    setPeriod(data);
+  }, []);
+
+  // ── Habit stacks ──────────────────────────────────────────────────────────
+  const addStack    = useCallback((data)     => setHabitStacks(s => [...s, data]), []);
+  const editStack   = useCallback((id, data) => setHabitStacks(s => s.map(st => st.id === id ? { ...st, ...data } : st)), []);
+  const deleteStack = useCallback((id)       => setHabitStacks(s => s.filter(st => st.id !== id)), []);
+
+  // ── Recipes ───────────────────────────────────────────────────────────────
+  const addRecipe    = useCallback((r)  => setRecipes(s => [...s, r]), []);
+  const deleteRecipe = useCallback((id) => setRecipes(s => s.filter(r => r.id !== id)), []);
+
+  // ── Meal plans ────────────────────────────────────────────────────────────
+  const setMealPlan = useCallback((dateKey, plan) => setMealPlans(mp => ({ ...mp, [dateKey]: plan })), []);
+
+  // ── Bonus XP ──────────────────────────────────────────────────────────────
+  const addBonusXP = useCallback((amount) => setBonusXP(p => p + amount), []);
+
   // ── Avatar ────────────────────────────────────────────────────────────────
   const initials = currentUser
     ? currentUser.name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)
@@ -428,8 +638,16 @@ function App() {
         <button className="profile-action-btn" onClick={() => { setShowPremium(true); setMobileProfile(false); }}>
           👑 Go Premium
         </button>
+        <button className="profile-action-btn" onClick={() => { setShowExport(true); setMobileProfile(false); }}>
+          📦 Export Data
+        </button>
         {currentUser ? (
-          <button className="profile-action-btn danger" onClick={handleSignOut}>Sign Out</button>
+          <>
+            <button className="profile-action-btn danger" onClick={handleSignOut}>Sign Out</button>
+            <button className="profile-action-btn danger" onClick={() => { handleDeleteAccount(); setMobileProfile(false); }}>
+              🗑 Delete All Data
+            </button>
+          </>
         ) : (
           <button className="profile-action-btn" onClick={openLogin}>Sign In</button>
         )}
@@ -478,7 +696,10 @@ function App() {
             <button className={`view-toggle-btn ${view === 'month'    ? 'active' : ''}`} onClick={() => setView('month')}>Month</button>
             <button className={`view-toggle-btn ${view === 'year'     ? 'active' : ''}`} onClick={() => setView('year')}>Year</button>
             <button className={`view-toggle-btn ${view === 'goals'    ? 'active' : ''}`} onClick={() => setView('goals')}>Goals</button>
+            <button className={`view-toggle-btn ${view === 'health'   ? 'active' : ''}`} onClick={() => setView('health')}>Health</button>
             <button className={`view-toggle-btn ${view === 'insights' ? 'active' : ''}`} onClick={() => setView('insights')}>Insights</button>
+            <button className={`view-toggle-btn ${view === 'journal'  ? 'active' : ''}`} onClick={() => setView('journal')}>Journal</button>
+            <button className={`view-toggle-btn ${view === 'coach'    ? 'active' : ''}`} onClick={() => setView('coach')}>Coach</button>
           </div>
         </div>
 
@@ -487,6 +708,8 @@ function App() {
             {today.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
           </span>
 
+          <button className="header-icon-btn" onClick={() => setShowExport(true)} title="Export Data">📦</button>
+          <button className="header-icon-btn" onClick={() => setShowNLLog(true)} title="Quick Log (Natural Language)">🗣️</button>
           <button className="header-icon-btn" onClick={() => setShowFocusTimer(true)} title="Focus Timer">⏱</button>
           <button className="header-icon-btn" onClick={() => setTheme(t => t === 'dark' ? 'light' : 'dark')} title="Toggle theme">
             {theme === 'dark' ? '☀️' : '🌙'}
@@ -541,6 +764,12 @@ function App() {
           onArchive={archiveHabit}
           archivedHabits={archivedHabits}
           onRestore={restoreHabit}
+          isPremium={isPremium}
+          onShowPremium={() => setShowPremium(true)}
+          stacks={habitStacks}
+          onAddStack={addStack}
+          onEditStack={editStack}
+          onDeleteStack={deleteStack}
         />
 
         {/* Mobile habits drawer */}
@@ -560,6 +789,12 @@ function App() {
                 onArchive={archiveHabit}
                 archivedHabits={archivedHabits}
                 onRestore={restoreHabit}
+                isPremium={isPremium}
+                onShowPremium={() => { setShowPremium(true); setMobileHabits(false); }}
+                stacks={habitStacks}
+                onAddStack={addStack}
+                onEditStack={editStack}
+                onDeleteStack={deleteStack}
               />
             </div>
           </div>
@@ -575,7 +810,11 @@ function App() {
         )}
 
         <main className="main-content">
+          <AnimatePresence mode="wait">
           {view === 'today' && (
+            <motion.div key="today" className="view-motion"
+              initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.22, ease: [0.4, 0, 0.2, 1] }}>
             <TodayView
               habits={habits}
               completions={completions}
@@ -600,9 +839,16 @@ function App() {
               onSetGratitude={handleSetGratitude}
               onSetScreenTime={handleSetScreenTime}
               onSetScreenGoal={handleSetScreenGoal}
+              stacks={habitStacks}
+              onAddBonusXP={addBonusXP}
+              onNavigate={(v) => { setView(v); setMobileHabits(false); setMobileProfile(false); }}
             />
+            </motion.div>
           )}
           {view === 'month' && (
+            <motion.div key="month" className="view-motion"
+              initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.22, ease: [0.4, 0, 0.2, 1] }}>
             <MonthView
               habits={habits}
               year={currentYear}
@@ -612,8 +858,12 @@ function App() {
               onPrevMonth={prevMonth}
               onNextMonth={nextMonth}
             />
+            </motion.div>
           )}
           {view === 'year' && (
+            <motion.div key="year" className="view-motion"
+              initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.22, ease: [0.4, 0, 0.2, 1] }}>
             <YearOverview
               habits={habits}
               year={currentYear}
@@ -621,8 +871,12 @@ function App() {
               onYearChange={setCurrentYear}
               onSelectMonth={(month) => { setCurrentMonth(month); setView('month'); }}
             />
+            </motion.div>
           )}
           {view === 'goals' && (
+            <motion.div key="goals" className="view-motion"
+              initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.22, ease: [0.4, 0, 0.2, 1] }}>
             <GoalsView
               goals={goals}
               challenges={challenges}
@@ -636,9 +890,14 @@ function App() {
               onEditChallenge={editChallenge}
               onDeleteChallenge={deleteChallenge}
               onToggleChallenge={toggleChallengeDay}
+              onAddBonusXP={addBonusXP}
             />
+            </motion.div>
           )}
           {view === 'insights' && (
+            <motion.div key="insights" className="view-motion"
+              initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.22, ease: [0.4, 0, 0.2, 1] }}>
             <InsightsView
               habits={habits}
               completions={completions}
@@ -646,7 +905,87 @@ function App() {
               water={water}
               sleep={sleep}
             />
+            </motion.div>
           )}
+          {view === 'health' && (
+            <motion.div key="health" className="view-motion"
+              initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.22, ease: [0.4, 0, 0.2, 1] }}>
+            <HealthView
+              sleep={sleep}
+              onSetSleep={handleSetSleep}
+              nutrition={nutrition}
+              nutritionGoals={nutritionGoals}
+              onSetNutrition={handleSetNutrition}
+              onSetNutritionGoals={handleSetNutritionGoals}
+              workouts={workouts}
+              bodyMeasurements={bodyMeasurements}
+              onAddWorkout={addWorkout}
+              onUpdateWorkout={updateWorkout}
+              onDeleteWorkout={deleteWorkout}
+              onAddMeasurement={addMeasurement}
+              wellbeing={wellbeing}
+              period={period}
+              onSetWellbeing={handleSetWellbeing}
+              onSetPeriod={handleSetPeriod}
+              isPremium={isPremium}
+              onShowPremium={() => setShowPremium(true)}
+              onAddBonusXP={addBonusXP}
+              recipes={recipes}
+              onAddRecipe={addRecipe}
+              onDeleteRecipe={deleteRecipe}
+              mealPlans={mealPlans}
+              onSetMealPlan={setMealPlan}
+            />
+            </motion.div>
+          )}
+          {view === 'journal' && (
+            <motion.div key="journal" className="view-motion"
+              initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.22, ease: [0.4, 0, 0.2, 1] }}>
+            <JournalView journal={journal} onSetJournal={handleSetJournal} />
+            </motion.div>
+          )}
+          {view === 'coach' && (
+            <motion.div key="coach" className="view-motion"
+              initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.22, ease: [0.4, 0, 0.2, 1] }}>
+            <AICoachView
+              habits={habits}
+              completions={completions}
+              moods={moods}
+              sleep={sleep}
+              water={water}
+              goals={goals}
+              workouts={workouts}
+              nutrition={nutrition}
+              wellbeing={wellbeing}
+            />
+            </motion.div>
+          )}
+          {view === 'profile' && (
+            <motion.div key="profile" className="view-motion"
+              initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.22, ease: [0.4, 0, 0.2, 1] }}>
+            <ProfileView
+              currentUser={currentUser}
+              habits={habits}
+              completions={completions}
+              sleep={sleep}
+              workouts={workouts}
+              journal={journal}
+              shields={shields}
+              isSupabaseSynced={isSupabaseConfigured()}
+              onShowAchievements={() => setShowAchievements(true)}
+              onShowPremium={() => setShowPremium(true)}
+              onShowExport={() => setShowExport(true)}
+              onSignOut={handleSignOut}
+              onDeleteAccount={handleDeleteAccount}
+              onSignIn={openLogin}
+            />
+            </motion.div>
+          )}
+          </AnimatePresence>
         </main>
       </div>
 
@@ -654,10 +993,6 @@ function App() {
       <BottomNav
         view={view}
         onSetView={(v) => { setView(v); setMobileHabits(false); setMobileProfile(false); }}
-        onHabits={() => setMobileHabits(v => !v)}
-        onProfile={() => setMobileProfile(v => !v)}
-        habitsActive={mobileHabits}
-        profileActive={mobileProfile}
       />
 
       {/* Modals */}
@@ -701,6 +1036,59 @@ function App() {
           onSave={saveWeeklyReview}
           onClose={() => setShowWeeklyReview(false)}
         />
+      )}
+      {showExport && (
+        <ExportModal
+          habits={habits}
+          completions={completions}
+          goals={goals}
+          workouts={workouts}
+          nutrition={nutrition}
+          sleep={sleep}
+          wellbeing={wellbeing}
+          moods={moods}
+          water={water}
+          onClose={() => setShowExport(false)}
+        />
+      )}
+
+      {/* Natural Language Logger Modal */}
+      {showNLLog && (
+        <div className="nl-log-modal-overlay" onClick={() => { setShowNLLog(false); setNLInput(''); setNLParsed(null); }}>
+          <div className="nl-log-modal" onClick={e => e.stopPropagation()}>
+            <h3>🗣️ Quick Log</h3>
+            <p>Describe your activity in plain English and Ritual will log it automatically.</p>
+            <input
+              className="nl-log-input"
+              placeholder='e.g. "ran 5km in 28 minutes" or "45 minutes of yoga"'
+              value={nlInput}
+              autoFocus
+              onChange={e => {
+                setNLInput(e.target.value);
+                setNLParsed(parseNaturalLanguage(e.target.value));
+              }}
+              onKeyDown={e => { if (e.key === 'Enter' && nlParsed) handleNLConfirm(); }}
+            />
+            {nlParsed && (
+              <div className="nl-log-result">
+                <div className="nl-log-result-label">Detected workout</div>
+                <strong>{nlParsed.name || nlParsed.type}</strong>
+                {nlParsed.distance && <span> · {nlParsed.distance}{nlParsed.distanceUnit}</span>}
+                {nlParsed.duration && <span> · {nlParsed.duration} min</span>}
+                {nlParsed.exercises?.length > 0 && <span> · {nlParsed.exercises.length} exercise(s)</span>}
+              </div>
+            )}
+            {nlInput && !nlParsed && (
+              <div className="nl-log-result" style={{ color: 'var(--t3)' }}>
+                Couldn't parse that — try "ran 5km", "45 min yoga", or "squatted 80kg for 3 sets of 8"
+              </div>
+            )}
+            <div className="nl-log-actions">
+              <button className="nl-log-cancel-btn" onClick={() => { setShowNLLog(false); setNLInput(''); setNLParsed(null); }}>Cancel</button>
+              <button className="nl-log-confirm-btn" onClick={handleNLConfirm} disabled={!nlParsed}>Log Workout</button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

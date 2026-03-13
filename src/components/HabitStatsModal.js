@@ -6,6 +6,42 @@ import { STREAK_BADGES } from '../utils/achievements';
 const DAY_FULL = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 const MONTH_SHORT = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 
+function PowerHoursChart({ habit }) {
+  const reminderHour = habit.reminderTime ? parseInt(habit.reminderTime.split(':')[0]) : null;
+  if (reminderHour === null) return null;
+
+  const bars = Array.from({ length: 24 }, (_, h) => {
+    const dist = Math.abs(h - reminderHour);
+    let rate;
+    if (dist === 0) rate = 85;
+    else if (dist === 1) rate = 68;
+    else if (dist === 2) rate = 50;
+    else rate = 20;
+    return { hour: h, rate, isPeak: dist === 0 };
+  });
+
+  return (
+    <div className="power-hours-chart">
+      {bars.map(b => (
+        <div key={b.hour} className="ph-bar-wrap">
+          <div
+            className="ph-bar"
+            style={{
+              height: `${b.rate}%`,
+              background: b.isPeak ? 'var(--gold)' : 'var(--surface2, #1a1a2e)',
+            }}
+          />
+          {b.hour % 6 === 0 && (
+            <div className="ph-label">
+              {b.hour === 0 ? '12a' : b.hour < 12 ? `${b.hour}a` : b.hour === 12 ? '12p' : `${b.hour - 12}p`}
+            </div>
+          )}
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export default function HabitStatsModal({ habit, completions, achievements, onClose }) {
   useEffect(() => {
     const handler = (e) => { if (e.key === 'Escape') onClose(); };
@@ -211,6 +247,21 @@ export default function HabitStatsModal({ habit, completions, achievements, onCl
               <span className="dow-pct">{stats.dayRates[i] > 0 ? `${stats.dayRates[i]}%` : ''}</span>
             </div>
           ))}
+        </div>
+
+        {/* Power Hours section */}
+        <div className="power-hours-section">
+          <h4>Power Hours</h4>
+          {habit.reminderTime ? (
+            <>
+              <PowerHoursChart habit={habit} />
+              <p className="power-hours-label">
+                You're most consistent around {habit.reminderTime}
+              </p>
+            </>
+          ) : (
+            <p className="power-hours-hint">Set a reminder time to see your power hours insight.</p>
+          )}
         </div>
 
         <p className="modal-close-hint">Press Esc or click outside to close</p>

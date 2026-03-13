@@ -1,93 +1,149 @@
 // ─────────────────────────────────────────────────────────────────────────────
-// Supabase Cloud Sync  (optional — app works 100% offline without it)
+// Supabase — Real Auth + Cloud Sync
 //
-// SETUP:
+// SETUP (3 steps):
 //  1. Create a free project at https://supabase.com
-//  2. Add to a .env file in the project root:
+//  2. Create a .env file in the project root:
 //       REACT_APP_SUPABASE_URL=https://xxxx.supabase.co
 //       REACT_APP_SUPABASE_ANON_KEY=eyJhbGc...
-//  3. npm install @supabase/supabase-js
-//  4. Run this SQL in the Supabase SQL editor:
+//  3. Run this SQL in the Supabase SQL editor:
 //
-//  CREATE TABLE habits (
-//    id text, user_id text, name text, color text, icon text,
-//    days int[], reminder_time text, category text, created_at bigint,
-//    PRIMARY KEY (user_id, id)
+//  create table if not exists user_data (
+//    user_id uuid primary key references auth.users on delete cascade,
+//    habits jsonb not null default '[]',
+//    completions jsonb not null default '{}',
+//    notes jsonb not null default '{}',
+//    moods jsonb not null default '{}',
+//    water jsonb not null default '{}',
+//    sleep_data jsonb not null default '{}',
+//    gratitude jsonb not null default '{}',
+//    goals jsonb not null default '[]',
+//    challenges jsonb not null default '[]',
+//    archived_habits jsonb not null default '[]',
+//    shields integer not null default 0,
+//    milestones jsonb not null default '[]',
+//    achievements jsonb not null default '{}',
+//    weekly_reviews jsonb not null default '{}',
+//    intentions jsonb not null default '{}',
+//    updated_at timestamptz not null default now()
 //  );
-//  CREATE TABLE completions (
-//    user_id text, habit_id text, year int, month int, day int, note text,
-//    PRIMARY KEY (user_id, habit_id, year, month, day)
-//  );
-//  ALTER TABLE habits      ENABLE ROW LEVEL SECURITY;
-//  ALTER TABLE completions ENABLE ROW LEVEL SECURITY;
+//  alter table user_data enable row level security;
+//  create policy "own data only" on user_data for all using (auth.uid() = user_id);
 // ─────────────────────────────────────────────────────────────────────────────
 
-let _client = null;
+import { createClient } from '@supabase/supabase-js';
 
-function getClient() {
+const SUPABASE_URL = process.env.REACT_APP_SUPABASE_URL;
+const SUPABASE_KEY = process.env.REACT_APP_SUPABASE_ANON_KEY;
+
+export const isConfigured = () => !!(SUPABASE_URL && SUPABASE_KEY);
+
+let _client = null;
+export function getClient() {
   if (_client) return _client;
-  const url = process.env.REACT_APP_SUPABASE_URL;
-  const key = process.env.REACT_APP_SUPABASE_ANON_KEY;
-  if (!url || !key) return null;
-  try {
-    // eslint-disable-next-line import/no-extraneous-dependencies
-    const { createClient } = require('@supabase/supabase-js');
-    _client = createClient(url, key);
-  } catch {
-    return null;
-  }
+  if (!isConfigured()) return null;
+  _client = createClient(SUPABASE_URL, SUPABASE_KEY);
   return _client;
 }
 
-export const isConfigured = () =>
-  !!(process.env.REACT_APP_SUPABASE_URL && process.env.REACT_APP_SUPABASE_ANON_KEY);
+// ── Auth ─────────────────────────────────────────────────────────────────────
 
-export async function syncUp(userId, habits, completions, notes) {
-  const c = getClient();
-  if (!c || !userId) return;
+export async function supabaseSignUp(email, password, name) {
+  const sb = getClient();
+  if (!sb) throw new Error('Supabase not configured');
+  const { data, error } = await sb.auth.signUp({
+    email,
+    password,
+    options: { data: { name } },
+  });
+  if (error) throw error;
+  return normaliseUser(data.user);
+}
+
+export async function supabaseSignIn(email, password) {
+  const sb = getClient();
+  if (!sb) throw new Error('Supabase not configured');
+  const { data, error } = await sb.auth.signInWithPassword({ email, password });
+  if (error) throw error;
+  return normaliseUser(data.user);
+}
+
+export async function supabaseSignOut() {
+  const sb = getClient();
+  if (!sb) return;
+  await sb.auth.signOut();
+}
+
+export async function getSupabaseSession() {
+  const sb = getClient();
+  if (!sb) return null;
+  const { data } = await sb.auth.getSession();
+  return data.session ? normaliseUser(data.session.user) : null;
+}
+
+export function normaliseUser(user) {
+  if (!user) return null;
+  return {
+    id:    user.id,
+    email: user.email,
+    name:  user.user_metadata?.name || user.email.split('@')[0],
+  };
+}
+
+// ── Sync ─────────────────────────────────────────────────────────────────────
+
+export async function syncUp(userId, payload) {
+  const sb = getClient();
+  if (!sb || !userId) return;
   try {
-    await c.from('habits').upsert(
-      habits.map(h => ({ ...h, user_id: userId, days: h.days || [0,1,2,3,4,5,6] })),
-      { onConflict: 'user_id,id' }
+    const { error } = await sb.from('user_data').upsert(
+      { user_id: userId, ...payload, updated_at: new Date().toISOString() },
+      { onConflict: 'user_id' }
     );
-    const rows = Object.entries(completions)
-      .filter(([, v]) => v)
-      .map(([key]) => {
-        const [habit_id, year, month, day] = key.split('|');
-        return {
-          user_id: userId,
-          habit_id,
-          year: +year, month: +month, day: +day,
-          note: notes?.[key] || null,
-        };
-      });
-    if (rows.length) {
-      await c.from('completions').upsert(rows, {
-        onConflict: 'user_id,habit_id,year,month,day',
-      });
-    }
+    if (error) console.error('[Ritual] syncUp error:', error.message);
   } catch (e) {
-    console.error('[Ritual] Sync error:', e);
+    console.error('[Ritual] syncUp exception:', e);
   }
 }
 
 export async function syncDown(userId) {
-  const c = getClient();
-  if (!c || !userId) return null;
+  const sb = getClient();
+  if (!sb || !userId) return null;
   try {
-    const [{ data: habitsData }, { data: completionsData }] = await Promise.all([
-      c.from('habits').select('*').eq('user_id', userId),
-      c.from('completions').select('*').eq('user_id', userId),
-    ]);
-    const completions = {}, notes = {};
-    completionsData?.forEach(row => {
-      const key = `${row.habit_id}|${row.year}|${row.month}|${row.day}`;
-      completions[key] = true;
-      if (row.note) notes[key] = row.note;
-    });
-    return { habits: habitsData || [], completions, notes };
+    const { data, error } = await sb
+      .from('user_data')
+      .select('*')
+      .eq('user_id', userId)
+      .single();
+    if (error && error.code !== 'PGRST116') {
+      console.error('[Ritual] syncDown error:', error.message);
+      return null;
+    }
+    return data || null;
   } catch (e) {
-    console.error('[Ritual] Sync error:', e);
+    console.error('[Ritual] syncDown exception:', e);
     return null;
   }
+}
+
+// ── Real-time subscriptions ───────────────────────────────────────────────────
+
+export function subscribeToSync(userId, onUpdate) {
+  const sb = getClient();
+  if (!sb || !userId) return null;
+  const channel = sb
+    .channel(`user_data_${userId}`)
+    .on(
+      'postgres_changes',
+      { event: 'UPDATE', schema: 'public', table: 'user_data', filter: `user_id=eq.${userId}` },
+      (payload) => { if (payload.new) onUpdate(payload.new); }
+    )
+    .subscribe();
+  return channel;
+}
+
+export function unsubscribeFromSync(channel) {
+  const sb = getClient();
+  if (!sb || !channel) return;
+  sb.removeChannel(channel);
 }

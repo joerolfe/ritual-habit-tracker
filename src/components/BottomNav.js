@@ -1,45 +1,39 @@
 import React from 'react';
 
-export default function BottomNav({ view, onSetView, onHabits, onProfile, habitsActive, profileActive }) {
-  const items = [
-    { id: 'today',    label: 'Today',    icon: <TodayIcon /> },
-    { id: 'goals',    label: 'Goals',    icon: <GoalsIcon /> },
-    { id: 'insights', label: 'Insights', icon: <InsightsIcon /> },
-    { id: 'habits',   label: 'Habits',   icon: <HabitsIcon /> },
-    { id: 'profile',  label: 'Profile',  icon: <ProfileIcon /> },
-  ];
+const TABS = [
+  { id: 'today',   label: 'Home',    icon: <HomeIcon /> },
+  { id: 'goals',   label: 'Goals',   icon: <GoalsIcon /> },
+  { id: 'health',  label: 'Health',  icon: <HealthIcon /> },
+  { id: 'journal', label: 'Journal', icon: <JournalIcon /> },
+  { id: 'profile', label: 'Profile', icon: <ProfileIcon /> },
+];
 
-  const active = (id) => {
-    if (id === 'habits')  return habitsActive;
-    if (id === 'profile') return profileActive;
-    return view === id && !habitsActive && !profileActive;
-  };
-
+export default function BottomNav({ view, onSetView }) {
   return (
-    <nav className="bottom-nav">
-      {items.map(item => (
-        <button
-          key={item.id}
-          className={`bottom-nav-btn ${active(item.id) ? 'bnav-active' : ''}`}
-          onClick={() => {
-            if (item.id === 'habits')  { onHabits?.();  return; }
-            if (item.id === 'profile') { onProfile?.(); return; }
-            onSetView(item.id);
-          }}
-        >
-          <span className="bnav-icon">{item.icon}</span>
-          <span className="bnav-label">{item.label}</span>
-        </button>
-      ))}
+    <nav className="bnav-pill">
+      {TABS.map(tab => {
+        const active = view === tab.id;
+        return (
+          <button
+            key={tab.id}
+            className={`bnav-pill-btn ${active ? 'active' : ''}`}
+            onClick={() => onSetView(tab.id)}
+            aria-label={tab.label}
+          >
+            <span className="bnav-pill-icon">{tab.icon}</span>
+            {active && <span className="bnav-pill-label">{tab.label}</span>}
+          </button>
+        );
+      })}
     </nav>
   );
 }
 
-function TodayIcon() {
+function HomeIcon() {
   return (
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-      <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.7"/>
-      <path d="M12 7v5l3 3" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H5a1 1 0 01-1-1V9.5z" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M9 21V12h6v9" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"/>
     </svg>
   );
 }
@@ -52,20 +46,18 @@ function GoalsIcon() {
     </svg>
   );
 }
-function InsightsIcon() {
+function HealthIcon() {
   return (
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-      <rect x="2"  y="14" width="4" height="7" rx="1" fill="currentColor" opacity=".45"/>
-      <rect x="10" y="9"  width="4" height="12" rx="1" fill="currentColor" opacity=".7"/>
-      <rect x="18" y="3"  width="4" height="18" rx="1" fill="currentColor"/>
+      <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"/>
     </svg>
   );
 }
-function HabitsIcon() {
+function JournalIcon() {
   return (
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-      <path d="M9 11l3 3L22 4" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"/>
-      <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round"/>
+      <rect x="4" y="3" width="14" height="18" rx="2" stroke="currentColor" strokeWidth="1.7"/>
+      <path d="M8 7h8M8 11h8M8 15h5" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round"/>
     </svg>
   );
 }

@@ -1,0 +1,1558 @@
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   HEALTH SECTION — LUXURY MOBILE REDESIGN
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── SHARED HEALTH INPUTS / FORMS ────────────────────────────────────────── */
+.sleep-view input[type="time"],
+.sleep-view input[type="number"],
+.sleep-view select,
+.sleep-view textarea,
+.nutrition-view input[type="text"],
+.nutrition-view input[type="number"],
+.nutrition-view select,
+.workout-view input[type="number"],
+.workout-view input[type="text"] {
+  background: rgba(255,255,255,0.04) !important;
+  border: 1px solid rgba(255,255,255,0.08) !important;
+  border-radius: 12px !important;
+  color: #fff !important;
+  font-size: 15px !important;
+  padding: 11px 14px !important;
+  transition: border-color 0.18s, box-shadow 0.18s !important;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.sleep-view input[type="time"]:focus,
+.sleep-view input[type="number"]:focus,
+.sleep-view select:focus,
+.sleep-view textarea:focus,
+.nutrition-view input[type="text"]:focus,
+.nutrition-view input[type="number"]:focus,
+.workout-view input[type="number"]:focus,
+.workout-view input[type="text"]:focus {
+  border-color: rgba(200,169,110,0.40) !important;
+  box-shadow: 0 0 0 3px rgba(200,169,110,0.07) !important;
+  outline: none !important;
+}
+
+/* ── SLEEP VIEW ──────────────────────────────────────────────────────────── */
+.sleep-view {
+  padding: 0 !important;
+}
+.sleep-log-form {
+  padding: 20px 20px 32px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 20px !important;
+}
+.sleep-field {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 7px !important;
+}
+.sleep-field label {
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+  color: rgba(235,235,245,0.38) !important;
+}
+.sleep-field input[type="time"] {
+  font-size: 22px !important;
+  font-weight: 300 !important;
+  letter-spacing: 0.04em !important;
+  padding: 14px 16px !important;
+  border-radius: 14px !important;
+  background: rgba(255,255,255,0.05) !important;
+  border: 1px solid rgba(255,255,255,0.08) !important;
+}
+
+/* Sleep score ring */
+.sleep-score-ring-wrap {
+  display: flex !important;
+  justify-content: center !important;
+  padding: 24px 0 16px !important;
+}
+.sleep-score-ring {
+  filter: drop-shadow(0 0 18px rgba(200,169,110,0.22));
+}
+
+/* Duration badge */
+.sleep-duration-badge {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  background: rgba(200,169,110,0.10) !important;
+  border: 1px solid rgba(200,169,110,0.22) !important;
+  color: var(--gold) !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  padding: 6px 14px !important;
+  border-radius: 99px !important;
+  letter-spacing: 0.02em !important;
+}
+
+/* Quality buttons */
+.sleep-quality-btns {
+  display: flex !important;
+  gap: 8px !important;
+}
+.sleep-quality-btn {
+  flex: 1 !important;
+  padding: 12px 4px !important;
+  border-radius: 14px !important;
+  border: 1.5px solid rgba(255,255,255,0.07) !important;
+  background: rgba(255,255,255,0.04) !important;
+  color: rgba(235,235,245,0.45) !important;
+  font-size: 22px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  gap: 4px !important;
+  cursor: pointer !important;
+  transition: all 0.18s !important;
+}
+.sleep-quality-btn:hover {
+  background: rgba(255,255,255,0.07) !important;
+  border-color: rgba(255,255,255,0.14) !important;
+}
+.sleep-quality-btn.active,
+.sleep-quality-btn.selected {
+  background: rgba(200,169,110,0.12) !important;
+  border-color: rgba(200,169,110,0.40) !important;
+  color: var(--gold) !important;
+  box-shadow: 0 0 12px rgba(200,169,110,0.15) !important;
+}
+.sleep-quality-btn span:last-child {
+  font-size: 10px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.04em !important;
+}
+
+/* How you felt chips */
+.sleep-feel-chips {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 8px !important;
+}
+.sleep-feel-chip {
+  padding: 8px 16px !important;
+  border-radius: 99px !important;
+  border: 1px solid rgba(255,255,255,0.09) !important;
+  background: rgba(255,255,255,0.04) !important;
+  color: rgba(235,235,245,0.55) !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  cursor: pointer !important;
+  transition: all 0.16s !important;
+}
+.sleep-feel-chip:hover {
+  border-color: rgba(255,255,255,0.18) !important;
+  color: rgba(235,235,245,0.80) !important;
+}
+.sleep-feel-chip.active,
+.sleep-feel-chip.selected {
+  background: rgba(200,169,110,0.12) !important;
+  border-color: rgba(200,169,110,0.38) !important;
+  color: var(--gold) !important;
+}
+
+/* Sleep factor chips */
+.sleep-factors {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 8px !important;
+}
+.factor-chip {
+  padding: 7px 14px !important;
+  border-radius: 99px !important;
+  border: 1px solid rgba(255,255,255,0.08) !important;
+  background: rgba(255,255,255,0.03) !important;
+  color: rgba(235,235,245,0.50) !important;
+  font-size: 12.5px !important;
+  cursor: pointer !important;
+  transition: all 0.16s !important;
+}
+.factor-chip.active,
+.factor-chip.selected {
+  background: rgba(255,89,89,0.12) !important;
+  border-color: rgba(255,89,89,0.35) !important;
+  color: #ff8a8a !important;
+}
+
+/* Sleep save button */
+.sleep-save-btn {
+  width: 100% !important;
+  padding: 15px !important;
+  border-radius: 14px !important;
+  background: linear-gradient(135deg, #dfc07a 0%, #c8a96e 100%) !important;
+  color: #000 !important;
+  font-size: 15px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.02em !important;
+  border: none !important;
+  cursor: pointer !important;
+  box-shadow: 0 4px 20px rgba(200,169,110,0.30) !important;
+  transition: transform 0.15s, box-shadow 0.15s !important;
+}
+.sleep-save-btn:hover {
+  transform: translateY(-1px) !important;
+  box-shadow: 0 6px 24px rgba(200,169,110,0.40) !important;
+}
+.sleep-save-btn:active { transform: scale(0.98) !important; }
+
+/* Sleep section headings */
+.sleep-section-title,
+.sleep-log-form h3,
+.sleep-trends h3,
+.sleep-alarm h3 {
+  font-family: "Playfair Display", serif !important;
+  font-size: 17px !important;
+  font-weight: 600 !important;
+  color: rgba(235,235,245,0.85) !important;
+  margin: 0 0 12px !important;
+}
+
+/* Sleep history list */
+.sleep-history-list {
+  padding: 0 20px 24px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 10px !important;
+}
+.sleep-history-item {
+  background: rgba(255,255,255,0.04) !important;
+  border: 1px solid rgba(255,255,255,0.07) !important;
+  border-radius: 14px !important;
+  padding: 14px 16px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  box-shadow: var(--sh-xs) !important;
+}
+.sleep-history-date {
+  font-size: 11px !important;
+  color: rgba(235,235,245,0.38) !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.06em !important;
+  font-weight: 600 !important;
+}
+.sleep-history-duration {
+  font-size: 18px !important;
+  font-weight: 700 !important;
+  color: var(--gold) !important;
+  letter-spacing: -0.02em !important;
+}
+
+/* Smart alarm cards */
+.sleep-alarm-cards {
+  display: flex !important;
+  gap: 10px !important;
+  padding: 0 20px 24px !important;
+}
+.alarm-card {
+  flex: 1 !important;
+  background: rgba(255,255,255,0.04) !important;
+  border: 1.5px solid rgba(255,255,255,0.07) !important;
+  border-radius: 16px !important;
+  padding: 14px 10px !important;
+  text-align: center !important;
+  cursor: pointer !important;
+  transition: all 0.18s !important;
+  box-shadow: var(--sh-xs) !important;
+  position: relative !important;
+}
+.alarm-card:hover {
+  border-color: rgba(200,169,110,0.30) !important;
+  background: rgba(200,169,110,0.06) !important;
+  box-shadow: var(--sh-sm) !important;
+  transform: translateY(-2px) !important;
+}
+.alarm-card.recommended {
+  border-color: rgba(200,169,110,0.40) !important;
+  background: rgba(200,169,110,0.08) !important;
+}
+.alarm-recommended-badge {
+  position: absolute !important;
+  top: -8px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  background: var(--gold) !important;
+  color: #000 !important;
+  font-size: 9px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.05em !important;
+  padding: 2px 10px !important;
+  border-radius: 99px !important;
+}
+
+/* Soundscape sheet */
+.soundscape-sheet {
+  position: fixed !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  max-width: 480px !important;
+  margin: 0 auto !important;
+  background: rgba(14,14,18,0.98) !important;
+  backdrop-filter: blur(30px) !important;
+  -webkit-backdrop-filter: blur(30px) !important;
+  border-top: 1px solid rgba(255,255,255,0.08) !important;
+  border-radius: 24px 24px 0 0 !important;
+  padding: 20px 20px calc(20px + env(safe-area-inset-bottom,0px)) !important;
+  z-index: 600 !important;
+  box-shadow: 0 -20px 60px rgba(0,0,0,0.6) !important;
+}
+.soundscape-handle {
+  width: 36px !important;
+  height: 4px !important;
+  background: rgba(255,255,255,0.16) !important;
+  border-radius: 2px !important;
+  margin: 0 auto 18px !important;
+}
+.soundscape-grid {
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr) !important;
+  gap: 10px !important;
+  margin-bottom: 20px !important;
+}
+.soundscape-btn {
+  background: rgba(255,255,255,0.04) !important;
+  border: 1.5px solid rgba(255,255,255,0.07) !important;
+  border-radius: 16px !important;
+  padding: 14px 8px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  gap: 6px !important;
+  cursor: pointer !important;
+  transition: all 0.18s !important;
+  font-size: 13px !important;
+  color: rgba(235,235,245,0.65) !important;
+}
+.soundscape-btn:hover {
+  background: rgba(255,255,255,0.07) !important;
+  border-color: rgba(255,255,255,0.14) !important;
+}
+.soundscape-btn.active {
+  background: rgba(200,169,110,0.12) !important;
+  border-color: rgba(200,169,110,0.38) !important;
+  color: var(--gold) !important;
+  box-shadow: 0 0 14px rgba(200,169,110,0.15) !important;
+}
+.soundscape-icon { font-size: 26px !important; }
+.soundscape-volume-row {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  margin-bottom: 16px !important;
+}
+.soundscape-volume-row input[type="range"] {
+  flex: 1 !important;
+  -webkit-appearance: none !important;
+  appearance: none !important;
+  height: 4px !important;
+  background: rgba(255,255,255,0.12) !important;
+  border-radius: 2px !important;
+  border: none !important;
+  padding: 0 !important;
+}
+.soundscape-volume-row input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none !important;
+  width: 18px !important;
+  height: 18px !important;
+  border-radius: 50% !important;
+  background: var(--gold) !important;
+  cursor: pointer !important;
+}
+.soundscape-timer-row {
+  display: flex !important;
+  gap: 8px !important;
+}
+.soundscape-timer-chip {
+  flex: 1 !important;
+  padding: 8px 4px !important;
+  border-radius: 10px !important;
+  border: 1px solid rgba(255,255,255,0.08) !important;
+  background: rgba(255,255,255,0.03) !important;
+  color: rgba(235,235,245,0.50) !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  transition: all 0.15s !important;
+}
+.soundscape-timer-chip.active {
+  background: rgba(200,169,110,0.12) !important;
+  border-color: rgba(200,169,110,0.38) !important;
+  color: var(--gold) !important;
+}
+
+/* Sleep phase chart */
+.sleep-phase-chart-wrap {
+  padding: 0 20px 24px !important;
+}
+.sleep-phase-chart-wrap svg {
+  border-radius: 12px !important;
+  overflow: visible;
+}
+
+/* Sleep trend section */
+.sleep-trends-section {
+  padding: 0 20px 32px !important;
+}
+.sleep-debt-pill {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  padding: 6px 14px !important;
+  border-radius: 99px !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  margin-bottom: 16px !important;
+}
+
+/* ── NUTRITION VIEW ───────────────────────────────────────────────────────── */
+.nutrition-view {
+  padding: 0 !important;
+}
+.nutrition-summary {
+  padding: 20px 20px 16px !important;
+}
+.calorie-ring-wrap {
+  position: relative !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+.macro-bars {
+  padding: 0 20px 16px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 10px !important;
+}
+.macro-bar-row {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+}
+.macro-bar-label {
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  color: rgba(235,235,245,0.55) !important;
+  width: 52px !important;
+  flex-shrink: 0 !important;
+}
+.macro-bar-track {
+  flex: 1 !important;
+  height: 6px !important;
+  background: rgba(255,255,255,0.07) !important;
+  border-radius: 3px !important;
+  overflow: hidden !important;
+}
+.macro-bar-fill {
+  height: 100% !important;
+  border-radius: 3px !important;
+  transition: width 0.5s ease !important;
+}
+.macro-bar-count {
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  color: rgba(235,235,245,0.45) !important;
+  width: 60px !important;
+  text-align: right !important;
+  flex-shrink: 0 !important;
+}
+
+/* Meal sections */
+.meal-section {
+  margin: 0 16px 12px !important;
+  background: rgba(255,255,255,0.03) !important;
+  border: 1px solid rgba(255,255,255,0.07) !important;
+  border-radius: 16px !important;
+  overflow: hidden !important;
+  box-shadow: var(--sh-xs) !important;
+}
+.meal-header {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 13px 16px !important;
+  border-bottom: 1px solid rgba(255,255,255,0.05) !important;
+}
+.meal-title {
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.04em !important;
+  color: rgba(235,235,245,0.70) !important;
+  text-transform: uppercase !important;
+}
+.meal-subtotals {
+  display: flex !important;
+  gap: 6px !important;
+  align-items: center !important;
+}
+.meal-subtotals span,
+.meal-subtotal-pill {
+  font-size: 11px !important;
+  color: rgba(235,235,245,0.38) !important;
+  font-weight: 500 !important;
+}
+.meal-add-btn {
+  width: 28px !important;
+  height: 28px !important;
+  border-radius: 50% !important;
+  background: rgba(200,169,110,0.12) !important;
+  border: 1px solid rgba(200,169,110,0.25) !important;
+  color: var(--gold) !important;
+  font-size: 18px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  transition: all 0.15s !important;
+  line-height: 1 !important;
+  padding: 0 !important;
+  flex-shrink: 0 !important;
+}
+.meal-add-btn:hover {
+  background: rgba(200,169,110,0.20) !important;
+  transform: scale(1.08) !important;
+}
+.meal-item {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  padding: 11px 16px !important;
+  border-bottom: 1px solid rgba(255,255,255,0.04) !important;
+  transition: background 0.14s !important;
+}
+.meal-item:last-child { border-bottom: none !important; }
+.meal-item:hover { background: rgba(255,255,255,0.02) !important; }
+.meal-item-name {
+  flex: 1 !important;
+  font-size: 14px !important;
+  color: rgba(235,235,245,0.82) !important;
+}
+.meal-item-cal {
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  color: rgba(235,235,245,0.45) !important;
+  flex-shrink: 0 !important;
+}
+.meal-item-del {
+  width: 24px !important;
+  height: 24px !important;
+  border-radius: 50% !important;
+  border: none !important;
+  background: rgba(255,59,48,0.12) !important;
+  color: #ff3b30 !important;
+  font-size: 14px !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0 !important;
+  opacity: 0 !important;
+  transition: opacity 0.15s !important;
+}
+.meal-item:hover .meal-item-del { opacity: 1 !important; }
+
+/* Food search modal — full bottom sheet */
+.food-search-modal {
+  position: fixed !important;
+  inset: 0 !important;
+  background: rgba(0,0,0,0.65) !important;
+  backdrop-filter: blur(6px) !important;
+  -webkit-backdrop-filter: blur(6px) !important;
+  z-index: 500 !important;
+  display: flex !important;
+  align-items: flex-end !important;
+  justify-content: center !important;
+}
+.food-search-panel {
+  width: 100% !important;
+  max-width: 480px !important;
+  max-height: 88vh !important;
+  background: #111114 !important;
+  border-radius: 24px 24px 0 0 !important;
+  padding: 0 0 calc(16px + env(safe-area-inset-bottom,0px)) !important;
+  box-shadow: 0 -20px 60px rgba(0,0,0,0.7) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+}
+.food-search-handle {
+  width: 36px !important;
+  height: 4px !important;
+  background: rgba(255,255,255,0.14) !important;
+  border-radius: 2px !important;
+  margin: 14px auto 6px !important;
+  flex-shrink: 0 !important;
+}
+.food-search-header {
+  padding: 8px 20px 14px !important;
+  flex-shrink: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+}
+.food-search-input {
+  flex: 1 !important;
+  background: rgba(255,255,255,0.06) !important;
+  border: 1px solid rgba(255,255,255,0.09) !important;
+  border-radius: 12px !important;
+  padding: 10px 14px !important;
+  font-size: 15px !important;
+  color: #fff !important;
+}
+.food-search-input:focus {
+  border-color: rgba(200,169,110,0.38) !important;
+  box-shadow: 0 0 0 3px rgba(200,169,110,0.07) !important;
+  outline: none !important;
+}
+.food-search-results {
+  flex: 1 !important;
+  overflow-y: auto !important;
+  padding: 0 16px !important;
+}
+.food-result-item {
+  padding: 13px 14px !important;
+  border-radius: 12px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  cursor: pointer !important;
+  transition: background 0.14s !important;
+  border: 1px solid transparent !important;
+  margin-bottom: 4px !important;
+}
+.food-result-item:hover {
+  background: rgba(255,255,255,0.05) !important;
+  border-color: rgba(255,255,255,0.07) !important;
+}
+.food-result-name {
+  flex: 1 !important;
+  font-size: 14.5px !important;
+  color: rgba(235,235,245,0.82) !important;
+}
+.food-result-cal {
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  color: var(--gold) !important;
+}
+.food-qty-row {
+  padding: 14px 20px !important;
+  display: flex !important;
+  gap: 10px !important;
+  align-items: center !important;
+  border-top: 1px solid rgba(255,255,255,0.06) !important;
+  flex-shrink: 0 !important;
+}
+.food-qty-input {
+  width: 80px !important;
+  padding: 10px 12px !important;
+  border-radius: 10px !important;
+  background: rgba(255,255,255,0.05) !important;
+  border: 1px solid rgba(255,255,255,0.09) !important;
+  color: #fff !important;
+  font-size: 15px !important;
+  text-align: center !important;
+}
+.food-add-btn {
+  flex: 1 !important;
+  padding: 12px !important;
+  border-radius: 12px !important;
+  background: linear-gradient(135deg, #dfc07a, #c8a96e) !important;
+  color: #000 !important;
+  font-weight: 700 !important;
+  font-size: 14px !important;
+  border: none !important;
+  cursor: pointer !important;
+  box-shadow: 0 3px 14px rgba(200,169,110,0.28) !important;
+  transition: transform 0.14s, box-shadow 0.14s !important;
+}
+.food-add-btn:hover {
+  transform: translateY(-1px) !important;
+  box-shadow: 0 5px 18px rgba(200,169,110,0.38) !important;
+}
+.food-add-btn:active { transform: scale(0.98) !important; }
+
+/* Micronutrients */
+.micronutrients-panel {
+  margin: 0 16px 12px !important;
+  background: rgba(255,255,255,0.03) !important;
+  border: 1px solid rgba(255,255,255,0.07) !important;
+  border-radius: 16px !important;
+  overflow: hidden !important;
+}
+.micronutrients-panel summary {
+  padding: 13px 16px !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  color: rgba(235,235,245,0.60) !important;
+  cursor: pointer !important;
+  list-style: none !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+}
+.micronutrients-panel summary::-webkit-details-marker { display: none !important; }
+.micronutrient-row {
+  padding: 10px 16px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  border-top: 1px solid rgba(255,255,255,0.04) !important;
+}
+.micronutrient-name {
+  font-size: 13px !important;
+  width: 90px !important;
+  flex-shrink: 0 !important;
+  color: rgba(235,235,245,0.65) !important;
+}
+.micronutrient-track {
+  flex: 1 !important;
+  height: 5px !important;
+  background: rgba(255,255,255,0.07) !important;
+  border-radius: 3px !important;
+  overflow: hidden !important;
+}
+.micronutrient-fill {
+  height: 100% !important;
+  border-radius: 3px !important;
+}
+.micronutrient-pct {
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  color: rgba(235,235,245,0.40) !important;
+  width: 36px !important;
+  text-align: right !important;
+  flex-shrink: 0 !important;
+}
+
+/* Weekly recharts chart */
+.nutrition-weekly-chart {
+  padding: 0 16px 24px !important;
+}
+.nutrition-weekly-stats {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 10px !important;
+  padding: 0 16px 24px !important;
+}
+.nutrition-weekly-stat-card {
+  background: rgba(255,255,255,0.04) !important;
+  border: 1px solid rgba(255,255,255,0.07) !important;
+  border-radius: 14px !important;
+  padding: 14px !important;
+  box-shadow: var(--sh-xs) !important;
+}
+.nutrition-weekly-stat-label {
+  font-size: 10px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.06em !important;
+  text-transform: uppercase !important;
+  color: rgba(235,235,245,0.35) !important;
+  margin-bottom: 4px !important;
+}
+.nutrition-weekly-stat-value {
+  font-size: 20px !important;
+  font-weight: 700 !important;
+  color: var(--gold) !important;
+  letter-spacing: -0.02em !important;
+}
+
+/* Barcode scanner modal */
+.barcode-modal {
+  position: fixed !important;
+  inset: 0 !important;
+  background: rgba(0,0,0,0.85) !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+  z-index: 600 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+.barcode-panel {
+  width: calc(100% - 32px) !important;
+  max-width: 420px !important;
+  background: #111114 !important;
+  border-radius: 24px !important;
+  overflow: hidden !important;
+  box-shadow: var(--sh-lg) !important;
+}
+.barcode-panel h3 {
+  padding: 20px 20px 14px !important;
+  font-family: "Playfair Display", serif !important;
+  font-size: 18px !important;
+  margin: 0 !important;
+}
+#barcode-reader { width: 100% !important; }
+.barcode-close-btn {
+  display: block !important;
+  width: calc(100% - 32px) !important;
+  margin: 14px 16px !important;
+  padding: 12px !important;
+  border-radius: 12px !important;
+  background: rgba(255,255,255,0.06) !important;
+  border: 1px solid rgba(255,255,255,0.09) !important;
+  color: rgba(235,235,245,0.70) !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+}
+
+/* Recipe cards */
+.recipe-card {
+  margin: 0 16px 10px !important;
+  background: rgba(255,255,255,0.03) !important;
+  border: 1px solid rgba(255,255,255,0.07) !important;
+  border-radius: 16px !important;
+  padding: 14px 16px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  cursor: pointer !important;
+  box-shadow: var(--sh-xs) !important;
+  transition: all 0.18s !important;
+}
+.recipe-card:hover {
+  background: rgba(255,255,255,0.05) !important;
+  border-color: rgba(255,255,255,0.12) !important;
+  box-shadow: var(--sh-sm) !important;
+  transform: translateY(-1px) !important;
+}
+.recipe-icon { font-size: 28px !important; }
+.recipe-name {
+  font-size: 15px !important;
+  font-weight: 600 !important;
+  color: rgba(235,235,245,0.85) !important;
+}
+.recipe-macros {
+  font-size: 12px !important;
+  color: rgba(235,235,245,0.40) !important;
+  margin-top: 2px !important;
+}
+
+/* Meal planning grid */
+.meal-plan-grid {
+  padding: 0 16px 24px !important;
+  overflow-x: auto !important;
+}
+.meal-plan-day-col { min-width: 130px !important; }
+.meal-plan-day-header {
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.06em !important;
+  text-transform: uppercase !important;
+  color: rgba(235,235,245,0.40) !important;
+  text-align: center !important;
+  padding: 8px 4px !important;
+}
+.meal-plan-slot {
+  background: rgba(255,255,255,0.03) !important;
+  border: 1px solid rgba(255,255,255,0.06) !important;
+  border-radius: 10px !important;
+  min-height: 56px !important;
+  margin: 4px !important;
+  padding: 8px !important;
+  font-size: 12px !important;
+  color: rgba(235,235,245,0.38) !important;
+  cursor: pointer !important;
+  transition: all 0.15s !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+.meal-plan-slot:hover {
+  background: rgba(255,255,255,0.06) !important;
+  border-color: rgba(200,169,110,0.20) !important;
+  color: rgba(235,235,245,0.70) !important;
+}
+
+/* ── WORKOUT VIEW ─────────────────────────────────────────────────────────── */
+.workout-view { padding: 0 !important; }
+.workout-start-btn {
+  display: block !important;
+  width: calc(100% - 32px) !important;
+  margin: 20px 16px !important;
+  padding: 16px !important;
+  border-radius: 16px !important;
+  background: linear-gradient(135deg, #dfc07a 0%, #c8a96e 100%) !important;
+  color: #000 !important;
+  font-size: 16px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.02em !important;
+  border: none !important;
+  cursor: pointer !important;
+  box-shadow: 0 4px 24px rgba(200,169,110,0.32) !important;
+  transition: transform 0.15s, box-shadow 0.15s !important;
+}
+.workout-start-btn:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 32px rgba(200,169,110,0.42) !important;
+}
+.workout-start-btn:active { transform: scale(0.98) !important; }
+
+/* Active workout */
+.active-workout {
+  margin: 0 16px !important;
+  background: rgba(255,255,255,0.03) !important;
+  border: 1px solid rgba(255,255,255,0.08) !important;
+  border-radius: 20px !important;
+  overflow: hidden !important;
+  box-shadow: var(--sh-sm) !important;
+}
+.active-workout-header {
+  padding: 16px 18px !important;
+  border-bottom: 1px solid rgba(255,255,255,0.05) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+}
+.active-workout-title {
+  font-family: "Playfair Display", serif !important;
+  font-size: 17px !important;
+  font-weight: 600 !important;
+}
+.workout-timer {
+  font-size: 20px !important;
+  font-weight: 700 !important;
+  color: var(--gold) !important;
+  font-variant-numeric: tabular-nums !important;
+  letter-spacing: 0.04em !important;
+}
+.workout-exercise-block {
+  padding: 14px 18px !important;
+  border-bottom: 1px solid rgba(255,255,255,0.04) !important;
+}
+.workout-exercise-name {
+  font-size: 15px !important;
+  font-weight: 600 !important;
+  color: rgba(235,235,245,0.80) !important;
+  margin-bottom: 10px !important;
+}
+.workout-set-row {
+  display: grid !important;
+  grid-template-columns: 28px 1fr 1fr 38px !important;
+  gap: 8px !important;
+  align-items: center !important;
+  padding: 6px 0 !important;
+}
+.workout-set-num {
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  color: rgba(235,235,245,0.35) !important;
+  text-align: center !important;
+}
+.workout-set-input {
+  background: rgba(255,255,255,0.06) !important;
+  border: 1px solid rgba(255,255,255,0.09) !important;
+  border-radius: 10px !important;
+  padding: 9px 12px !important;
+  font-size: 15px !important;
+  color: #fff !important;
+  text-align: center !important;
+  font-weight: 500 !important;
+  transition: border-color 0.15s !important;
+}
+.workout-set-input:focus {
+  border-color: rgba(200,169,110,0.38) !important;
+  box-shadow: 0 0 0 2px rgba(200,169,110,0.07) !important;
+  outline: none !important;
+}
+.workout-set-done {
+  width: 38px !important;
+  height: 38px !important;
+  border-radius: 50% !important;
+  border: 1.5px solid rgba(52,199,89,0.35) !important;
+  background: rgba(52,199,89,0.08) !important;
+  color: #34c759 !important;
+  font-size: 17px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  transition: all 0.16s !important;
+  padding: 0 !important;
+  flex-shrink: 0 !important;
+}
+.workout-set-done.completed,
+.workout-set-done:hover {
+  background: rgba(52,199,89,0.18) !important;
+  border-color: #34c759 !important;
+  box-shadow: 0 0 10px rgba(52,199,89,0.20) !important;
+}
+.workout-add-set-btn {
+  margin: 10px 0 4px !important;
+  padding: 9px 16px !important;
+  border-radius: 10px !important;
+  border: 1px dashed rgba(255,255,255,0.14) !important;
+  background: transparent !important;
+  color: rgba(235,235,245,0.45) !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  width: 100% !important;
+  transition: all 0.15s !important;
+}
+.workout-add-set-btn:hover {
+  border-color: rgba(200,169,110,0.28) !important;
+  color: var(--gold) !important;
+  background: rgba(200,169,110,0.04) !important;
+}
+
+/* Workout template cards */
+.workout-template-card {
+  margin: 0 16px 10px !important;
+  background: rgba(255,255,255,0.04) !important;
+  border: 1px solid rgba(255,255,255,0.07) !important;
+  border-radius: 16px !important;
+  padding: 16px !important;
+  cursor: pointer !important;
+  box-shadow: var(--sh-xs) !important;
+  transition: all 0.18s !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 14px !important;
+}
+.workout-template-card:hover {
+  background: rgba(255,255,255,0.06) !important;
+  border-color: rgba(200,169,110,0.22) !important;
+  box-shadow: var(--sh-sm) !important;
+  transform: translateY(-1px) !important;
+}
+.workout-template-icon { font-size: 26px !important; }
+.workout-template-name {
+  font-size: 15px !important;
+  font-weight: 600 !important;
+  color: rgba(235,235,245,0.82) !important;
+}
+.workout-template-meta {
+  font-size: 12px !important;
+  color: rgba(235,235,245,0.40) !important;
+  margin-top: 2px !important;
+}
+
+/* Workout history cards */
+.workout-history-card {
+  margin: 0 16px 10px !important;
+  background: rgba(255,255,255,0.03) !important;
+  border: 1px solid rgba(255,255,255,0.06) !important;
+  border-radius: 14px !important;
+  padding: 14px 16px !important;
+  box-shadow: var(--sh-xs) !important;
+}
+.workout-history-date {
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.06em !important;
+  text-transform: uppercase !important;
+  color: rgba(235,235,245,0.35) !important;
+  margin-bottom: 6px !important;
+}
+.workout-history-name {
+  font-size: 15px !important;
+  font-weight: 600 !important;
+  color: rgba(235,235,245,0.80) !important;
+}
+.workout-history-stats {
+  display: flex !important;
+  gap: 16px !important;
+  margin-top: 8px !important;
+}
+.workout-history-stat-val {
+  font-size: 16px !important;
+  font-weight: 700 !important;
+  color: var(--gold) !important;
+  letter-spacing: -0.02em !important;
+}
+.workout-history-stat-lbl {
+  font-size: 10px !important;
+  color: rgba(235,235,245,0.35) !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.04em !important;
+  font-weight: 600 !important;
+}
+.workout-finish-btn {
+  display: block !important;
+  width: calc(100% - 36px) !important;
+  margin: 14px 18px !important;
+  padding: 14px !important;
+  border-radius: 14px !important;
+  background: linear-gradient(135deg, #dfc07a, #c8a96e) !important;
+  color: #000 !important;
+  font-weight: 700 !important;
+  font-size: 15px !important;
+  border: none !important;
+  cursor: pointer !important;
+  box-shadow: 0 4px 18px rgba(200,169,110,0.28) !important;
+}
+
+/* Body measurements */
+.measurement-form {
+  margin: 0 16px 16px !important;
+  background: rgba(255,255,255,0.03) !important;
+  border: 1px solid rgba(255,255,255,0.07) !important;
+  border-radius: 16px !important;
+  padding: 16px !important;
+}
+.measurement-form h4 {
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.06em !important;
+  color: rgba(235,235,245,0.40) !important;
+  margin: 0 0 12px !important;
+}
+.measurement-fields {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 10px !important;
+}
+.measurement-field input {
+  width: 100% !important;
+  padding: 10px 12px !important;
+  border-radius: 10px !important;
+  background: rgba(255,255,255,0.05) !important;
+  border: 1px solid rgba(255,255,255,0.08) !important;
+  color: #fff !important;
+  font-size: 14px !important;
+}
+.measurement-field label {
+  font-size: 11px !important;
+  color: rgba(235,235,245,0.38) !important;
+  display: block !important;
+  margin-bottom: 4px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.05em !important;
+}
+
+/* ── WELLBEING VIEW ───────────────────────────────────────────────────────── */
+.wellbeing-view { padding: 20px 16px 32px !important; }
+.wellbeing-section {
+  background: rgba(255,255,255,0.03) !important;
+  border: 1px solid rgba(255,255,255,0.07) !important;
+  border-radius: 18px !important;
+  padding: 18px !important;
+  margin-bottom: 14px !important;
+  box-shadow: var(--sh-xs) !important;
+}
+.wellbeing-section-title {
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.06em !important;
+  text-transform: uppercase !important;
+  color: rgba(235,235,245,0.40) !important;
+  margin: 0 0 14px !important;
+}
+.wellbeing-slider-row {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  padding: 8px 0 !important;
+  border-bottom: 1px solid rgba(255,255,255,0.04) !important;
+}
+.wellbeing-slider-row:last-child { border-bottom: none !important; }
+.wellbeing-slider-label {
+  font-size: 14px !important;
+  width: 100px !important;
+  flex-shrink: 0 !important;
+  color: rgba(235,235,245,0.70) !important;
+}
+.wellbeing-slider-row input[type="range"] {
+  flex: 1 !important;
+  -webkit-appearance: none !important;
+  appearance: none !important;
+  height: 5px !important;
+  background: rgba(255,255,255,0.10) !important;
+  border-radius: 3px !important;
+  border: none !important;
+  padding: 0 !important;
+}
+.wellbeing-slider-row input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none !important;
+  width: 20px !important;
+  height: 20px !important;
+  border-radius: 50% !important;
+  background: var(--gold) !important;
+  cursor: pointer !important;
+  box-shadow: 0 2px 8px rgba(200,169,110,0.35) !important;
+}
+.wellbeing-slider-val {
+  font-size: 15px !important;
+  font-weight: 700 !important;
+  color: var(--gold) !important;
+  width: 28px !important;
+  text-align: right !important;
+  flex-shrink: 0 !important;
+}
+.wellbeing-log-btn {
+  width: 100% !important;
+  margin-top: 14px !important;
+  padding: 13px !important;
+  border-radius: 12px !important;
+  background: linear-gradient(135deg, #dfc07a, #c8a96e) !important;
+  color: #000 !important;
+  font-weight: 700 !important;
+  font-size: 14px !important;
+  border: none !important;
+  cursor: pointer !important;
+  box-shadow: 0 3px 14px rgba(200,169,110,0.25) !important;
+}
+
+/* ── MEDITATION ───────────────────────────────────────────────────────────── */
+.meditation-tab { padding: 20px 16px 100px !important; }
+
+.quick-session-row {
+  display: flex !important;
+  gap: 8px !important;
+  overflow-x: auto !important;
+  padding-bottom: 4px !important;
+  margin-bottom: 20px !important;
+  scrollbar-width: none !important;
+}
+.quick-session-row::-webkit-scrollbar { display: none !important; }
+.quick-session-pill {
+  flex-shrink: 0 !important;
+  padding: 9px 18px !important;
+  border-radius: 99px !important;
+  background: rgba(255,255,255,0.05) !important;
+  border: 1px solid rgba(255,255,255,0.09) !important;
+  color: rgba(235,235,245,0.60) !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  transition: all 0.16s !important;
+  white-space: nowrap !important;
+}
+.quick-session-pill:hover {
+  background: rgba(200,169,110,0.10) !important;
+  border-color: rgba(200,169,110,0.28) !important;
+  color: var(--gold) !important;
+}
+
+/* Beginner course card */
+.meditation-course-card {
+  background: linear-gradient(135deg, rgba(124,58,237,0.18) 0%, rgba(76,29,149,0.12) 100%) !important;
+  border: 1px solid rgba(124,58,237,0.25) !important;
+  border-radius: 20px !important;
+  padding: 18px !important;
+  margin-bottom: 20px !important;
+  box-shadow: 0 4px 20px rgba(124,58,237,0.12) !important;
+}
+.course-title {
+  font-family: "Playfair Display", serif !important;
+  font-size: 18px !important;
+  font-weight: 600 !important;
+  color: rgba(235,235,245,0.90) !important;
+  margin-bottom: 4px !important;
+}
+.course-subtitle {
+  font-size: 13px !important;
+  color: rgba(235,235,245,0.45) !important;
+  margin-bottom: 14px !important;
+}
+.course-progress-track {
+  height: 4px !important;
+  background: rgba(255,255,255,0.10) !important;
+  border-radius: 2px !important;
+  overflow: hidden !important;
+  margin-bottom: 12px !important;
+}
+.course-progress-fill {
+  height: 100% !important;
+  background: linear-gradient(90deg, #7c3aed, #a855f7) !important;
+  border-radius: 2px !important;
+  transition: width 0.4s !important;
+}
+.course-days-row {
+  display: flex !important;
+  gap: 6px !important;
+}
+.course-day-dot {
+  flex: 1 !important;
+  height: 32px !important;
+  border-radius: 8px !important;
+  border: 1.5px solid rgba(255,255,255,0.10) !important;
+  background: rgba(255,255,255,0.04) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  color: rgba(235,235,245,0.35) !important;
+  cursor: pointer !important;
+  transition: all 0.16s !important;
+}
+.course-day-dot.completed {
+  background: rgba(124,58,237,0.25) !important;
+  border-color: rgba(124,58,237,0.50) !important;
+  color: #a78bfa !important;
+}
+.course-day-dot.current {
+  background: rgba(124,58,237,0.40) !important;
+  border-color: #7c3aed !important;
+  color: #fff !important;
+  box-shadow: 0 0 10px rgba(124,58,237,0.30) !important;
+}
+
+/* Category filter */
+.meditation-category-filter {
+  display: flex !important;
+  gap: 7px !important;
+  overflow-x: auto !important;
+  padding-bottom: 4px !important;
+  margin-bottom: 16px !important;
+  scrollbar-width: none !important;
+}
+.meditation-category-filter::-webkit-scrollbar { display: none !important; }
+.category-pill {
+  flex-shrink: 0 !important;
+  padding: 7px 14px !important;
+  border-radius: 99px !important;
+  border: 1px solid rgba(255,255,255,0.09) !important;
+  background: rgba(255,255,255,0.03) !important;
+  color: rgba(235,235,245,0.50) !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  transition: all 0.16s !important;
+  white-space: nowrap !important;
+}
+.category-pill:hover {
+  border-color: rgba(255,255,255,0.18) !important;
+  color: rgba(235,235,245,0.80) !important;
+}
+.category-pill.active {
+  background: var(--gold) !important;
+  border-color: var(--gold) !important;
+  color: #000 !important;
+  font-weight: 700 !important;
+}
+
+/* Session cards */
+.meditation-sessions-grid {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 10px !important;
+}
+.meditation-card {
+  background: rgba(255,255,255,0.04) !important;
+  border: 1px solid rgba(255,255,255,0.07) !important;
+  border-radius: 18px !important;
+  padding: 16px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 14px !important;
+  cursor: pointer !important;
+  box-shadow: var(--sh-xs) !important;
+  transition: all 0.18s !important;
+}
+.meditation-card:hover {
+  background: rgba(255,255,255,0.06) !important;
+  border-color: rgba(255,255,255,0.12) !important;
+  box-shadow: var(--sh-sm) !important;
+  transform: translateY(-2px) !important;
+}
+.meditation-card-dot {
+  width: 10px !important;
+  height: 10px !important;
+  border-radius: 50% !important;
+  flex-shrink: 0 !important;
+}
+.meditation-card-info { flex: 1 !important; }
+.meditation-card-title {
+  font-size: 15px !important;
+  font-weight: 600 !important;
+  color: rgba(235,235,245,0.85) !important;
+  margin-bottom: 3px !important;
+}
+.meditation-card-meta {
+  font-size: 12px !important;
+  color: rgba(235,235,245,0.40) !important;
+}
+.meditation-play-btn {
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 50% !important;
+  background: rgba(200,169,110,0.12) !important;
+  border: 1.5px solid rgba(200,169,110,0.28) !important;
+  color: var(--gold) !important;
+  font-size: 16px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  transition: all 0.16s !important;
+  padding: 0 !important;
+  flex-shrink: 0 !important;
+}
+.meditation-play-btn:hover {
+  background: rgba(200,169,110,0.22) !important;
+  box-shadow: 0 0 14px rgba(200,169,110,0.22) !important;
+  transform: scale(1.08) !important;
+}
+
+/* Meditation player overlay */
+.meditation-player {
+  position: fixed !important;
+  inset: 0 !important;
+  background: radial-gradient(ellipse at 50% 40%, rgba(76,29,149,0.35) 0%, #050507 70%) !important;
+  z-index: 700 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 40px 24px calc(40px + env(safe-area-inset-bottom,0px)) !important;
+}
+.breathing-orb {
+  width: 160px !important;
+  height: 160px !important;
+  border-radius: 50% !important;
+  background: radial-gradient(circle at 40% 35%, rgba(167,139,250,0.55), rgba(124,58,237,0.30)) !important;
+  box-shadow: 0 0 60px rgba(124,58,237,0.40), 0 0 120px rgba(124,58,237,0.15) !important;
+  animation: breathe 4s ease-in-out infinite alternate !important;
+  margin: 32px 0 !important;
+}
+@keyframes breathe {
+  from { transform: scale(0.85); opacity: 0.75; box-shadow: 0 0 40px rgba(124,58,237,0.25), 0 0 80px rgba(124,58,237,0.10); }
+  to   { transform: scale(1.15); opacity: 1.00; box-shadow: 0 0 80px rgba(124,58,237,0.55), 0 0 150px rgba(124,58,237,0.20); }
+}
+.player-session-title {
+  font-family: "Playfair Display", serif !important;
+  font-size: 22px !important;
+  font-weight: 600 !important;
+  color: rgba(235,235,245,0.90) !important;
+  text-align: center !important;
+  margin-bottom: 8px !important;
+}
+.player-instruction {
+  font-size: 15px !important;
+  color: rgba(235,235,245,0.55) !important;
+  text-align: center !important;
+  min-height: 40px !important;
+  font-style: italic !important;
+  line-height: 1.55 !important;
+  margin-bottom: 24px !important;
+}
+.player-progress-track {
+  width: 100% !important;
+  max-width: 300px !important;
+  height: 3px !important;
+  background: rgba(255,255,255,0.10) !important;
+  border-radius: 2px !important;
+  overflow: hidden !important;
+  margin-bottom: 28px !important;
+}
+.player-progress-fill {
+  height: 100% !important;
+  background: linear-gradient(90deg, #7c3aed, #a855f7) !important;
+  border-radius: 2px !important;
+  transition: width 1s linear !important;
+}
+.player-controls {
+  display: flex !important;
+  align-items: center !important;
+  gap: 20px !important;
+}
+.player-pause-btn {
+  width: 70px !important;
+  height: 70px !important;
+  border-radius: 50% !important;
+  background: rgba(255,255,255,0.10) !important;
+  border: 1.5px solid rgba(255,255,255,0.16) !important;
+  color: rgba(235,235,245,0.90) !important;
+  font-size: 28px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  transition: all 0.18s !important;
+}
+.player-pause-btn:hover {
+  background: rgba(255,255,255,0.15) !important;
+  transform: scale(1.06) !important;
+}
+.player-close-btn {
+  position: absolute !important;
+  top: calc(20px + env(safe-area-inset-top,0px)) !important;
+  right: 20px !important;
+  width: 36px !important;
+  height: 36px !important;
+  border-radius: 50% !important;
+  background: rgba(255,255,255,0.08) !important;
+  border: 1px solid rgba(255,255,255,0.10) !important;
+  color: rgba(235,235,245,0.55) !important;
+  font-size: 18px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+}
+.player-elapsed {
+  font-size: 13px !important;
+  font-variant-numeric: tabular-nums !important;
+  color: rgba(235,235,245,0.38) !important;
+}
+.player-complete { text-align: center !important; }
+.player-complete h2 {
+  font-family: "Playfair Display", serif !important;
+  font-size: 26px !important;
+  margin-bottom: 10px !important;
+  color: rgba(235,235,245,0.92) !important;
+}
+.player-complete p {
+  color: rgba(235,235,245,0.50) !important;
+  margin-bottom: 24px !important;
+}
+
+/* Meditation stats bar */
+.meditation-stats-bar {
+  display: grid !important;
+  grid-template-columns: repeat(4, 1fr) !important;
+  gap: 8px !important;
+  margin-bottom: 20px !important;
+}
+.meditation-stat-card {
+  background: rgba(255,255,255,0.04) !important;
+  border: 1px solid rgba(255,255,255,0.07) !important;
+  border-radius: 14px !important;
+  padding: 12px 8px !important;
+  text-align: center !important;
+  box-shadow: var(--sh-xs) !important;
+}
+.meditation-stat-val {
+  font-size: 20px !important;
+  font-weight: 700 !important;
+  color: var(--gold) !important;
+  letter-spacing: -0.02em !important;
+}
+.meditation-stat-lbl {
+  font-size: 10px !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.04em !important;
+  color: rgba(235,235,245,0.35) !important;
+  margin-top: 2px !important;
+}
+
+/* ── HEALTH MOBILE BREAKPOINTS ───────────────────────────────────────────── */
+@media (max-width: 430px) {
+  .sleep-field input[type="time"] { font-size: 28px !important; }
+  .sleep-quality-btns             { gap: 6px !important; }
+  .sleep-quality-btn              { padding: 10px 2px !important; font-size: 20px !important; }
+  .sleep-feel-chip                { font-size: 12px !important; padding: 7px 12px !important; }
+  .factor-chip                    { font-size: 11.5px !important; padding: 6px 12px !important; }
+  .alarm-card                     { padding: 12px 6px !important; }
+  .soundscape-grid                { grid-template-columns: repeat(3, 1fr) !important; gap: 8px !important; }
+  .meal-section                   { margin: 0 12px 10px !important; }
+  .workout-start-btn              { margin: 16px 12px !important; width: calc(100% - 24px) !important; }
+  .workout-set-input              { padding: 8px 6px !important; font-size: 14px !important; }
+  .meditation-stats-bar           { grid-template-columns: repeat(2, 1fr) !important; }
+  .breathing-orb                  { width: 130px !important; height: 130px !important; }
+  .active-workout                 { margin: 0 12px !important; }
+  .measurement-fields             { grid-template-columns: 1fr !important; }
+}

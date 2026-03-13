@@ -5,7 +5,17 @@
       "Bash(timeout /t 1 /nobreak)",
       "Bash(npx react-scripts:*)",
       "Bash(timeout 20 npm start)",
-      "Bash(node -e \"require\\(''./src/App.css''\\)\")"
+      "Bash(node -e \"require\\(''./src/App.css''\\)\")",
+      "Bash(python3 -c \":*)",
+      "Bash(node -e \":*)",
+      "Bash(npm start:*)",
+      "Bash(npm install:*)",
+      "Bash(npx cap:*)",
+      "Bash(python3 \"c:/Users/Joseph/OneDrive/ritual-habit-tracker/append_css.py\")",
+      "Bash(python \"c:/Users/Joseph/OneDrive/ritual-habit-tracker/append_css.py\")",
+      "Bash(node \"c:/Users/Joseph/OneDrive/ritual-habit-tracker/append_css.js\")",
+      "Bash(\"c:/Users/Joseph/OneDrive/ritual-habit-tracker/src/App.css\")",
+      "Bash(CI=false npm run build)"
     ]
   }
 }
