@@ -48,49 +48,151 @@ export default function ExportModal({ habits, completions, goals, workouts, nutr
     URL.revokeObjectURL(url);
   };
 
-  return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="export-modal" onClick={e => e.stopPropagation()}>
-        <div className="export-modal-header">
-          <h2 className="export-modal-title">Export Your Data</h2>
-          <button className="modal-close-btn" onClick={onClose}>×</button>
-        </div>
-        <p className="export-modal-desc">Download a copy of all your Ritual data. Your data belongs to you.</p>
+  const statCells = [
+    ['Habits', stats.habits],
+    ['Completions', stats.completions],
+    ['Goals', stats.goals],
+    ['Workouts', stats.workouts],
+    ['Nutrition Days', stats.nutritionDays],
+    ['Sleep Entries', stats.sleepDays],
+  ];
 
-        <div className="export-stats">
-          {[
-            ['Habits', stats.habits],
-            ['Completions', stats.completions],
-            ['Goals', stats.goals],
-            ['Workouts', stats.workouts],
-            ['Nutrition days', stats.nutritionDays],
-            ['Sleep entries', stats.sleepDays],
-          ].map(([label, val]) => (
-            <div key={label} className="export-stat">
-              <span className="export-stat-val">{val.toLocaleString()}</span>
-              <span className="export-stat-label">{label}</span>
+  return (
+    <div
+      onClick={onClose}
+      style={{
+        position: 'fixed',
+        inset: 0,
+        background: 'rgba(0,0,0,0.85)',
+        zIndex: 1000,
+        display: 'flex',
+        alignItems: 'flex-end',
+      }}
+    >
+      <div
+        onClick={e => e.stopPropagation()}
+        style={{
+          background: '#111111',
+          borderRadius: '24px 24px 0 0',
+          padding: '24px',
+          width: '100%',
+          maxHeight: '85vh',
+          overflowY: 'auto',
+          boxSizing: 'border-box',
+        }}
+      >
+        {/* Pull indicator */}
+        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
+          <div style={{ width: '40px', height: '4px', background: '#333', borderRadius: '2px' }} />
+        </div>
+
+        {/* Header */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px' }}>
+          <span style={{ fontSize: '22px', color: '#fff', fontFamily: 'Playfair Display, serif', fontWeight: 700 }}>
+            Export Data
+          </span>
+          <button
+            onClick={onClose}
+            style={{
+              background: 'none',
+              border: 'none',
+              color: '#fff',
+              fontSize: '22px',
+              cursor: 'pointer',
+              lineHeight: 1,
+              padding: '0 4px',
+            }}
+          >
+            ×
+          </button>
+        </div>
+
+        {/* Stats grid */}
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(3, 1fr)',
+            gap: '12px',
+            marginBottom: '24px',
+          }}
+        >
+          {statCells.map(([label, val]) => (
+            <div
+              key={label}
+              style={{
+                background: '#1A1A1A',
+                borderRadius: '12px',
+                padding: '12px',
+                textAlign: 'center',
+              }}
+            >
+              <div style={{ fontSize: '24px', color: '#fff', fontWeight: 700 }}>
+                {val.toLocaleString()}
+              </div>
+              <div style={{ fontSize: '11px', color: '#888', textTransform: 'uppercase', marginTop: '4px', letterSpacing: '0.5px' }}>
+                {label}
+              </div>
             </div>
           ))}
         </div>
 
-        <div className="export-buttons">
-          <button className="export-btn json" onClick={exportJSON}>
-            <span className="export-btn-icon">📦</span>
-            <div>
-              <div className="export-btn-title">Export as JSON</div>
-              <div className="export-btn-sub">All data — habits, sleep, nutrition, workouts, goals</div>
+        {/* Export JSON button */}
+        <button
+          onClick={exportJSON}
+          style={{
+            width: '100%',
+            background: '#00BCD4',
+            color: '#000',
+            border: 'none',
+            borderRadius: '16px',
+            padding: '16px',
+            display: 'flex',
+            gap: '12px',
+            alignItems: 'center',
+            cursor: 'pointer',
+            marginBottom: '12px',
+            boxSizing: 'border-box',
+          }}
+        >
+          <span style={{ fontSize: '40px', lineHeight: 1 }}>📦</span>
+          <div style={{ textAlign: 'left' }}>
+            <div style={{ fontWeight: 700, fontSize: '16px' }}>Export as JSON</div>
+            <div style={{ fontSize: '12px', color: 'rgba(0,0,0,0.6)', marginTop: '2px' }}>
+              Full data dump — habits, sleep, nutrition, workouts
             </div>
-          </button>
-          <button className="export-btn csv" onClick={exportCSV}>
-            <span className="export-btn-icon">📊</span>
-            <div>
-              <div className="export-btn-title">Export as CSV</div>
-              <div className="export-btn-sub">Habit completion history — opens in Excel/Sheets</div>
-            </div>
-          </button>
-        </div>
+          </div>
+        </button>
 
-        <p className="export-gdpr-note">Your data is stored locally on your device. We never sell or share your personal data.</p>
+        {/* Export CSV button */}
+        <button
+          onClick={exportCSV}
+          style={{
+            width: '100%',
+            background: 'transparent',
+            color: '#fff',
+            border: '1.5px solid #333',
+            borderRadius: '16px',
+            padding: '16px',
+            display: 'flex',
+            gap: '12px',
+            alignItems: 'center',
+            cursor: 'pointer',
+            boxSizing: 'border-box',
+          }}
+        >
+          <span style={{ fontSize: '40px', lineHeight: 1 }}>📊</span>
+          <div style={{ textAlign: 'left' }}>
+            <div style={{ fontWeight: 700, fontSize: '16px' }}>Export as CSV</div>
+            <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.4)', marginTop: '2px' }}>
+              Habit completion history — opens in Excel or Sheets
+            </div>
+          </div>
+        </button>
+
+        {/* Footer note */}
+        <p style={{ fontSize: '12px', color: '#555', textAlign: 'center', marginTop: '16px', marginBottom: 0 }}>
+          Your data is stored locally. We never sell your data.
+        </p>
       </div>
     </div>
   );

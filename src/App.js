@@ -1090,38 +1090,55 @@ function App() {
 
       {/* Natural Language Logger Modal */}
       {showNLLog && (
-        <div className="nl-log-modal-overlay" onClick={() => { setShowNLLog(false); setNLInput(''); setNLParsed(null); }}>
-          <div className="nl-log-modal" onClick={e => e.stopPropagation()}>
-            <h3>🗣️ Quick Log</h3>
-            <p>Describe your activity in plain English and Ritual will log it automatically.</p>
+        <div
+          onClick={() => { setShowNLLog(false); setNLInput(''); setNLParsed(null); }}
+          style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.85)', zIndex: 1000, display: 'flex', alignItems: 'flex-end' }}
+        >
+          <div
+            onClick={e => e.stopPropagation()}
+            style={{ background: '#111111', borderRadius: '24px 24px 0 0', padding: '12px 20px 32px', width: '100%', boxSizing: 'border-box' }}
+          >
+            {/* Pull bar */}
+            <div style={{ width: 40, height: 4, background: '#333', borderRadius: 2, margin: '0 auto 20px' }} />
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 }}>
+              <span style={{ fontSize: 18, fontWeight: 700, color: '#fff', fontFamily: 'Playfair Display, serif' }}>🗣️ Quick Log</span>
+              <button onClick={() => { setShowNLLog(false); setNLInput(''); setNLParsed(null); }} style={{ background: 'none', border: 'none', color: '#888', fontSize: 20, cursor: 'pointer', padding: 8 }}>×</button>
+            </div>
+            <p style={{ fontSize: 13, color: '#888', margin: '0 0 16px' }}>Describe your activity and Ritual will log it automatically.</p>
             <input
-              className="nl-log-input"
+              style={{ width: '100%', background: '#1A1A1A', border: '1.5px solid #2a2a2a', borderRadius: 14, color: '#fff', fontSize: 16, padding: '14px 16px', boxSizing: 'border-box', fontFamily: 'Inter, sans-serif', outline: 'none' }}
               placeholder='e.g. "ran 5km in 28 minutes" or "45 minutes of yoga"'
               value={nlInput}
               autoFocus
-              onChange={e => {
-                setNLInput(e.target.value);
-                setNLParsed(parseNaturalLanguage(e.target.value));
-              }}
+              onChange={e => { setNLInput(e.target.value); setNLParsed(parseNaturalLanguage(e.target.value)); }}
               onKeyDown={e => { if (e.key === 'Enter' && nlParsed) handleNLConfirm(); }}
+              onFocus={e => { e.target.style.borderColor = '#00BCD4'; }}
+              onBlur={e => { e.target.style.borderColor = '#2a2a2a'; }}
             />
             {nlParsed && (
-              <div className="nl-log-result">
-                <div className="nl-log-result-label">Detected workout</div>
-                <strong>{nlParsed.name || nlParsed.type}</strong>
-                {nlParsed.distance && <span> · {nlParsed.distance}{nlParsed.distanceUnit}</span>}
-                {nlParsed.duration && <span> · {nlParsed.duration} min</span>}
-                {nlParsed.exercises?.length > 0 && <span> · {nlParsed.exercises.length} exercise(s)</span>}
+              <div style={{ marginTop: 12, background: '#1A1A1A', borderRadius: 12, padding: '12px 16px', border: '1px solid rgba(0,188,212,0.2)' }}>
+                <div style={{ fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.08em', color: '#00BCD4', marginBottom: 6 }}>Detected workout</div>
+                <span style={{ color: '#fff', fontWeight: 600, fontSize: 15 }}>{nlParsed.name || nlParsed.type}</span>
+                {nlParsed.distance && <span style={{ color: '#888', fontSize: 13 }}> · {nlParsed.distance}{nlParsed.distanceUnit}</span>}
+                {nlParsed.duration && <span style={{ color: '#888', fontSize: 13 }}> · {nlParsed.duration} min</span>}
+                {nlParsed.exercises?.length > 0 && <span style={{ color: '#888', fontSize: 13 }}> · {nlParsed.exercises.length} exercise(s)</span>}
               </div>
             )}
             {nlInput && !nlParsed && (
-              <div className="nl-log-result" style={{ color: 'var(--t3)' }}>
+              <div style={{ marginTop: 12, background: '#1A1A1A', borderRadius: 12, padding: '12px 16px', fontSize: 13, color: '#666' }}>
                 Couldn't parse that — try "ran 5km", "45 min yoga", or "squatted 80kg for 3 sets of 8"
               </div>
             )}
-            <div className="nl-log-actions">
-              <button className="nl-log-cancel-btn" onClick={() => { setShowNLLog(false); setNLInput(''); setNLParsed(null); }}>Cancel</button>
-              <button className="nl-log-confirm-btn" onClick={handleNLConfirm} disabled={!nlParsed}>Log Workout</button>
+            <div style={{ display: 'flex', gap: 10, marginTop: 16 }}>
+              <button
+                onClick={() => { setShowNLLog(false); setNLInput(''); setNLParsed(null); }}
+                style={{ flex: 1, background: '#1A1A1A', border: '1px solid #333', borderRadius: 14, color: '#888', padding: '14px', cursor: 'pointer', fontSize: 15, fontFamily: 'Inter, sans-serif' }}
+              >Cancel</button>
+              <button
+                onClick={handleNLConfirm}
+                disabled={!nlParsed}
+                style={{ flex: 2, background: nlParsed ? '#00BCD4' : '#1A1A1A', border: 'none', borderRadius: 14, color: nlParsed ? '#000' : '#444', padding: '14px', cursor: nlParsed ? 'pointer' : 'default', fontSize: 15, fontWeight: 700, fontFamily: 'Inter, sans-serif', transition: 'background 0.2s' }}
+              >Log Workout</button>
             </div>
           </div>
         </div>

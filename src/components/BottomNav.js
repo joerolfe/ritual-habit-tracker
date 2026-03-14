@@ -2,7 +2,7 @@ import React from 'react';
 
 const TABS = [
   { id: 'today',   label: 'Home',    icon: <HomeIcon /> },
-  { id: 'tracker', label: 'Tracker', icon: <TrackerIcon /> },
+  { id: 'goals',   label: 'Goals',   icon: <GoalsIcon /> },
   { id: 'health',  label: 'Health',  icon: <HealthIcon /> },
   { id: 'journal', label: 'Journal', icon: <JournalIcon /> },
   { id: 'profile', label: 'Profile', icon: <ProfileIcon /> },
@@ -19,6 +19,11 @@ export default function BottomNav({ view, onSetView }) {
             className={`bnav-pill-btn ${active ? 'active' : ''}`}
             onClick={() => onSetView(tab.id)}
             aria-label={tab.label}
+            style={active ? {
+              color: '#00BCD4',
+              background: 'rgba(0,188,212,0.12)',
+              boxShadow: '0 0 12px rgba(0,188,212,0.25)',
+            } : { color: '#555555' }}
           >
             <span className="bnav-pill-icon">{tab.icon}</span>
             {active && <span className="bnav-pill-label">{tab.label}</span>}
@@ -37,13 +42,13 @@ function HomeIcon() {
     </svg>
   );
 }
-function TrackerIcon() {
+function GoalsIcon() {
   return (
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-      <rect x="3" y="4" width="18" height="16" rx="2" stroke="currentColor" strokeWidth="1.7"/>
-      <path d="M3 9h18" stroke="currentColor" strokeWidth="1.7"/>
-      <path d="M8 4v5M16 4v5" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round"/>
-      <path d="M7 13h2v2H7zM11 13h2v2h-2zM15 13h2v2h-2zM7 17h2v2H7zM11 17h2v2h-2z" fill="currentColor" opacity="0.6"/>
+      <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.7"/>
+      <circle cx="12" cy="12" r="5" stroke="currentColor" strokeWidth="1.7"/>
+      <circle cx="12" cy="12" r="1.5" fill="currentColor"/>
+      <path d="M12 3v2M12 19v2M3 12h2M19 12h2" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round"/>
     </svg>
   );
 }

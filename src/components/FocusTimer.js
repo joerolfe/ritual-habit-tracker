@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 
 const MODES = [
-  { id: 'focus',       label: 'Focus',       duration: 25 * 60, color: '#30d158' },
-  { id: 'short',       label: 'Short Break', duration:  5 * 60, color: '#ff9f0a' },
-  { id: 'long',        label: 'Long Break',  duration: 15 * 60, color: '#0a84ff' },
+  { id: 'focus',       label: 'Focus',       duration: 25 * 60, color: '#FF8C42' },
+  { id: 'short',       label: 'Short Break', duration:  5 * 60, color: '#FFA726' },
+  { id: 'long',        label: 'Long Break',  duration: 15 * 60, color: '#00BCD4' },
 ];
 
 function playBeep() {
@@ -77,71 +77,267 @@ export default function FocusTimer({ onClose, habits, onToggle }) {
   const timeStr = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
 
   // SVG ring
-  const size = 180;
-  const stroke = 8;
+  const size = 260;
+  const stroke = 10;
   const radius = (size - stroke) / 2;
   const circ = 2 * Math.PI * radius;
   const pct = secondsLeft / mode.duration;
   const offset = circ * (1 - pct);
 
-  return (
-    <div className="focus-timer-overlay" onClick={onClose}>
-      <div className="focus-timer-modal" onClick={e => e.stopPropagation()}>
-        <div className="focus-timer-header">
-          <span className="focus-timer-title">Focus Timer</span>
-          <button className="focus-timer-close" onClick={onClose}>×</button>
-        </div>
+  // Starfield: 80 stars with deterministic positions
+  const stars = useMemo(() => {
+    return Array.from({ length: 80 }, (_, i) => {
+      const x = (i * 137.5) % 100;
+      const y = (i * 97.3 + 13.7) % 100;
+      const opacity = 0.3 + ((i * 53) % 100) / 200; // 0.3–0.8
+      const size = 1 + ((i * 31) % 3); // 1–3px
+      return { x, y, opacity, size };
+    });
+  }, []);
 
+  return (
+    <div
+      onClick={onClose}
+      style={{
+        position: 'fixed',
+        inset: 0,
+        zIndex: 1000,
+        background: '#000000',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        overflow: 'hidden',
+      }}
+    >
+      {/* Starfield */}
+      {stars.map((star, i) => (
+        <div
+          key={i}
+          style={{
+            position: 'absolute',
+            left: `${star.x}%`,
+            top: `${star.y}%`,
+            width: `${star.size}px`,
+            height: `${star.size}px`,
+            borderRadius: '50%',
+            background: '#ffffff',
+            opacity: star.opacity,
+            pointerEvents: 'none',
+          }}
+        />
+      ))}
+
+      {/* Close button */}
+      <button
+        onClick={onClose}
+        style={{
+          position: 'absolute',
+          top: 16,
+          right: 16,
+          width: 44,
+          height: 44,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          background: 'none',
+          border: 'none',
+          color: '#888888',
+          fontSize: 24,
+          cursor: 'pointer',
+          zIndex: 10,
+          borderRadius: '50%',
+        }}
+      >
+        ×
+      </button>
+
+      {/* Inner content — stop propagation so clicks don't close */}
+      <div
+        onClick={e => e.stopPropagation()}
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: 28,
+          position: 'relative',
+          zIndex: 5,
+          width: '100%',
+          maxWidth: 360,
+          padding: '0 24px',
+          boxSizing: 'border-box',
+        }}
+      >
         {/* Mode tabs */}
-        <div className="focus-mode-tabs">
+        <div
+          style={{
+            display: 'flex',
+            gap: 8,
+            background: '#0D0D0D',
+            padding: 4,
+            borderRadius: 32,
+          }}
+        >
           {MODES.map((md, i) => (
             <button
               key={md.id}
-              className={`focus-mode-tab ${modeIdx === i ? 'active' : ''}`}
               onClick={() => switchMode(i)}
+              style={{
+                padding: '8px 16px',
+                borderRadius: 28,
+                border: 'none',
+                cursor: 'pointer',
+                fontSize: 13,
+                fontWeight: 600,
+                fontFamily: 'Inter, sans-serif',
+                background: modeIdx === i ? '#FF8C42' : '#1A1A1A',
+                color: modeIdx === i ? '#000000' : '#888888',
+                transition: 'background 0.2s, color 0.2s',
+              }}
             >
               {md.label}
             </button>
           ))}
         </div>
 
-        {/* Ring */}
-        <div className="focus-ring-wrap">
-          <svg width={size} height={size} style={{ transform: 'rotate(-90deg)' }}>
+        {/* SVG Ring */}
+        <div style={{ position: 'relative', width: size, height: size }}>
+          <svg
+            width={size}
+            height={size}
+            style={{ transform: 'rotate(-90deg)', display: 'block' }}
+          >
+            {/* Track */}
             <circle
-              cx={size / 2} cy={size / 2} r={radius}
-              fill="none" stroke="rgba(255,255,255,0.07)" strokeWidth={stroke}
+              cx={size / 2}
+              cy={size / 2}
+              r={radius}
+              fill="none"
+              stroke="rgba(255,255,255,0.08)"
+              strokeWidth={stroke}
             />
+            {/* Progress */}
             <circle
-              cx={size / 2} cy={size / 2} r={radius}
-              fill="none" stroke={mode.color} strokeWidth={stroke}
+              cx={size / 2}
+              cy={size / 2}
+              r={radius}
+              fill="none"
+              stroke={mode.color}
+              strokeWidth={stroke}
               strokeLinecap="round"
               strokeDasharray={circ}
               strokeDashoffset={offset}
               style={{ transition: running ? 'stroke-dashoffset 1s linear' : 'none' }}
             />
           </svg>
-          <div className="focus-ring-inner">
-            <span className="focus-time-display">{timeStr}</span>
-            <span className="focus-mode-label">{mode.label}</span>
+          {/* Centered text inside ring */}
+          <div
+            style={{
+              position: 'absolute',
+              inset: 0,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 6,
+            }}
+          >
+            <span
+              style={{
+                fontSize: 56,
+                fontWeight: 700,
+                fontFamily: 'monospace',
+                color: '#ffffff',
+                lineHeight: 1,
+                letterSpacing: 2,
+              }}
+            >
+              {timeStr}
+            </span>
+            <span
+              style={{
+                fontSize: 13,
+                color: '#888888',
+                fontFamily: 'Inter, sans-serif',
+                letterSpacing: 1,
+                textTransform: 'uppercase',
+              }}
+            >
+              {mode.label}
+            </span>
           </div>
         </div>
 
         {/* Session dots */}
-        <div className="focus-sessions">
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 8,
+          }}
+        >
           {Array.from({ length: Math.max(4, sessions + 1) }, (_, i) => (
-            <span key={i} className={`session-dot ${i < sessions ? 'done' : ''}`} />
+            <div
+              key={i}
+              style={{
+                width: 10,
+                height: 10,
+                borderRadius: '50%',
+                background: i < sessions ? '#FF8C42' : '#1A1A1A',
+                border: i < sessions ? 'none' : '1px solid #333',
+              }}
+            />
           ))}
-          <span className="focus-sessions-label">{sessions} session{sessions !== 1 ? 's' : ''}</span>
+          <span
+            style={{
+              fontSize: 13,
+              color: '#888888',
+              fontFamily: 'Inter, sans-serif',
+              marginLeft: 4,
+            }}
+          >
+            {sessions} session{sessions !== 1 ? 's' : ''}
+          </span>
         </div>
 
-        {/* Habit selector */}
-        <div className="focus-habit-row">
-          <span className="focus-habit-label">Working on</span>
+        {/* Habit linker */}
+        <div
+          style={{
+            width: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 8,
+          }}
+        >
+          <span
+            style={{
+              fontSize: 13,
+              color: '#888888',
+              fontFamily: 'Inter, sans-serif',
+              letterSpacing: 0.5,
+            }}
+          >
+            Link to habit
+          </span>
           <select
-            className="focus-habit-select"
             value={selectedHabit}
             onChange={e => setSelectedHabit(e.target.value)}
+            style={{
+              width: '100%',
+              height: 44,
+              background: '#111111',
+              border: '1px solid #333333',
+              borderRadius: 10,
+              color: '#ffffff',
+              fontSize: 14,
+              fontFamily: 'Inter, sans-serif',
+              padding: '0 12px',
+              cursor: 'pointer',
+              outline: 'none',
+              appearance: 'none',
+              WebkitAppearance: 'none',
+              accentColor: '#00BCD4',
+            }}
           >
             <option value="">— none —</option>
             {habits.map(h => (
@@ -151,16 +347,53 @@ export default function FocusTimer({ onClose, habits, onToggle }) {
         </div>
 
         {/* Controls */}
-        <div className="focus-controls">
-          <button className="focus-reset-btn" onClick={reset} title="Reset">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 20,
+          }}
+        >
+          {/* Reset button */}
+          <button
+            onClick={reset}
+            title="Reset"
+            style={{
+              width: 52,
+              height: 52,
+              borderRadius: '50%',
+              background: 'none',
+              border: '2px solid #333333',
+              color: '#888888',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexShrink: 0,
+            }}
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
               <path d="M3 12a9 9 0 1 0 9-9 9 9 0 0 0-6.36 2.64L3 8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
               <path d="M3 3v5h5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
           </button>
+
+          {/* Start / Pause button */}
           <button
-            className={`focus-start-btn ${running ? 'pause' : 'start'}`}
             onClick={() => setRunning(r => !r)}
+            style={{
+              width: 140,
+              height: 64,
+              borderRadius: 32,
+              background: '#00BCD4',
+              border: 'none',
+              color: '#000000',
+              fontSize: 18,
+              fontWeight: 700,
+              fontFamily: 'Inter, sans-serif',
+              cursor: 'pointer',
+              letterSpacing: 0.5,
+            }}
           >
             {running ? 'Pause' : secondsLeft === mode.duration ? 'Start' : 'Resume'}
           </button>
