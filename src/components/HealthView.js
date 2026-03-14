@@ -3,12 +3,14 @@ import SleepView from './SleepView';
 import NutritionView from './NutritionView';
 import WorkoutView from './WorkoutView';
 import WellbeingView from './WellbeingView';
+import StrainView from './StrainView';
 
 const HEALTH_TABS = [
-  { id: 'sleep',     label: '😴 Sleep',     icon: '😴' },
-  { id: 'nutrition', label: '🥗 Nutrition',  icon: '🥗' },
-  { id: 'exercise',  label: '💪 Exercise',   icon: '💪' },
-  { id: 'wellbeing', label: '🧠 Wellbeing',  icon: '🧠' },
+  { id: 'sleep',     label: 'Sleep',     emoji: '😴' },
+  { id: 'nutrition', label: 'Nutrition', emoji: '🥗' },
+  { id: 'exercise',  label: 'Gym',       emoji: '💪' },
+  { id: 'wellbeing', label: 'Wellbeing', emoji: '🧠' },
+  { id: 'strain',    label: 'Strain',    emoji: '📊' },
 ];
 
 export default function HealthView({
@@ -30,22 +32,33 @@ export default function HealthView({
   const [tab, setTab] = useState('sleep');
 
   return (
-    <div className="health-view-container">
-      {/* Top sub-tab nav */}
-      <div className="health-main-tabs">
-        {HEALTH_TABS.map(t => (
-          <button
-            key={t.id}
-            className={`health-main-tab ${tab === t.id ? 'active' : ''}`}
-            onClick={() => setTab(t.id)}
-          >
-            <span className="health-main-tab-icon">{t.icon}</span>
-            <span className="health-main-tab-label">{t.id.charAt(0).toUpperCase() + t.id.slice(1)}</span>
-          </button>
-        ))}
+    <div style={{ background: '#0A0A14', minHeight: '100%', display: 'flex', flexDirection: 'column' }}>
+      {/* Tab bar */}
+      <div style={{ overflowX: 'auto', padding: '12px 16px 0', flexShrink: 0 }}>
+        <div style={{ display: 'flex', gap: 6, background: '#1A1A2E', borderRadius: 12, padding: 4, width: 'fit-content', minWidth: '100%' }}>
+          {HEALTH_TABS.map(t => (
+            <button
+              key={t.id}
+              onClick={() => setTab(t.id)}
+              style={{
+                display: 'flex', alignItems: 'center', gap: 5,
+                padding: '8px 14px', borderRadius: 10, border: 'none',
+                fontSize: 13, fontWeight: tab === t.id ? 700 : 400,
+                background: tab === t.id ? '#FFFFFF' : 'transparent',
+                color: tab === t.id ? '#0A0A14' : '#8888AA',
+                cursor: 'pointer', whiteSpace: 'nowrap',
+                minHeight: 36, fontFamily: 'Inter, sans-serif',
+              }}
+            >
+              <span>{t.emoji}</span>
+              <span>{t.label}</span>
+            </button>
+          ))}
+        </div>
       </div>
 
-      <div className="health-tab-content">
+      {/* Content */}
+      <div style={{ flex: 1, overflowY: 'auto' }}>
         {tab === 'sleep' && (
           <SleepView sleep={sleep} onSetSleep={onSetSleep} />
         )}
@@ -86,6 +99,7 @@ export default function HealthView({
             onAddBonusXP={onAddBonusXP}
           />
         )}
+        {tab === 'strain' && <StrainView />}
       </div>
     </div>
   );
