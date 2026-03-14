@@ -126,23 +126,20 @@ const MOCK_MEASUREMENTS = Array.from({ length: 7 }, (_, i) => ({
 }));
 
 // ─── Design tokens ────────────────────────────────────────────────────────────
-const BG       = '#0A0A14';
-const CARD     = '#12121F';
-const ELEVATED = '#1A1A2E';
+const BG       = '#000000';
+const CARD     = '#111111';
+const ELEVATED = '#1A1A1A';
 const WHITE    = '#FFFFFF';
-const MUTED    = '#8888AA';
-const TEAL     = '#00BCD4';
-const ORANGE   = '#FF8C42';
-const BLUE     = '#4A7FD4';
+const MUTED    = '#888888';
 const BORDER   = 'rgba(255,255,255,0.08)';
 
 const TYPE_COLOR = {
-  Strength:    BLUE,
-  Cardio:      '#4CAF50',
-  HIIT:        ORANGE,
-  Flexibility: '#7B5FF5',
-  Sport:       TEAL,
-  Other:       MUTED,
+  Strength:    'rgba(255,255,255,0.12)',
+  Cardio:      'rgba(255,255,255,0.12)',
+  HIIT:        'rgba(255,255,255,0.12)',
+  Flexibility: 'rgba(255,255,255,0.12)',
+  Sport:       'rgba(255,255,255,0.12)',
+  Other:       'rgba(255,255,255,0.12)',
 };
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -288,13 +285,13 @@ function WorkoutBuilder({ onClose, onSave }) {
             style={{ background: 'none', border: 'none', color: WHITE, fontSize: 22, cursor: 'pointer', padding: '4px 8px', lineHeight: 1 }}
           >✕</button>
           <span style={{
-            color: TEAL, fontWeight: 700, fontSize: 36,
+            color: WHITE, fontWeight: 700, fontSize: 36,
             fontVariantNumeric: 'tabular-nums', letterSpacing: '-0.02em',
           }}>
             {fmtTimer(timerSecs)}
           </span>
           <button onClick={handleFinish} style={{
-            background: TEAL, border: 'none', color: '#000', fontWeight: 700,
+            background: '#FFFFFF', border: 'none', color: '#000000', fontWeight: 700,
             fontSize: 14, borderRadius: 12, padding: '8px 18px', cursor: 'pointer',
           }}>Finish</button>
         </div>
@@ -307,8 +304,8 @@ function WorkoutBuilder({ onClose, onSave }) {
               <button key={t} onClick={() => setWType(t)} style={{
                 padding: '7px 16px', borderRadius: 20, fontSize: 13, fontWeight: 600,
                 cursor: 'pointer', flexShrink: 0, border: 'none',
-                background: wType === t ? TEAL : ELEVATED,
-                color: wType === t ? '#000' : MUTED,
+                background: wType === t ? '#FFFFFF' : ELEVATED,
+                color: wType === t ? '#000000' : MUTED,
               }}>{t}</button>
             ))}
           </div>
@@ -322,7 +319,7 @@ function WorkoutBuilder({ onClose, onSave }) {
                   {' '}
                   <span style={{
                     display: 'inline-block', padding: '2px 7px', borderRadius: 20,
-                    fontSize: 11, background: TEAL + '22', color: TEAL,
+                    fontSize: 11, background: 'rgba(255,255,255,0.12)', color: WHITE,
                     fontWeight: 600, verticalAlign: 'middle',
                   }}>{ex.muscles.split(',')[0]}</span>
                 </div>
@@ -360,14 +357,14 @@ function WorkoutBuilder({ onClose, onSave }) {
                     style={{
                       width: 32, height: 32, borderRadius: 8, border: 'none',
                       cursor: 'pointer', fontSize: 14, flexShrink: 0,
-                      background: set.done ? TEAL : ELEVATED,
-                      color: set.done ? '#000' : MUTED, fontWeight: 700,
+                      background: set.done ? '#FFFFFF' : ELEVATED,
+                      color: set.done ? '#000000' : MUTED, fontWeight: 700,
                     }}>✓</button>
                 </div>
               ))}
 
               <button onClick={() => addSet(exIdx)} style={{
-                background: 'none', border: 'none', color: TEAL,
+                background: 'none', border: 'none', color: WHITE,
                 fontSize: 13, cursor: 'pointer', padding: '4px 0', fontWeight: 600,
               }}>+ Add set</button>
             </div>
@@ -377,7 +374,7 @@ function WorkoutBuilder({ onClose, onSave }) {
           <button onClick={() => setShowSearch(true)} style={{
             width: '100%', padding: '14px',
             border: `1px solid ${BORDER}`, borderRadius: 16,
-            background: 'none', color: TEAL,
+            background: 'none', color: WHITE,
             fontSize: 15, cursor: 'pointer', fontWeight: 600,
             boxSizing: 'border-box',
           }}>+ Add Exercise</button>
@@ -390,9 +387,9 @@ function WorkoutBuilder({ onClose, onSave }) {
           background: `linear-gradient(transparent, ${BG} 40%)`,
         }}>
           <button onClick={handleFinish} style={{
-            width: '100%', height: 52, background: TEAL,
+            width: '100%', height: 52, background: '#FFFFFF',
             border: 'none', borderRadius: 14,
-            color: '#000', fontWeight: 800, fontSize: 16, cursor: 'pointer',
+            color: '#000000', fontWeight: 800, fontSize: 16, cursor: 'pointer',
             boxSizing: 'border-box',
           }}>Finish Workout</button>
         </div>
@@ -436,8 +433,8 @@ function WorkoutBuilder({ onClose, onSave }) {
                   </div>
                   <span style={{
                     fontSize: 11, padding: '3px 8px', borderRadius: 10,
-                    background: (TYPE_COLOR[ex.category] || MUTED) + '22',
-                    color: TYPE_COLOR[ex.category] || MUTED,
+                    background: 'rgba(255,255,255,0.12)',
+                    color: WHITE,
                   }}>{ex.category}</span>
                 </button>
               ))}
@@ -561,9 +558,9 @@ export default function WorkoutView({
                 <span style={{
                   display: 'inline-block', padding: '3px 10px', borderRadius: 20,
                   fontSize: 12, fontWeight: 700,
-                  background: (TYPE_COLOR[todayWorkout.type] || MUTED) + '22',
-                  color: TYPE_COLOR[todayWorkout.type] || MUTED,
-                  border: `1px solid ${(TYPE_COLOR[todayWorkout.type] || MUTED)}44`,
+                  background: 'rgba(255,255,255,0.12)',
+                  color: WHITE,
+                  border: `1px solid rgba(255,255,255,0.2)`,
                 }}>{todayWorkout.type}</span>
                 <span style={{ color: MUTED, fontSize: 13 }}>{todayWorkout.duration}min</span>
               </div>
@@ -609,7 +606,7 @@ export default function WorkoutView({
           <button
             onClick={() => setShowWorkoutModal(true)}
             style={{
-              background: TEAL, color: '#000', fontWeight: 700,
+              background: '#FFFFFF', color: '#000000', fontWeight: 700,
               borderRadius: 12, height: 44, width: '100%',
               fontSize: 14, cursor: 'pointer', border: 'none',
               boxSizing: 'border-box',
@@ -627,7 +624,6 @@ export default function WorkoutView({
             const isExpanded = expandedWorkout === w.id;
             const vol = w.totalVolume || calcVolume(w.exercises);
             const sparkData = getSparkData(w);
-            const typeColor = TYPE_COLOR[w.type] || MUTED;
 
             return (
               <div
@@ -642,8 +638,8 @@ export default function WorkoutView({
                     <span style={{
                       display: 'inline-block', padding: '2px 9px', borderRadius: 20,
                       fontSize: 11, fontWeight: 700,
-                      background: typeColor + '22', color: typeColor,
-                      border: `1px solid ${typeColor}44`,
+                      background: 'rgba(255,255,255,0.12)', color: WHITE,
+                      border: `1px solid rgba(255,255,255,0.2)`,
                     }}>{w.type}</span>
                     <button
                       onClick={e => { e.stopPropagation(); handleDeleteWorkout(w.id); }}
@@ -671,7 +667,7 @@ export default function WorkoutView({
                   <div style={{ flexShrink: 0 }}>
                     <LineChart width={80} height={40} data={sparkData}>
                       <Line
-                        type="monotone" dataKey="v" stroke={ORANGE}
+                        type="monotone" dataKey="v" stroke='#FFFFFF'
                         strokeWidth={2} dot={false} isAnimationActive={false}
                       />
                     </LineChart>
@@ -729,7 +725,7 @@ export default function WorkoutView({
                     <span style={{
                       display: 'inline-block', padding: '2px 7px', borderRadius: 20,
                       fontSize: 11, fontWeight: 500,
-                      background: 'rgba(136,136,170,0.15)', color: MUTED,
+                      background: 'rgba(136,136,136,0.15)', color: MUTED,
                     }}>{pr.muscles.split(',')[0].trim()}</span>
                   )}
                 </div>
@@ -747,12 +743,12 @@ export default function WorkoutView({
                   <span style={{
                     display: 'inline-block', padding: '2px 7px', borderRadius: 10,
                     fontSize: 11, fontWeight: 700,
-                    background: '#FFB800', color: '#000',
+                    background: 'rgba(255,255,255,0.15)', color: '#FFFFFF',
                   }}>🏅 PR</span>
                   <div style={{ color: MUTED, fontSize: 11, marginTop: 4 }}>
                     {fmtDateShort(pr.date)}
                   </div>
-                  <div style={{ color: '#4CAF50', fontSize: 13, marginTop: 2 }}>▲</div>
+                  <div style={{ color: '#FFFFFF', fontSize: 13, marginTop: 2 }}>▲</div>
                 </div>
               </div>
             ))}
@@ -768,7 +764,7 @@ export default function WorkoutView({
             <ResponsiveContainer width="100%" height={120}>
               <LineChart data={weightData} margin={{ top: 8, right: 8, bottom: 0, left: 0 }}>
                 <Line
-                  type="monotone" dataKey="w" stroke={MUTED} strokeWidth={2}
+                  type="monotone" dataKey="w" stroke='rgba(255,255,255,0.6)' strokeWidth={2}
                   dot={{ fill: MUTED, r: 3 }} isAnimationActive={false}
                 />
                 <XAxis
@@ -794,7 +790,7 @@ export default function WorkoutView({
               <div style={{ display: 'flex', alignItems: 'baseline', gap: 6 }}>
                 <span style={{ color: WHITE, fontWeight: 700, fontSize: 20 }}>77.2</span>
                 <span style={{ color: MUTED, fontSize: 13 }}>kg</span>
-                <span style={{ color: BLUE, fontSize: 16, marginLeft: 4 }}>▼</span>
+                <span style={{ color: '#888888', fontSize: 16, marginLeft: 4 }}>▼</span>
               </div>
             </div>
             <div style={{ ...cardStyle, flex: 1 }}>
@@ -802,7 +798,7 @@ export default function WorkoutView({
               <div style={{ display: 'flex', alignItems: 'baseline', gap: 6 }}>
                 <span style={{ color: WHITE, fontWeight: 700, fontSize: 20 }}>14.2</span>
                 <span style={{ color: MUTED, fontSize: 13 }}>%</span>
-                <span style={{ color: BLUE, fontSize: 16, marginLeft: 4 }}>▼</span>
+                <span style={{ color: '#888888', fontSize: 16, marginLeft: 4 }}>▼</span>
               </div>
             </div>
           </div>
@@ -812,7 +808,7 @@ export default function WorkoutView({
             <button
               onClick={() => setShowMeasurements(s => !s)}
               style={{
-                background: 'none', border: 'none', color: TEAL,
+                background: 'none', border: 'none', color: WHITE,
                 fontSize: 14, fontWeight: 600, cursor: 'pointer',
                 padding: 0, width: '100%', textAlign: 'left',
               }}

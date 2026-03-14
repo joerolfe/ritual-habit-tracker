@@ -15,7 +15,19 @@
       "Bash(python \"c:/Users/Joseph/OneDrive/ritual-habit-tracker/append_css.py\")",
       "Bash(node \"c:/Users/Joseph/OneDrive/ritual-habit-tracker/append_css.js\")",
       "Bash(\"c:/Users/Joseph/OneDrive/ritual-habit-tracker/src/App.css\")",
-      "Bash(CI=false npm run build)"
+      "Bash(CI=false npm run build)",
+      "Bash(grep -v \"^$\\\\|source-map\\\\|source map\\\\|Failed to parse\")",
+      "Bash(netstat -ano)",
+      "Bash(sed -n '399,415p' \"c:/Users/Joseph/OneDrive/ritual-habit-tracker/src/App.css\")",
+      "Bash(sed -n '176,200p' \"c:/Users/Joseph/OneDrive/ritual-habit-tracker/src/App.css\")",
+      "Bash(head -5 grep -n \"className.*view\\\\|return \\(\" c:/Users/Joseph/OneDrive/ritual-habit-tracker/src/components/ProfileView.js)",
+      "Bash(head -5 grep -n \"className.*view\\\\|return \\(\" c:/Users/Joseph/OneDrive/ritual-habit-tracker/src/components/AICoachView.js)",
+      "Bash(sed -n '407,420p' \"c:/Users/Joseph/OneDrive/ritual-habit-tracker/src/App.css\")",
+      "Bash(sed -n '497,515p' \"c:/Users/Joseph/OneDrive/ritual-habit-tracker/src/App.css\")",
+      "Bash(sed -n '679,700p' \"c:/Users/Joseph/OneDrive/ritual-habit-tracker/src/App.css\")",
+      "Bash(sed -n '754,800p' \"c:/Users/Joseph/OneDrive/ritual-habit-tracker/src/App.css\")",
+      "Bash(node -e \"console.log\\(require\\(''./node_modules/recharts/package.json''\\).version\\)\")",
+      "Bash(\"c:/Users/Joseph/OneDrive/ritual-habit-tracker/src/App.css\":*)"
     ]
   }
 }

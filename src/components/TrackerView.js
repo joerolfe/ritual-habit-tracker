@@ -6,9 +6,9 @@ import GoalsView from './GoalsView';
 import InsightsView from './InsightsView';
 
 const HABIT_COLORS = [
-  '#ff6b6b','#ff9f43','#ffd93d','#6bcb77',
-  '#4d96ff','#c77dff','#ff85a1','#00c9a7',
-  '#ff6b35','#74c0fc',
+  '#FFFFFF','#CCCCCC','#AAAAAA','#888888',
+  '#666666','#555555','#444444','#333333',
+  '#222222','#1A1A1A',
 ];
 
 
@@ -18,8 +18,8 @@ const T = {
   bg: '#000000',
   card: '#111111',
   inner: '#1A1A1A',
-  teal: '#00BCD4',
-  orange: '#FF8C42',
+  teal: '#FFFFFF',
+  orange: 'rgba(255,255,255,0.65)',
   text: '#FFFFFF',
   muted: 'rgba(255,255,255,0.45)',
   border: 'rgba(255,255,255,0.08)',
@@ -40,8 +40,8 @@ function PillTabs({ tabs, active, onChange }) {
           style={{
             padding: '8px 20px', borderRadius: 24,
             border: 'none', flexShrink: 0, cursor: 'pointer',
-            background: active === t ? T.teal : T.card,
-            color: active === t ? '#000' : T.muted,
+            background: active === t ? '#FFFFFF' : T.card,
+            color: active === t ? '#000000' : '#888888',
             fontSize: 14, fontWeight: 600,
             fontFamily: 'Inter, -apple-system, sans-serif',
           }}
@@ -156,8 +156,8 @@ function HabitModal({ habit, onSave, onClose, onDelete }) {
               onClick={() => toggleDay(i)}
               style={{
                 flex: 1, aspectRatio: '1', borderRadius: '50%', border: 'none', cursor: 'pointer',
-                background: days.includes(i) ? T.teal : T.inner,
-                color: days.includes(i) ? '#000' : T.muted,
+                background: days.includes(i) ? '#FFFFFF' : T.inner,
+                color: days.includes(i) ? '#000000' : T.muted,
                 fontSize: 12, fontWeight: 700, fontFamily: 'inherit',
               }}
             >{d}</button>
@@ -170,8 +170,8 @@ function HabitModal({ habit, onSave, onClose, onDelete }) {
           disabled={!name.trim()}
           style={{
             width: '100%', padding: '15px', borderRadius: 30, border: 'none',
-            background: name.trim() ? T.teal : '#333',
-            color: name.trim() ? '#000' : T.muted,
+            background: name.trim() ? '#FFFFFF' : '#333',
+            color: name.trim() ? '#000000' : T.muted,
             fontSize: 16, fontWeight: 700, cursor: name.trim() ? 'pointer' : 'default',
             fontFamily: 'inherit', marginBottom: 10,
           }}
@@ -231,7 +231,7 @@ function DailyView({ habits, isCompleted, onToggle, onAddHabit, onEditHabit, onD
         <div style={{ height: 6, borderRadius: 3, background: '#1A1A1A', marginTop: 10, overflow: 'hidden' }}>
           <div style={{
             height: '100%', borderRadius: 3,
-            background: pct >= 80 ? '#30d158' : pct >= 50 ? T.orange : T.teal,
+            background: '#FFFFFF',
             width: `${pct}%`, transition: 'width 0.5s ease',
           }} />
         </div>
@@ -264,7 +264,7 @@ function DailyView({ habits, isCompleted, onToggle, onAddHabit, onEditHabit, onD
                     border: `2px solid ${done ? habit.color : 'rgba(255,255,255,0.2)'}`,
                     background: done ? habit.color : 'transparent',
                     cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    fontSize: 16, color: '#fff', transition: 'all 0.18s',
+                    fontSize: 16, color: '#000000', transition: 'all 0.18s',
                   }}
                 >
                   {done ? '✓' : ''}
@@ -334,8 +334,8 @@ function DailyView({ habits, isCompleted, onToggle, onAddHabit, onEditHabit, onD
         onClick={() => setShowAdd(true)}
         style={{
           width: '100%', padding: '14px', borderRadius: 14,
-          border: `1.5px dashed rgba(0,188,212,0.4)`,
-          background: 'rgba(0,188,212,0.06)', color: T.teal,
+          border: `1.5px dashed rgba(255,255,255,0.28)`,
+          background: 'rgba(255,255,255,0.042)', color: T.teal,
           fontSize: 15, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit',
         }}
       >

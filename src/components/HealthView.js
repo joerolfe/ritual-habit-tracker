@@ -32,10 +32,10 @@ export default function HealthView({
   const [tab, setTab] = useState('sleep');
 
   return (
-    <div style={{ background: '#0A0A14', minHeight: '100%', display: 'flex', flexDirection: 'column' }}>
+    <div style={{ background: '#000000', minHeight: '100%', display: 'flex', flexDirection: 'column' }}>
       {/* Tab bar */}
       <div style={{ overflowX: 'auto', padding: '12px 16px 0', flexShrink: 0 }}>
-        <div style={{ display: 'flex', gap: 6, background: '#1A1A2E', borderRadius: 12, padding: 4, width: 'fit-content', minWidth: '100%' }}>
+        <div style={{ display: 'flex', gap: 6, background: '#1A1A1A', borderRadius: 12, padding: 4, width: 'fit-content', minWidth: '100%' }}>
           {HEALTH_TABS.map(t => (
             <button
               key={t.id}
@@ -45,7 +45,7 @@ export default function HealthView({
                 padding: '8px 14px', borderRadius: 10, border: 'none',
                 fontSize: 13, fontWeight: tab === t.id ? 700 : 400,
                 background: tab === t.id ? '#FFFFFF' : 'transparent',
-                color: tab === t.id ? '#0A0A14' : '#8888AA',
+                color: tab === t.id ? '#000000' : '#888888',
                 cursor: 'pointer', whiteSpace: 'nowrap',
                 minHeight: 36, fontFamily: 'Inter, sans-serif',
               }}

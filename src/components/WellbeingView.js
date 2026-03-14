@@ -60,7 +60,7 @@ const BREATHING_EXERCISES = [
       { label: 'Exhale', duration: 4 },
       { label: 'Hold',   duration: 4 },
     ],
-    gradient: 'linear-gradient(135deg, #1565C0, #42A5F5)',
+    gradient: 'linear-gradient(135deg, #1A1A1A, #333333)',
   },
   {
     id: '478',
@@ -72,7 +72,7 @@ const BREATHING_EXERCISES = [
       { label: 'Hold',   duration: 7 },
       { label: 'Exhale', duration: 8 },
     ],
-    gradient: 'linear-gradient(135deg, #6A1B9A, #CE93D8)',
+    gradient: 'linear-gradient(135deg, #111111, #2A2A2A)',
   },
   {
     id: 'calm',
@@ -83,7 +83,7 @@ const BREATHING_EXERCISES = [
       { label: 'Inhale', duration: 4 },
       { label: 'Exhale', duration: 6 },
     ],
-    gradient: 'linear-gradient(135deg, #00BCD4, #0097A7)',
+    gradient: 'linear-gradient(135deg, #1A1A1A, #2E2E2E)',
   },
   {
     id: 'power',
@@ -96,7 +96,7 @@ const BREATHING_EXERCISES = [
       { label: 'Exhale', duration: 6 },
       { label: 'Hold',   duration: 2 },
     ],
-    gradient: 'linear-gradient(135deg, #FF6B35, #FF8C42)',
+    gradient: 'linear-gradient(135deg, #111111, #2A2A2A)',
   },
 ];
 
@@ -168,12 +168,12 @@ function severityLabel(score, type) {
 function pad2(n) { return String(n).padStart(2, '0'); }
 
 // ─── DESIGN TOKENS ────────────────────────────────────────────────────────────
-const BG       = '#0A0A14';
-const SURFACE  = '#12121F';
-const ELEVATED = '#1A1A2E';
-const TEAL     = '#00BCD4';
+const BG       = '#000000';
+const SURFACE  = '#111111';
+const ELEVATED = '#1A1A1A';
+const TEAL     = '#FFFFFF';
 const TEXT     = '#FFFFFF';
-const MUTED    = '#8888AA';
+const MUTED    = '#888888';
 const BORDER   = '1px solid rgba(255,255,255,0.08)';
 
 const card = {
@@ -204,10 +204,10 @@ function BreathingSession({ exercise, onClose }) {
 
   const phaseStyle = (() => {
     switch (phase.label) {
-      case 'Inhale': return { glow: TEAL,      size: 160 };
-      case 'Hold':   return { glow: '#FFA726', size: 160 };
-      case 'Exhale': return { glow: '#AB47BC', size: 80  };
-      default:       return { glow: '#FFA726', size: 120 };
+      case 'Inhale': return { glow: 'rgba(255,255,255,0.6)', size: 160 };
+      case 'Hold':   return { glow: '#FFA726',               size: 160 };
+      case 'Exhale': return { glow: '#AB47BC',               size: 80  };
+      default:       return { glow: '#FFA726',               size: 120 };
     }
   })();
 
@@ -262,7 +262,7 @@ function BreathingSession({ exercise, onClose }) {
           <circle cx="100" cy="100" r="70" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="4" />
           <circle
             cx="100" cy="100" r="70" fill="none"
-            stroke={TEAL} strokeWidth="4"
+            stroke="#FFFFFF" strokeWidth="4"
             strokeDasharray={`${dash} ${circumference}`}
             strokeLinecap="round"
             transform="rotate(-90 100 100)"
@@ -272,9 +272,9 @@ function BreathingSession({ exercise, onClose }) {
         <div style={{
           width: circleSize, height: circleSize,
           borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(0,188,212,0.3) 0%, rgba(0,188,212,0.05) 100%)',
-          border: `2px solid ${phaseStyle.glow}`,
-          boxShadow: `0 0 30px ${phaseStyle.glow}60`,
+          background: 'radial-gradient(circle, rgba(255,255,255,0.21) 0%, rgba(255,255,255,0.035) 100%)',
+          border: `2px solid rgba(255,255,255,0.6)`,
+          boxShadow: `0 0 30px rgba(255,255,255,0.6)60`,
           transition: 'width 0.9s ease, height 0.9s ease, border-color 0.5s, box-shadow 0.5s',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
         }}>
@@ -290,9 +290,9 @@ function BreathingSession({ exercise, onClose }) {
 
       <button onClick={onClose} style={{
         marginTop: 32, padding: '12px 40px',
-        background: done ? TEAL : 'rgba(255,255,255,0.12)',
+        background: done ? '#FFFFFF' : 'rgba(255,255,255,0.12)',
         border: 'none',
-        color: done ? '#0A0A14' : TEXT,
+        color: done ? '#000000' : TEXT,
         borderRadius: 30, fontSize: 16, fontWeight: 700, cursor: 'pointer',
       }}>{done ? 'Done' : 'End Session'}</button>
     </div>
@@ -338,8 +338,8 @@ function LogSessionModal({ onClose, onSave }) {
           {emojis.map((em, i) => (
             <button key={i} onClick={() => setMoodAfter(i + 1)} style={{
               fontSize: 24,
-              background: moodAfter === i + 1 ? 'rgba(0,188,212,0.3)' : 'transparent',
-              border: moodAfter === i + 1 ? `2px solid ${TEAL}` : '2px solid transparent',
+              background: moodAfter === i + 1 ? 'rgba(255,255,255,0.21)' : 'transparent',
+              border: moodAfter === i + 1 ? `2px solid #FFFFFF` : '2px solid transparent',
               borderRadius: 10, padding: 6, cursor: 'pointer',
             }}>{em}</button>
           ))}
@@ -352,8 +352,8 @@ function LogSessionModal({ onClose, onSave }) {
           }}>Cancel</button>
           <button onClick={() => { onSave({ duration: Number(dur), type, notes, moodAfter }); onClose(); }}
             style={{
-              flex: 1, padding: '12px 0', background: TEAL, border: 'none',
-              color: '#0A0A14', borderRadius: 30, cursor: 'pointer', fontWeight: 700, fontSize: 15,
+              flex: 1, padding: '12px 0', background: '#FFFFFF', border: 'none',
+              color: '#000000', borderRadius: 30, cursor: 'pointer', fontWeight: 700, fontSize: 15,
             }}>Save</button>
         </div>
       </div>
@@ -535,7 +535,7 @@ export default function WellbeingView({ wellbeing = {}, period = {}, onSetWellbe
                 whiteSpace: 'nowrap',
                 fontWeight: innerTab === t.id ? 700 : 400,
                 background: innerTab === t.id ? '#FFFFFF' : 'transparent',
-                color: innerTab === t.id ? '#0A0A14' : MUTED,
+                color: innerTab === t.id ? '#000000' : '#888888',
                 transition: 'all 0.2s',
               }}
             >{t.label}</button>
@@ -564,7 +564,7 @@ export default function WellbeingView({ wellbeing = {}, period = {}, onSetWellbe
                     <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
                       <span style={{ fontSize: 24 }}>{sl.emoji}</span>
                       <span style={{ fontSize: 14, color: TEXT, flex: 1 }}>{sl.label}</span>
-                      <span style={{ fontSize: 14, color: TEAL, fontWeight: 600 }}>{sl.value}</span>
+                      <span style={{ fontSize: 14, color: '#FFFFFF', fontWeight: 600 }}>{sl.value}</span>
                     </div>
                     <input
                       type="range" min="1" max="10" value={sl.value}
@@ -573,8 +573,8 @@ export default function WellbeingView({ wellbeing = {}, period = {}, onSetWellbe
                         width: '100%', height: 4, borderRadius: 2,
                         outline: 'none', cursor: 'pointer',
                         appearance: 'none', WebkitAppearance: 'none',
-                        accentColor: TEAL,
-                        background: `linear-gradient(to right, ${TEAL} 0%, ${TEAL} ${pct}%, rgba(255,255,255,0.12) ${pct}%, rgba(255,255,255,0.12) 100%)`,
+                        accentColor: '#FFFFFF',
+                        background: `linear-gradient(to right, #FFFFFF 0%, #FFFFFF ${pct}%, rgba(255,255,255,0.12) ${pct}%, rgba(255,255,255,0.12) 100%)`,
                       }}
                     />
                   </div>
@@ -585,13 +585,13 @@ export default function WellbeingView({ wellbeing = {}, period = {}, onSetWellbe
             {/* Rotating prompt card */}
             <div style={{
               background: ELEVATED,
-              borderLeft: `3px solid ${TEAL}`,
+              borderLeft: '3px solid rgba(255,255,255,0.3)',
               padding: 14,
               borderRadius: 12,
               marginBottom: 16,
               boxSizing: 'border-box',
             }}>
-              <div style={{ fontSize: 11, color: TEAL, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 6 }}>Journal Prompt</div>
+              <div style={{ fontSize: 11, color: '#FFFFFF', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 6 }}>Journal Prompt</div>
               <div style={{ fontSize: 14, color: TEXT, lineHeight: 1.5 }}>{CHECKIN_PROMPTS[promptIdx]}</div>
             </div>
 
@@ -603,11 +603,11 @@ export default function WellbeingView({ wellbeing = {}, period = {}, onSetWellbe
                   const sel = feelings.includes(f);
                   return (
                     <button key={f} onClick={() => toggleFeeling(f)} style={{
-                      background: sel ? TEAL : ELEVATED,
+                      background: sel ? '#FFFFFF' : ELEVATED,
                       borderRadius: 20,
                       padding: '8px 14px',
                       fontSize: 13,
-                      color: sel ? '#000' : TEXT,
+                      color: sel ? '#000000' : TEXT,
                       border: sel ? 'none' : '1px solid rgba(255,255,255,0.1)',
                       fontWeight: sel ? 700 : 400,
                       cursor: 'pointer',
@@ -640,7 +640,7 @@ export default function WellbeingView({ wellbeing = {}, period = {}, onSetWellbe
 
             {/* Save button */}
             <button onClick={saveCheckin} style={{
-              background: TEAL, color: '#000', fontWeight: 700,
+              background: '#FFFFFF', color: '#000000', fontWeight: 700,
               borderRadius: 12, height: 48, width: '100%',
               border: 'none', fontSize: 16, cursor: 'pointer',
             }}>Save Check-in (+10 XP)</button>
@@ -716,7 +716,7 @@ export default function WellbeingView({ wellbeing = {}, period = {}, onSetWellbe
                   position: 'absolute', top: '50%', left: '50%',
                   transform: 'translate(-50%,-50%)',
                   width: 200, height: 200, borderRadius: '50%',
-                  background: `radial-gradient(circle, rgba(0,188,212,0.08) 0%, transparent 70%)`,
+                  background: `radial-gradient(circle, rgba(255,255,255,0.056) 0%, transparent 70%)`,
                   animation: 'pulse 3s ease-in-out infinite',
                 }} />
                 <style>{`@keyframes pulse { 0%,100%{transform:translate(-50%,-50%) scale(1)} 50%{transform:translate(-50%,-50%) scale(1.15)} }`}</style>
@@ -728,7 +728,7 @@ export default function WellbeingView({ wellbeing = {}, period = {}, onSetWellbe
                 </div>
                 <div style={{ height: 3, background: 'rgba(255,255,255,0.1)', borderRadius: 2, marginBottom: 24 }}>
                   <div style={{
-                    height: '100%', borderRadius: 2, background: TEAL,
+                    height: '100%', borderRadius: 2, background: '#FFFFFF',
                     width: `${(meditationTimer.elapsed / meditationTimer.durationSec) * 100}%`,
                     transition: 'width 0.9s linear',
                   }} />
@@ -753,7 +753,7 @@ export default function WellbeingView({ wellbeing = {}, period = {}, onSetWellbe
                   {[5, 10, 20].map(m => (
                     <button key={m} onClick={() => startMeditation(m)} style={{
                       background: ELEVATED, borderRadius: 20, padding: '8px 16px',
-                      border: `1px solid ${TEAL}`, color: TEAL,
+                      border: `1px solid #FFFFFF`, color: '#FFFFFF',
                       fontWeight: 700, fontSize: 14, cursor: 'pointer',
                     }}>{m}m</button>
                   ))}
@@ -782,7 +782,7 @@ export default function WellbeingView({ wellbeing = {}, period = {}, onSetWellbe
               <div key={i} style={{ ...card, marginBottom: 8, display: 'flex', alignItems: 'center', gap: 12 }}>
                 <div style={{ flex: 1 }}>
                   <div style={{ color: TEXT, fontSize: 14, fontWeight: 600 }}>{s.date}</div>
-                  <div style={{ color: MUTED, fontSize: 12 }}>{s.type}</div>
+                  <div style={{ background: 'rgba(255,255,255,0.1)', color: '#FFFFFF', display: 'inline-block', borderRadius: 6, padding: '2px 8px', fontSize: 12, marginTop: 2 }}>{s.type}</div>
                 </div>
                 <div style={{ color: MUTED, fontSize: 13 }}>{s.duration}</div>
                 <div style={{ fontSize: 20 }}>{s.moodAfter}</div>
@@ -791,8 +791,8 @@ export default function WellbeingView({ wellbeing = {}, period = {}, onSetWellbe
 
             <button onClick={() => setShowLogModal(true)} style={{
               width: '100%', marginTop: 8, padding: '13px 0',
-              background: 'transparent', border: `1.5px solid ${TEAL}`,
-              color: TEAL, borderRadius: 30, fontWeight: 700, fontSize: 15, cursor: 'pointer',
+              background: 'transparent', border: `1.5px solid #FFFFFF`,
+              color: '#FFFFFF', borderRadius: 30, fontWeight: 700, fontSize: 15, cursor: 'pointer',
             }}>Log Session</button>
 
             {showLogModal && (
@@ -812,7 +812,7 @@ export default function WellbeingView({ wellbeing = {}, period = {}, onSetWellbe
               <svg width="160" height="90" viewBox="0 0 160 90">
                 <rect x="2" y="10" width="140" height="70" rx="8" ry="8" fill="none" stroke="white" strokeWidth="2.5"/>
                 <rect x="142" y="30" width="14" height="30" rx="4" fill="white" opacity="0.6"/>
-                <rect x="7" y="15" width={Math.round(0.82 * 130)} height="60" rx="5" fill="#4CAF50"/>
+                <rect x="7" y="15" width={Math.round(0.82 * 130)} height="60" rx="5" fill="#FFFFFF"/>
                 <path d="M75 25 L65 47 L75 47 L65 65 L90 38 L78 38 Z" fill="white"/>
               </svg>
               <div style={{ fontSize: 28, fontWeight: 700, color: TEXT, marginBottom: 4, marginTop: 8 }}>82%</div>
@@ -822,11 +822,11 @@ export default function WellbeingView({ wellbeing = {}, period = {}, onSetWellbe
             {/* Stat cards 2-col */}
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 12 }}>
               <div style={{ ...card, borderRadius: 16, padding: 16 }}>
-                <div style={{ fontSize: 24, fontWeight: 700, color: '#4CAF50' }}>+38%</div>
+                <div style={{ fontSize: 24, fontWeight: 700, color: 'rgba(255,255,255,0.75)' }}>+38%</div>
                 <div style={{ fontSize: 12, color: MUTED, marginTop: 2 }}>Charge rate</div>
               </div>
               <div style={{ ...card, borderRadius: 16, padding: 16 }}>
-                <div style={{ fontSize: 24, fontWeight: 700, color: '#FF4444' }}>−16%</div>
+                <div style={{ fontSize: 24, fontWeight: 700, color: 'rgba(255,255,255,0.4)' }}>−16%</div>
                 <div style={{ fontSize: 12, color: MUTED, marginTop: 2 }}>Drain rate</div>
               </div>
             </div>
@@ -834,7 +834,7 @@ export default function WellbeingView({ wellbeing = {}, period = {}, onSetWellbe
             {/* Insight card */}
             <div style={{
               background: ELEVATED,
-              borderLeft: `3px solid ${TEAL}`,
+              borderLeft: `3px solid rgba(255,255,255,0.3)`,
               padding: 16,
               borderRadius: 12,
               marginBottom: 12,
@@ -853,10 +853,10 @@ export default function WellbeingView({ wellbeing = {}, period = {}, onSetWellbe
               <div style={{ fontSize: 11, color: MUTED, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 8 }}>Energy &amp; Stress Level</div>
               <ResponsiveContainer width="100%" height={140}>
                 <LineChart data={energyChartData} margin={{ top: 8, right: 8, bottom: 0, left: 0 }}>
-                  <ReferenceArea x1={0} x2={6} fill="rgba(74,127,212,0.15)" />
-                  <ReferenceArea x1={7} x2={9} fill="rgba(255,140,66,0.1)" />
-                  <Line type="monotone" dataKey="energy" stroke="#4CAF50" strokeWidth={2} dot={false} />
-                  <Line type="monotone" dataKey="stress" stroke="#FFB800" strokeWidth={2} dot={false} />
+                  <ReferenceArea x1={0} x2={6} fill="rgba(255,255,255,0.04)" />
+                  <ReferenceArea x1={7} x2={9} fill="rgba(255,255,255,0.04)" />
+                  <Line type="monotone" dataKey="energy" stroke="#FFFFFF" strokeWidth={2} dot={false} />
+                  <Line type="monotone" dataKey="stress" stroke="rgba(255,255,255,0.45)" strokeWidth={2} dot={false} />
                   <XAxis dataKey="hour" tick={{ fill: MUTED, fontSize: 10 }} axisLine={false} tickLine={false} interval={5} />
                   <Tooltip
                     contentStyle={{ background: ELEVATED, border: 'none', borderRadius: 8, color: TEXT, fontSize: 12 }}
@@ -867,11 +867,11 @@ export default function WellbeingView({ wellbeing = {}, period = {}, onSetWellbe
               {/* Legend */}
               <div style={{ display: 'flex', gap: 16, marginTop: 8 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                  <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#4CAF50' }} />
+                  <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#FFFFFF' }} />
                   <span style={{ fontSize: 12, color: MUTED }}>Energy</span>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                  <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#FFB800' }} />
+                  <div style={{ width: 10, height: 10, borderRadius: '50%', background: 'rgba(255,255,255,0.45)' }} />
                   <span style={{ fontSize: 12, color: MUTED }}>Stress Level</span>
                 </div>
               </div>
@@ -882,9 +882,9 @@ export default function WellbeingView({ wellbeing = {}, period = {}, onSetWellbe
         {/* ════════════════════════ STRESS ══════════════════════════════════ */}
         {innerTab === 'stress' && (
           <div>
-            {/* Gauge hero card - light themed */}
+            {/* Gauge hero card - dark themed */}
             <div style={{
-              background: 'linear-gradient(135deg, #E8F4FD, #C5E8F5)',
+              background: '#1A1A1A',
               borderRadius: 16,
               padding: 24,
               marginBottom: 12,
@@ -895,43 +895,43 @@ export default function WellbeingView({ wellbeing = {}, period = {}, onSetWellbe
             }}>
               <svg width="200" height="120" viewBox="0 0 200 120">
                 <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="#E0E0E0" strokeWidth="12" strokeLinecap="round"/>
-                <path d="M 20 100 A 80 80 0 0 1 80 28"  fill="none" stroke="#4CAF50" strokeWidth="12" strokeLinecap="round"/>
-                <path d="M 80 28  A 80 80 0 0 1 140 28" fill="none" stroke="#FFB800" strokeWidth="12" strokeLinecap="round"/>
-                <path d="M 140 28 A 80 80 0 0 1 180 100" fill="none" stroke="#FF4444" strokeWidth="12" strokeLinecap="round"/>
-                <line x1="100" y1="100" x2="65" y2="45" stroke="#1A1A2E" strokeWidth="3" strokeLinecap="round"/>
-                <circle cx="100" cy="100" r="6" fill="#1A1A2E"/>
+                <path d="M 20 100 A 80 80 0 0 1 80 28"  fill="none" stroke="rgba(255,255,255,0.7)" strokeWidth="12" strokeLinecap="round"/>
+                <path d="M 80 28  A 80 80 0 0 1 140 28" fill="none" stroke="rgba(255,255,255,0.4)" strokeWidth="12" strokeLinecap="round"/>
+                <path d="M 140 28 A 80 80 0 0 1 180 100" fill="none" stroke="rgba(255,255,255,0.2)" strokeWidth="12" strokeLinecap="round"/>
+                <line x1="100" y1="100" x2="65" y2="45" stroke="rgba(255,255,255,0.8)" strokeWidth="3" strokeLinecap="round"/>
+                <circle cx="100" cy="100" r="6" fill="rgba(255,255,255,0.8)"/>
                 <text x="15"  y="118" fontSize="12" fill="#666">0</text>
                 <text x="180" y="118" fontSize="12" fill="#666">100</text>
               </svg>
-              <div style={{ fontSize: 32, fontWeight: 700, color: '#1A1A2E', textAlign: 'center' }}>33</div>
-              <div style={{ fontSize: 13, color: '#666', textAlign: 'center' }}>Stress Score</div>
+              <div style={{ fontSize: 32, fontWeight: 700, color: TEXT, textAlign: 'center' }}>33</div>
+              <div style={{ fontSize: 13, color: MUTED, textAlign: 'center' }}>Stress Score</div>
             </div>
 
-            {/* Stat cards - white for stress tab */}
+            {/* Stat cards - dark for stress tab */}
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 12 }}>
-              <div style={{ background: '#FFFFFF', borderRadius: 16, border: '1px solid #E0E0E0', padding: 16 }}>
-                <div style={{ fontSize: 18, fontWeight: 700, color: '#1A1A2E' }}>Average HRV</div>
-                <div style={{ fontSize: 22, fontWeight: 700, color: '#1A1A2E', marginTop: 4 }}>85 ms <span style={{ color: '#4A7FD4', fontSize: 16 }}>▲</span></div>
-                <div style={{ fontSize: 12, color: '#666' }}>Above normal</div>
+              <div style={{ background: '#111111', borderRadius: 16, border: '1px solid rgba(255,255,255,0.08)', padding: 16 }}>
+                <div style={{ fontSize: 18, fontWeight: 700, color: '#FFFFFF' }}>Average HRV</div>
+                <div style={{ fontSize: 22, fontWeight: 700, color: '#FFFFFF', marginTop: 4 }}>85 ms <span style={{ color: 'rgba(255,255,255,0.6)', fontSize: 16 }}>▲</span></div>
+                <div style={{ fontSize: 12, color: '#888888' }}>Above normal</div>
               </div>
-              <div style={{ background: '#FFFFFF', borderRadius: 16, border: '1px solid #E0E0E0', padding: 16 }}>
-                <div style={{ fontSize: 18, fontWeight: 700, color: '#1A1A2E' }}>Average HR</div>
-                <div style={{ fontSize: 22, fontWeight: 700, color: '#1A1A2E', marginTop: 4 }}>98 bpm <span style={{ color: '#FF8C42', fontSize: 16 }}>▼</span></div>
-                <div style={{ fontSize: 12, color: '#666' }}>Below normal</div>
+              <div style={{ background: '#111111', borderRadius: 16, border: '1px solid rgba(255,255,255,0.08)', padding: 16 }}>
+                <div style={{ fontSize: 18, fontWeight: 700, color: '#FFFFFF' }}>Average HR</div>
+                <div style={{ fontSize: 22, fontWeight: 700, color: '#FFFFFF', marginTop: 4 }}>98 bpm <span style={{ color: 'rgba(255,255,255,0.65)', fontSize: 16 }}>▼</span></div>
+                <div style={{ fontSize: 12, color: '#888888' }}>Below normal</div>
               </div>
             </div>
 
-            {/* Insight card - white */}
+            {/* Insight card - dark */}
             <div style={{
-              background: '#FFFFFF',
+              background: '#111111',
               borderRadius: 12,
-              border: '1px solid #E0E0E0',
+              border: '1px solid rgba(255,255,255,0.08)',
               padding: 16,
               marginBottom: 12,
               boxSizing: 'border-box',
             }}>
-              <div style={{ fontSize: 15, fontWeight: 700, color: '#1A1A2E', marginBottom: 6 }}>Calm and collected 🧘</div>
-              <div style={{ fontSize: 13, color: '#666', lineHeight: 1.5 }}>
+              <div style={{ fontSize: 15, fontWeight: 700, color: '#FFFFFF', marginBottom: 6 }}>Calm and collected 🧘</div>
+              <div style={{ fontSize: 13, color: '#888888', lineHeight: 1.5 }}>
                 Your HRV is elevated indicating good recovery. Stress levels are well managed today.
               </div>
             </div>
@@ -943,11 +943,11 @@ export default function WellbeingView({ wellbeing = {}, period = {}, onSetWellbe
                 <AreaChart data={stressChartData} margin={{ top: 8, right: 8, bottom: 0, left: 0 }}>
                   <defs>
                     <linearGradient id="stressGrad" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%"  stopColor="#FF4444" stopOpacity={0.6} />
-                      <stop offset="95%" stopColor="#4CAF50" stopOpacity={0.3} />
+                      <stop offset="5%"  stopColor="rgba(255,255,255,0.6)" stopOpacity={1} />
+                      <stop offset="95%" stopColor="rgba(255,255,255,0.1)" stopOpacity={1} />
                     </linearGradient>
                   </defs>
-                  <Area type="monotone" dataKey="stress" stroke="#FF8C42" fill="url(#stressGrad)" strokeWidth={2} />
+                  <Area type="monotone" dataKey="stress" stroke="rgba(255,255,255,0.6)" fill="url(#stressGrad)" strokeWidth={2} />
                   <XAxis dataKey="hour" tick={{ fill: MUTED, fontSize: 10 }} axisLine={false} tickLine={false} interval={5} />
                   <Tooltip
                     contentStyle={{ background: ELEVATED, border: 'none', borderRadius: 8, color: TEXT, fontSize: 12 }}
@@ -961,9 +961,9 @@ export default function WellbeingView({ wellbeing = {}, period = {}, onSetWellbe
             <div style={{ ...card, borderRadius: 16, padding: 16 }}>
               <div style={{ fontSize: 11, color: MUTED, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 12 }}>Time in Zone</div>
               {[
-                { label: 'High 🔴',  color: '#FF4444', pct: 11, time: '02:38:24' },
-                { label: 'Med 🟡',   color: '#FFB800', pct: 33, time: '07:55:12' },
-                { label: 'Low 🟢',   color: TEAL,      pct: 56, time: '13:26:24' },
+                { label: 'High 🔴',  color: 'rgba(255,255,255,0.85)', pct: 11, time: '02:38:24' },
+                { label: 'Med 🟡',   color: 'rgba(255,255,255,0.5)',  pct: 33, time: '07:55:12' },
+                { label: 'Low 🟢',   color: 'rgba(255,255,255,0.25)', pct: 56, time: '13:26:24' },
               ].map(b => (
                 <div key={b.label} style={{ marginBottom: 12 }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
@@ -1086,13 +1086,13 @@ export default function WellbeingView({ wellbeing = {}, period = {}, onSetWellbe
             {/* Disclaimer */}
             <div style={{
               background: ELEVATED,
-              borderLeft: `3px solid ${TEAL}`,
+              borderLeft: `3px solid rgba(255,255,255,0.3)`,
               borderRadius: 12,
               padding: 16,
               marginBottom: 16,
               boxSizing: 'border-box',
             }}>
-              <div style={{ fontSize: 11, color: TEAL, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 6 }}>Medical Disclaimer</div>
+              <div style={{ fontSize: 11, color: '#FFFFFF', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 6 }}>Medical Disclaimer</div>
               <div style={{ fontSize: 12, color: MUTED, lineHeight: 1.6 }}>
                 This is a screening tool only and does not constitute a medical diagnosis. Please consult a qualified healthcare professional for guidance.
               </div>
@@ -1106,8 +1106,8 @@ export default function WellbeingView({ wellbeing = {}, period = {}, onSetWellbe
                   <div style={{ fontSize: 11, color: MUTED, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 8 }}>7-Day Score History</div>
                   <ResponsiveContainer width="100%" height={120}>
                     <LineChart data={assessmentHistory} margin={{ top: 8, right: 8, bottom: 0, left: 0 }}>
-                      <Line type="monotone" dataKey="phq" stroke={TEAL}     strokeWidth={2} dot={false} name="PHQ-9" />
-                      <Line type="monotone" dataKey="gad" stroke="#AB47BC"  strokeWidth={2} dot={false} name="GAD-7" />
+                      <Line type="monotone" dataKey="phq" stroke="#FFFFFF"               strokeWidth={2} dot={false} name="PHQ-9" />
+                      <Line type="monotone" dataKey="gad" stroke="rgba(255,255,255,0.45)" strokeWidth={2} dot={false} name="GAD-7" />
                       <XAxis dataKey="day" tick={{ fill: MUTED, fontSize: 10 }} axisLine={false} tickLine={false} />
                       <Tooltip
                         contentStyle={{ background: ELEVATED, border: 'none', borderRadius: 8, color: TEXT, fontSize: 12 }}
@@ -1117,11 +1117,11 @@ export default function WellbeingView({ wellbeing = {}, period = {}, onSetWellbe
                   </ResponsiveContainer>
                   <div style={{ display: 'flex', gap: 16, marginTop: 8 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                      <div style={{ width: 10, height: 10, borderRadius: '50%', background: TEAL }} />
+                      <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#FFFFFF' }} />
                       <span style={{ fontSize: 12, color: MUTED }}>PHQ-9</span>
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                      <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#AB47BC' }} />
+                      <div style={{ width: 10, height: 10, borderRadius: '50%', background: 'rgba(255,255,255,0.45)' }} />
                       <span style={{ fontSize: 12, color: MUTED }}>GAD-7</span>
                     </div>
                   </div>
@@ -1137,8 +1137,8 @@ export default function WellbeingView({ wellbeing = {}, period = {}, onSetWellbe
                       <div style={{ color: MUTED, fontSize: 14, lineHeight: 1.5, marginBottom: 12 }}>{a.desc}</div>
                       <div style={{ color: MUTED, fontSize: 12, marginBottom: 14 }}>{a.qs} questions · ~2 minutes</div>
                       <button onClick={() => startAssessment(a.type)} style={{
-                        padding: '11px 28px', background: TEAL, border: 'none',
-                        color: '#0A0A14', borderRadius: 30, fontWeight: 700, fontSize: 14, cursor: 'pointer',
+                        padding: '11px 28px', background: '#FFFFFF', border: 'none',
+                        color: '#000000', borderRadius: 30, fontWeight: 700, fontSize: 14, cursor: 'pointer',
                       }}>Take Assessment</button>
                     </div>
                   ))}
@@ -1166,8 +1166,8 @@ export default function WellbeingView({ wellbeing = {}, period = {}, onSetWellbe
                     </div>
                     <div style={{ display: 'flex', gap: 12 }}>
                       <button onClick={() => startAssessment(assessmentType)} style={{
-                        flex: 1, padding: '12px 0', background: TEAL, border: 'none',
-                        color: '#0A0A14', borderRadius: 30, fontWeight: 700, fontSize: 14, cursor: 'pointer',
+                        flex: 1, padding: '12px 0', background: '#FFFFFF', border: 'none',
+                        color: '#000000', borderRadius: 30, fontWeight: 700, fontSize: 14, cursor: 'pointer',
                       }}>Retake</button>
                       <button onClick={() => setAssessmentType(null)} style={{
                         flex: 1, padding: '12px 0', background: 'transparent',
@@ -1191,14 +1191,14 @@ export default function WellbeingView({ wellbeing = {}, period = {}, onSetWellbe
                       <div style={{ color: MUTED, fontSize: 13 }}>
                         {assessmentType === 'phq9' ? 'PHQ-9' : 'GAD-7'}
                       </div>
-                      <div style={{ color: TEAL, fontWeight: 700, fontSize: 13 }}>Q {assessmentQ + 1} of {total}</div>
+                      <div style={{ color: '#FFFFFF', fontWeight: 700, fontSize: 13 }}>Q {assessmentQ + 1} of {total}</div>
                     </div>
                     <div style={{ height: 3, background: 'rgba(255,255,255,0.1)', borderRadius: 2, marginBottom: 28 }}>
-                      <div style={{ height: '100%', borderRadius: 2, background: TEAL, width: `${pct}%`, transition: 'width 0.3s' }} />
+                      <div style={{ height: '100%', borderRadius: 2, background: '#FFFFFF', width: `${pct}%`, transition: 'width 0.3s' }} />
                     </div>
                     <div style={{ color: TEXT, fontSize: 18, fontWeight: 600, lineHeight: 1.5, marginBottom: 32 }}>
                       Over the last 2 weeks, how often have you been bothered by:<br />
-                      <span style={{ color: TEAL }}>{q}</span>
+                      <span style={{ color: '#FFFFFF' }}>{q}</span>
                     </div>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 24 }}>
                       {ASSESSMENT_OPTIONS.map((opt, i) => (
@@ -1208,7 +1208,7 @@ export default function WellbeingView({ wellbeing = {}, period = {}, onSetWellbe
                             borderRadius: 14, color: TEXT, fontSize: 15, textAlign: 'left', cursor: 'pointer',
                             transition: 'all 0.15s',
                           }}
-                          onMouseEnter={e => { e.currentTarget.style.borderColor = TEAL; e.currentTarget.style.background = 'rgba(0,188,212,0.1)'; }}
+                          onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.35)'; e.currentTarget.style.background = 'rgba(255,255,255,0.12)'; }}
                           onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.12)'; e.currentTarget.style.background = ELEVATED; }}
                         >{opt}</button>
                       ))}

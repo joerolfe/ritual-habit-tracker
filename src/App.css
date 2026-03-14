@@ -7361,3 +7361,136 @@ input.sleep-time-input:focus { box-shadow: 0 0 0 2px #00BCD4 !important; }
      scroll via .main-content which is now overflow-y:auto on mobile.
      No extra CSS needed beyond ensuring the view can reach it. */
 }
+
+/* ════════════════════════════════════════════════════════════════════════════
+   LUXURY MONOCHROME — FINAL OVERRIDE (black / white / grey only)
+   ════════════════════════════════════════════════════════════════════════════ */
+:root {
+  --gold:          #FFFFFF !important;
+  --gold-soft:     rgba(255,255,255,0.07) !important;
+  --gold-border:   rgba(255,255,255,0.18) !important;
+  --teal:          #FFFFFF !important;
+  --teal-bg:       rgba(255,255,255,0.07) !important;
+  --orange-prog:   rgba(255,255,255,0.55) !important;
+  --green:         rgba(255,255,255,0.75) !important;
+  --orange:        rgba(255,255,255,0.55) !important;
+  --red:           #FF4444 !important;
+  --accent-teal:   #FFFFFF !important;
+  --accent-orange: rgba(255,255,255,0.6) !important;
+  --positive:      rgba(255,255,255,0.75) !important;
+  --negative:      #FF4444 !important;
+}
+
+/* ── Bottom nav active ─────────────────────────────────────────────────── */
+.bnav-pill-btn.active {
+  color: #FFFFFF !important;
+  background: rgba(255,255,255,0.10) !important;
+  box-shadow: 0 0 18px rgba(255,255,255,0.07) !important;
+}
+.bnav-pill-btn { color: #555555 !important; }
+
+/* ── Streak / level ───────────────────────────────────────────────────── */
+.streak-num { color: #FFFFFF !important; }
+.streak-badge { border-color: rgba(255,255,255,0.18) !important; }
+
+/* ── All primary buttons ──────────────────────────────────────────────── */
+.sidebar-add-btn,
+.ob-continue-btn,
+.auth-submit-btn,
+.landing-cta,
+.template-add-btn {
+  background: #FFFFFF !important;
+  color: #000000 !important;
+}
+
+/* ── Focus borders: white glow ──────────────────────────────────────────── */
+input:focus, textarea:focus, select:focus {
+  border-color: rgba(255,255,255,0.35) !important;
+  box-shadow: 0 0 0 2px rgba(255,255,255,0.08) !important;
+  outline: none !important;
+}
+
+/* ── Today view ring ─────────────────────────────────────────────────── */
+.today-ring-pct { color: #FFFFFF !important; -webkit-text-fill-color: #FFFFFF !important; }
+.ring-track { stroke: rgba(255,255,255,0.1) !important; }
+.ring-prog  { stroke: #FFFFFF !important; }
+
+/* ── Habit checkboxes ────────────────────────────────────────────────── */
+.habit-check-done { background: #FFFFFF !important; border-color: #FFFFFF !important; }
+.habit-check-done svg path { stroke: #000000 !important; }
+
+/* ── Pill / tag chips ────────────────────────────────────────────────── */
+.view-toggle-btn.active,
+.health-main-tab.active {
+  background: #FFFFFF !important;
+  color: #000000 !important;
+}
+
+/* ── Completion cells (keep functional colors for heat map) ──────────── */
+.grid-cell[data-pct="high"]   { background: rgba(255,255,255,0.85) !important; }
+.grid-cell[data-pct="mid"]    { background: rgba(255,255,255,0.45) !important; }
+.grid-cell[data-pct="low"]    { background: rgba(255,255,255,0.18) !important; }
+
+/* ── Month / year heatmap dots — white intensity scale ──────────────── */
+.mini-dot { background: rgba(255,255,255,0.15) !important; }
+.mini-dot.pct-high { background: rgba(255,255,255,0.85) !important; }
+.mini-dot.pct-mid  { background: rgba(255,255,255,0.45) !important; }
+.mini-dot.pct-low  { background: rgba(255,255,255,0.18) !important; }
+
+/* ── Sidebar ─────────────────────────────────────────────────────────── */
+.habit-color-dot { box-shadow: none !important; }
+.sidebar-habit-item:hover { background: rgba(255,255,255,0.05) !important; }
+
+/* ── App header ──────────────────────────────────────────────────────── */
+.app-header { border-bottom: 1px solid rgba(255,255,255,0.07) !important; }
+.header-icon-btn:hover { background: rgba(255,255,255,0.08) !important; color: #FFFFFF !important; }
+
+/* ── XP / level ──────────────────────────────────────────────────────── */
+.level-bar-fill { background: #FFFFFF !important; }
+.level-badge { background: rgba(255,255,255,0.12) !important; color: #FFFFFF !important; border: 1px solid rgba(255,255,255,0.2) !important; }
+
+/* ── Water / mood widgets ────────────────────────────────────────────── */
+.water-drop.filled { background: #FFFFFF !important; }
+.mood-btn.selected { border-color: rgba(255,255,255,0.4) !important; background: rgba(255,255,255,0.08) !important; }
+
+/* ── Journal ─────────────────────────────────────────────────────────── */
+.journal-tag.active { background: #FFFFFF !important; color: #000000 !important; }
+.journal-save-btn   { background: #FFFFFF !important; color: #000000 !important; }
+
+/* ── Goals progress ──────────────────────────────────────────────────── */
+.goal-progress-fill { background: #FFFFFF !important; }
+
+/* ── Premium / paywall ───────────────────────────────────────────────── */
+.premium-cta-btn { background: #FFFFFF !important; color: #000000 !important; }
+
+/* ── Onboarding ──────────────────────────────────────────────────────── */
+.ob-dot.active { background: #FFFFFF !important; }
+
+/* ── Light mode disabled (force dark always) ─────────────────────────── */
+body.light-mode { background: #000000 !important; color: #FFFFFF !important; }
+body.light-mode .app-header  { background: #000000 !important; border-bottom: 1px solid rgba(255,255,255,0.07) !important; }
+body.light-mode .sidebar      { background: #0D0D0D !important; }
+body.light-mode .main-content { background: #000000 !important; }
+body.light-mode .bnav-pill    { background: #111111 !important; }
+
+/* ── Scrolling — ensure all pages scroll ────────────────────────────── */
+.main-content {
+  overflow-y: auto !important;
+  padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px)) !important;
+}
+.today-view, .health-view-container {
+  height: auto !important;
+  min-height: 100% !important;
+  overflow-y: visible !important;
+}
+@media (max-width: 900px) {
+  .today-view {
+    height: auto !important;
+    overflow-y: visible !important;
+    padding-bottom: 0 !important;
+  }
+  .health-view-container {
+    height: auto !important;
+    overflow: visible !important;
+  }
+}

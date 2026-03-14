@@ -88,16 +88,17 @@ function sumMeals(dayData) {
 }
 
 // ─── DESIGN TOKENS ───────────────────────────────────────────────────────────
-const BG       = '#0A0A14';
-const CARD     = '#12121F';
-const ELEVATED = '#1A1A2E';
+const BG       = '#000000';
+const CARD     = '#111111';
+const ELEVATED = '#1A1A1A';
 const BORDER   = '1px solid rgba(255,255,255,0.08)';
-const TEAL     = '#00BCD4';
-const ORANGE   = '#FF8C42';
-const BLUE     = '#4A7FD4';
-const PINK     = '#FF69B4';
 const WHITE    = '#FFFFFF';
-const MUTED    = '#8888AA';
+const MUTED    = '#888888';
+
+// Macro colors (monochrome shades)
+const PROTEIN_COLOR = '#FFFFFF';
+const CARBS_COLOR   = 'rgba(255,255,255,0.55)';
+const FAT_COLOR     = 'rgba(255,255,255,0.35)';
 
 const cardStyle = {
   background: CARD,
@@ -137,7 +138,7 @@ function MacroRing({ label, value, goal, color }) {
         </div>
       </div>
       <span style={{ fontSize: 11, color: MUTED }}>/ {goal}g {label}</span>
-      <span style={{ fontSize: 11, color: over ? '#FF5252' : '#4CAF50', fontWeight: 600 }}>
+      <span style={{ fontSize: 11, color: over ? '#FF4444' : 'rgba(255,255,255,0.75)', fontWeight: 600 }}>
         {over ? `${Math.abs(Math.round(diff))}g over` : `${Math.round(diff)}g left`}
       </span>
     </div>
@@ -157,7 +158,7 @@ function DotGrid({ pct, color, label }) {
         {Array.from({ length: 100 }, (_, i) => (
           <div key={i} style={{
             width: 8, height: 8, borderRadius: '50%',
-            background: i < filled ? color : `${color}28`,
+            background: i < filled ? color : 'rgba(255,255,255,0.08)',
           }} />
         ))}
       </div>
@@ -254,7 +255,7 @@ function AddFoodModal({ mealKey, onClose, onConfirm }) {
           <div>
             <button
               onClick={() => setSelected(null)}
-              style={{ background: 'none', border: 'none', color: TEAL, fontSize: 13, cursor: 'pointer', padding: '0 0 12px 0', display: 'block' }}
+              style={{ background: 'none', border: 'none', color: WHITE, fontSize: 13, cursor: 'pointer', padding: '0 0 12px 0', display: 'block' }}
             >← Back</button>
             <div style={{ background: ELEVATED, borderRadius: 12, padding: 16, marginBottom: 16 }}>
               <div style={{ fontWeight: 700, color: WHITE, fontSize: 15, marginBottom: 4 }}>{selected.name}</div>
@@ -275,7 +276,7 @@ function AddFoodModal({ mealKey, onClose, onConfirm }) {
             </div>
             <button
               onClick={() => onConfirm(selected, portion)}
-              style={{ width: '100%', background: TEAL, border: 'none', borderRadius: 12, color: '#000', fontWeight: 700, fontSize: 16, padding: 14, cursor: 'pointer', marginBottom: 10 }}
+              style={{ width: '100%', background: '#FFFFFF', border: 'none', borderRadius: 12, color: '#000000', fontWeight: 700, fontSize: 16, padding: 14, cursor: 'pointer', marginBottom: 10 }}
             >Add to {MEAL_LABELS[mealKey]}</button>
             <button
               onClick={onClose}
@@ -442,7 +443,7 @@ export default function NutritionView({
                 key={label}
                 onClick={() => setAddFoodModal('breakfast')}
                 style={{
-                  background: ELEVATED, borderRadius: 10, height: 44,
+                  background: '#1A1A1A', borderRadius: 10, height: 44,
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   gap: 6, fontSize: 13, color: WHITE, border: BORDER,
                   cursor: 'pointer', boxSizing: 'border-box',
@@ -457,7 +458,7 @@ export default function NutritionView({
           {/* Camera viewfinder placeholder */}
           <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 8 }}>
             <div style={{
-              width: 60, height: 60, border: `2px dashed ${TEAL}`, borderRadius: 8,
+              width: 60, height: 60, border: `2px dashed rgba(255,255,255,0.7)`, borderRadius: 8,
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               fontSize: 22,
             }}>📷</div>
@@ -473,7 +474,7 @@ export default function NutritionView({
                 key={label}
                 onClick={() => setAddFoodModal('breakfast')}
                 style={{
-                  background: ELEVATED, borderRadius: 10, height: 44,
+                  background: '#1A1A1A', borderRadius: 10, height: 44,
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   gap: 6, fontSize: 13, color: WHITE, border: BORDER,
                   cursor: 'pointer', boxSizing: 'border-box',
@@ -495,7 +496,7 @@ export default function NutritionView({
                 key={label}
                 onClick={() => setAddFoodModal('breakfast')}
                 style={{
-                  background: ELEVATED, borderRadius: 10, height: 44,
+                  background: '#1A1A1A', borderRadius: 10, height: 44,
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   gap: 6, fontSize: 13, color: WHITE, border: BORDER,
                   cursor: 'pointer', boxSizing: 'border-box',
@@ -513,9 +514,9 @@ export default function NutritionView({
           <div style={{
             display: 'flex', justifyContent: 'space-around', padding: '8px 0',
           }}>
-            <MacroRing label="Carbs"   value={totals.carbs}   goal={goals.carbs}   color={BLUE}   />
-            <MacroRing label="Protein" value={totals.protein} goal={goals.protein} color={ORANGE} />
-            <MacroRing label="Fat"     value={totals.fat}     goal={goals.fat}     color={PINK}   />
+            <MacroRing label="Carbs"   value={totals.carbs}   goal={goals.carbs}   color={CARBS_COLOR}   />
+            <MacroRing label="Protein" value={totals.protein} goal={goals.protein} color={PROTEIN_COLOR} />
+            <MacroRing label="Fat"     value={totals.fat}     goal={goals.fat}     color={FAT_COLOR}     />
           </div>
         </div>
 
@@ -524,7 +525,7 @@ export default function NutritionView({
           {/* Header */}
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
             <span style={{ fontSize: 15, fontWeight: 700, color: WHITE }}>Calories</span>
-            <span style={{ fontSize: 13, color: TEAL }}>
+            <span style={{ fontSize: 13, color: WHITE }}>
               {kcalLeft >= 0 ? `${kcalLeft} kcal left` : `${Math.abs(kcalLeft)} kcal over`}
             </span>
           </div>
@@ -534,10 +535,10 @@ export default function NutritionView({
             <BarChart data={weekData} margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
               <Bar dataKey="kcal" radius={[4, 4, 0, 0]}>
                 {weekData.map((d, i) => (
-                  <Cell key={i} fill={d.kcal > goals.calories ? ORANGE : TEAL} />
+                  <Cell key={i} fill={d.kcal > goals.calories ? 'rgba(255,255,255,0.3)' : 'rgba(255,255,255,0.6)'} />
                 ))}
               </Bar>
-              <ReferenceLine y={goals.calories} stroke="rgba(255,255,255,0.3)" strokeDasharray="4 4" />
+              <ReferenceLine y={goals.calories} stroke="rgba(255,255,255,0.25)" strokeDasharray="4 4" />
               <Tooltip
                 contentStyle={{ background: CARD, border: BORDER, borderRadius: 8, color: WHITE, fontSize: 12 }}
                 labelStyle={{ color: MUTED }}
@@ -548,13 +549,13 @@ export default function NutritionView({
 
           {/* Below chart: macro left labels */}
           <div style={{ display: 'flex', justifyContent: 'space-around', marginTop: 10 }}>
-            <span style={{ fontSize: 11, color: ORANGE }}>
+            <span style={{ fontSize: 11, color: FAT_COLOR }}>
               Fat: {fatLeft >= 0 ? `${Math.round(fatLeft)}g left` : `${Math.round(Math.abs(fatLeft))}g over`}
             </span>
-            <span style={{ fontSize: 11, color: BLUE }}>
+            <span style={{ fontSize: 11, color: CARBS_COLOR }}>
               Carbs: {carbsLeft >= 0 ? `${Math.round(carbsLeft)}g left` : `${Math.round(Math.abs(carbsLeft))}g over`}
             </span>
-            <span style={{ fontSize: 11, color: PINK }}>
+            <span style={{ fontSize: 11, color: PROTEIN_COLOR }}>
               Protein: {proteinLeft >= 0 ? `${Math.round(proteinLeft)}g left` : `${Math.round(Math.abs(proteinLeft))}g over`}
             </span>
           </div>
@@ -569,9 +570,9 @@ export default function NutritionView({
           </div>
 
           <div style={{ display: 'flex', gap: 8, justifyContent: 'space-between' }}>
-            <DotGrid pct={carbsPct}   color={BLUE}   label="Carbs"   />
-            <DotGrid pct={proteinPct} color={ORANGE} label="Protein" />
-            <DotGrid pct={fatPct}     color={PINK}   label="Fat"     />
+            <DotGrid pct={carbsPct}   color={CARBS_COLOR}   label="Carbs"   />
+            <DotGrid pct={proteinPct} color={PROTEIN_COLOR} label="Protein" />
+            <DotGrid pct={fatPct}     color={FAT_COLOR}     label="Fat"     />
           </div>
         </div>
 
@@ -604,7 +605,7 @@ export default function NutritionView({
                 <button
                   onClick={e => { e.stopPropagation(); setAddFoodModal(meal); }}
                   style={{
-                    background: 'none', border: 'none', color: TEAL,
+                    background: 'none', border: 'none', color: WHITE,
                     fontSize: 13, cursor: 'pointer', padding: '0 8px 0 0', fontWeight: 600,
                   }}
                 >+ Add</button>
@@ -646,7 +647,7 @@ export default function NutritionView({
                   {/* Add food row */}
                   <div
                     onClick={() => setAddFoodModal(meal)}
-                    style={{ color: TEAL, fontSize: 13, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6, padding: '4px 0' }}
+                    style={{ color: WHITE, fontSize: 13, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6, padding: '4px 0' }}
                   >
                     <span style={{ fontSize: 16 }}>+</span> Add Food
                   </div>
@@ -674,7 +675,7 @@ export default function NutritionView({
         <div style={{ ...cardStyle, marginBottom: 12 }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
             <span style={{ fontSize: 15, fontWeight: 700, color: WHITE }}>💧 Water</span>
-            <span style={{ fontSize: 13, color: TEAL }}>{waterCount} / 8</span>
+            <span style={{ fontSize: 13, color: WHITE }}>{waterCount} / 8</span>
           </div>
 
           {/* Droplet buttons */}
@@ -699,7 +700,7 @@ export default function NutritionView({
           <div style={{ background: ELEVATED, borderRadius: 2, height: 4, overflow: 'hidden' }}>
             <div style={{
               width: `${(waterCount / 8) * 100}%`, height: '100%',
-              background: TEAL, borderRadius: 2,
+              background: '#FFFFFF', borderRadius: 2,
               transition: 'width 0.3s',
             }} />
           </div>
@@ -751,7 +752,7 @@ export default function NutritionView({
             ))}
             <button
               onClick={handleSaveGoals}
-              style={{ width: '100%', background: TEAL, border: 'none', borderRadius: 12, color: '#000', fontWeight: 700, fontSize: 16, padding: 14, cursor: 'pointer', marginTop: 4 }}
+              style={{ width: '100%', background: '#FFFFFF', border: 'none', borderRadius: 12, color: '#000000', fontWeight: 700, fontSize: 16, padding: 14, cursor: 'pointer', marginTop: 4 }}
             >Save Goals</button>
           </div>
         </div>

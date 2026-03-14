@@ -3,8 +3,8 @@ import React, { useState, useMemo } from 'react';
 // ─── Constants ────────────────────────────────────────────────────────────────
 
 const CAT_COLOR = {
-  Health: '#00BCD4', Career: '#3B82F6', Finance: '#22C55E',
-  Fitness: '#FF8C42', Learning: '#A855F7', Lifestyle: '#6B7280',
+  Health: '#AAAAAA', Career: '#999999', Finance: '#888888',
+  Fitness: '#BBBBBB', Learning: '#777777', Lifestyle: '#666666',
 };
 
 const EMOJI_OPTIONS = ['🏃', '📚', '⚖️', '🧘', '💰', '🎯', '🥗', '🎓', '💼', '🎨', '🏋️', '🚴'];
@@ -132,13 +132,13 @@ function goalPct(g) {
 
 function deadlineColor(days) {
   if (days === null) return 'rgba(255,255,255,0.45)';
-  if (days <= 7) return '#FF3B30';
-  if (days <= 14) return '#FF9F0A';
-  return '#22C55E';
+  if (days <= 7) return '#FF4444';
+  if (days <= 14) return 'rgba(255,255,255,0.55)';
+  return 'rgba(255,255,255,0.75)';
 }
 
 function catColor(cat) {
-  return CAT_COLOR[cat] || '#6B7280';
+  return CAT_COLOR[cat] || '#888888';
 }
 
 function darkenHex(hex) {
@@ -163,13 +163,13 @@ function ProgressRing({ pct, size = 48 }) {
       <circle
         cx={cx} cy={cy} r={radius}
         fill="none"
-        stroke="#333333"
+        stroke="rgba(255,255,255,0.1)"
         strokeWidth={4}
       />
       <circle
         cx={cx} cy={cy} r={radius}
         fill="none"
-        stroke="#FF8C42"
+        stroke="#FFFFFF"
         strokeWidth={4}
         strokeDasharray={circumference}
         strokeDashoffset={strokeDashoffset}
@@ -223,7 +223,7 @@ function WeeklyBarChart({ values }) {
               x={x} y={y}
               width={barW} height={barH}
               rx={6} ry={6}
-              fill="#00BCD4"
+              fill="#FFFFFF"
               opacity={0.9}
             />
             <text
@@ -268,7 +268,7 @@ function GoalCard({ goal, onEditGoal, isMock }) {
       {/* Top row: category badge + streak */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
         <span style={{
-          background: color + '22',
+          background: 'rgba(255,255,255,0.08)',
           color: color,
           fontSize: 11,
           fontWeight: 600,
@@ -280,8 +280,8 @@ function GoalCard({ goal, onEditGoal, isMock }) {
         </span>
         {goal.streak > 0 && (
           <span style={{
-            background: '#FF8C4222',
-            color: '#FF8C42',
+            background: 'rgba(255,255,255,0.07)',
+            color: 'rgba(255,255,255,0.65)',
             fontSize: 12,
             fontWeight: 600,
             padding: '3px 10px',
@@ -334,7 +334,7 @@ function GoalCard({ goal, onEditGoal, isMock }) {
             onClick={() => setExpanded(e => !e)}
             style={{
               background: 'none', border: 'none', cursor: 'pointer',
-              color: '#00BCD4', fontSize: 12, fontWeight: 600, padding: 0,
+              color: '#FFFFFF', fontSize: 12, fontWeight: 600, padding: 0,
               fontFamily: 'Inter, sans-serif',
             }}
           >
@@ -346,13 +346,13 @@ function GoalCard({ goal, onEditGoal, isMock }) {
                 <div key={ms.id} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                   <div style={{
                     width: 16, height: 16, borderRadius: '50%', flexShrink: 0,
-                    background: ms.done ? '#00BCD4' : 'transparent',
+                    background: ms.done ? '#FFFFFF' : 'transparent',
                     border: ms.done ? 'none' : '2px solid #333333',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                   }}>
                     {ms.done && (
                       <svg width={10} height={10} viewBox="0 0 10 10">
-                        <polyline points="1.5,5 4,7.5 8.5,2.5" fill="none" stroke="#000" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" />
+                        <polyline points="1.5,5 4,7.5 8.5,2.5" fill="none" stroke="#000000" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" />
                       </svg>
                     )}
                   </div>
@@ -392,7 +392,7 @@ function GoalCard({ goal, onEditGoal, isMock }) {
                     onClick={() => handleAdjust(-1)}
                     style={{
                       background: '#1A1A1A', border: 'none', borderRadius: 20,
-                      color: '#00BCD4', fontSize: 16, lineHeight: 1,
+                      color: '#FFFFFF', fontSize: 16, lineHeight: 1,
                       width: 28, height: 28, cursor: 'pointer',
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
                       fontFamily: 'Inter, sans-serif',
@@ -402,7 +402,7 @@ function GoalCard({ goal, onEditGoal, isMock }) {
                     onClick={() => handleAdjust(1)}
                     style={{
                       background: '#1A1A1A', border: 'none', borderRadius: 20,
-                      color: '#00BCD4', fontSize: 16, lineHeight: 1,
+                      color: '#FFFFFF', fontSize: 16, lineHeight: 1,
                       width: 28, height: 28, cursor: 'pointer',
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
                       fontFamily: 'Inter, sans-serif',
@@ -440,10 +440,10 @@ function OKRSection() {
         background: '#111111',
         borderRadius: 16,
         padding: 20,
-        borderLeft: '4px solid #A855F7',
+        borderLeft: '4px solid rgba(255,255,255,0.5)',
       }}>
         {/* Objective header */}
-        <div style={{ fontSize: 13, color: '#A855F7', fontWeight: 600, marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Objective</div>
+        <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', fontWeight: 600, marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Objective</div>
         <div style={{ fontSize: 18, fontWeight: 700, color: '#ffffff', marginBottom: 14 }}>
           Become a Top Performer This Quarter
         </div>
@@ -455,7 +455,7 @@ function OKRSection() {
             <span style={{ fontSize: 12, color: '#ffffff', fontWeight: 600 }}>{objPct}%</span>
           </div>
           <div style={{ background: '#1A1A1A', borderRadius: 4, height: 6, overflow: 'hidden' }}>
-            <div style={{ background: '#A855F7', height: '100%', width: `${objPct}%`, borderRadius: 4, transition: 'width 0.4s ease' }} />
+            <div style={{ background: 'rgba(255,255,255,0.5)', height: '100%', width: `${objPct}%`, borderRadius: 4, transition: 'width 0.4s ease' }} />
           </div>
         </div>
 
@@ -468,12 +468,12 @@ function OKRSection() {
                 <span style={{ fontSize: 13, color: 'rgba(255,255,255,0.8)', flex: 1, marginRight: 8 }}>
                   KR{i + 1}: {kr.label}
                 </span>
-                <span style={{ fontSize: 12, color: '#00BCD4', fontWeight: 600, whiteSpace: 'nowrap' }}>
+                <span style={{ fontSize: 12, color: '#FFFFFF', fontWeight: 600, whiteSpace: 'nowrap' }}>
                   {kr.current}/{kr.target} ({kr.pct}%)
                 </span>
               </div>
               <div style={{ background: '#1A1A1A', borderRadius: 4, height: 5, overflow: 'hidden' }}>
-                <div style={{ background: '#00BCD4', height: '100%', width: `${kr.pct}%`, borderRadius: 4, transition: 'width 0.4s ease' }} />
+                <div style={{ background: '#FFFFFF', height: '100%', width: `${kr.pct}%`, borderRadius: 4, transition: 'width 0.4s ease' }} />
               </div>
             </div>
           ))}
@@ -501,7 +501,7 @@ function ChallengeCard({ challenge, onToggleChallenge }) {
     }}>
       {/* Gradient header */}
       <div style={{
-        background: 'linear-gradient(135deg, #00BCD4, #A855F7)',
+        background: 'linear-gradient(135deg, #333333, #555555)',
         height: 60,
         display: 'flex',
         alignItems: 'center',
@@ -528,8 +528,8 @@ function ChallengeCard({ challenge, onToggleChallenge }) {
                 onClick={() => !isMock && onToggleChallenge && onToggleChallenge(challenge.id, idx)}
                 style={{
                   width: 32, height: 32, borderRadius: '50%',
-                  background: done ? '#00BCD4' : 'transparent',
-                  border: done ? 'none' : '2px solid #333333',
+                  background: done ? '#FFFFFF' : 'transparent',
+                  border: done ? 'none' : '2px solid rgba(255,255,255,0.1)',
                   cursor: isMock ? 'default' : 'pointer',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   fontSize: 10, color: done ? '#000' : 'rgba(255,255,255,0.3)',
@@ -546,8 +546,8 @@ function ChallengeCard({ challenge, onToggleChallenge }) {
         {/* Status / Start button */}
         {isStarted ? (
           <div style={{
-            background: '#00BCD422',
-            color: '#00BCD4',
+            background: 'rgba(255,255,255,0.08)',
+            color: '#FFFFFF',
             fontSize: 12,
             fontWeight: 600,
             padding: '7px 14px',
@@ -558,7 +558,7 @@ function ChallengeCard({ challenge, onToggleChallenge }) {
           </div>
         ) : (
           <button style={{
-            background: '#00BCD4',
+            background: '#FFFFFF',
             color: '#000000',
             fontSize: 13,
             fontWeight: 700,
@@ -591,8 +591,8 @@ function TemplateCard({ template, onPress }) {
         height: 100,
         minWidth: 140,
         borderRadius: 14,
-        background: `linear-gradient(135deg, ${color}, ${dark})`,
-        border: 'none',
+        background: '#111111',
+        border: '1px solid rgba(255,255,255,0.1)',
         cursor: 'pointer',
         display: 'flex',
         flexDirection: 'column',
@@ -601,6 +601,7 @@ function TemplateCard({ template, onPress }) {
         gap: 6,
         flexShrink: 0,
         padding: 0,
+        borderTop: '3px solid rgba(255,255,255,0.3)',
       }}
     >
       <span style={{ fontSize: 28 }}>{template.emoji}</span>
@@ -705,7 +706,7 @@ function AddGoalModal({ onClose, onAdd, prefill }) {
                 key={e}
                 onClick={() => setEmoji(e)}
                 style={{
-                  background: emoji === e ? '#00BCD4' : '#1A1A1A',
+                  background: emoji === e ? '#FFFFFF' : '#1A1A1A',
                   border: 'none', borderRadius: 10, padding: '8px 10px',
                   fontSize: 20, cursor: 'pointer', lineHeight: 1,
                 }}
@@ -747,9 +748,10 @@ function AddGoalModal({ onClose, onAdd, prefill }) {
                 key={t}
                 onClick={() => setType(t)}
                 style={{
-                  background: type === t ? '#00BCD4' : '#1A1A1A',
-                  color: type === t ? '#000' : 'rgba(255,255,255,0.7)',
-                  border: 'none', borderRadius: 20,
+                  background: type === t ? '#FFFFFF' : 'transparent',
+                  color: type === t ? '#000000' : '#888888',
+                  border: type === t ? 'none' : '1px solid rgba(255,255,255,0.12)',
+                  borderRadius: 20,
                   padding: '7px 16px',
                   fontSize: 13, fontWeight: 600,
                   cursor: 'pointer', fontFamily: 'Inter, sans-serif',
@@ -771,9 +773,10 @@ function AddGoalModal({ onClose, onAdd, prefill }) {
                 key={c}
                 onClick={() => setCategory(c)}
                 style={{
-                  background: category === c ? catColor(c) : '#1A1A1A',
-                  color: category === c ? '#000' : 'rgba(255,255,255,0.7)',
-                  border: 'none', borderRadius: 20,
+                  background: category === c ? '#FFFFFF' : 'transparent',
+                  color: category === c ? '#000000' : '#888888',
+                  border: category === c ? 'none' : '1px solid rgba(255,255,255,0.12)',
+                  borderRadius: 20,
                   padding: '7px 14px',
                   fontSize: 12, fontWeight: 600,
                   cursor: 'pointer', fontFamily: 'Inter, sans-serif',
@@ -825,7 +828,7 @@ function AddGoalModal({ onClose, onAdd, prefill }) {
         <button
           onClick={handleCreate}
           style={{
-            background: '#00BCD4',
+            background: '#FFFFFF',
             color: '#000000',
             fontSize: 16,
             fontWeight: 700,
@@ -919,7 +922,7 @@ export default function GoalsView({
         <button
           onClick={() => { setModalPrefill(null); setShowAddModal(true); }}
           style={{
-            background: '#00BCD4',
+            background: '#FFFFFF',
             color: '#000000',
             border: 'none',
             borderRadius: 20,
@@ -954,9 +957,9 @@ export default function GoalsView({
             key={tab.key}
             onClick={() => setFilter(tab.key)}
             style={{
-              background: filter === tab.key ? '#00BCD4' : '#111111',
-              color: filter === tab.key ? '#000000' : 'rgba(255,255,255,0.45)',
-              border: 'none',
+              background: filter === tab.key ? '#FFFFFF' : 'transparent',
+              color: filter === tab.key ? '#000000' : '#888888',
+              border: filter === tab.key ? 'none' : '1px solid rgba(255,255,255,0.12)',
               borderRadius: 20,
               padding: '8px 18px',
               fontSize: 13,
@@ -996,7 +999,7 @@ export default function GoalsView({
       <div style={{ marginTop: 24 }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 16px', marginBottom: 12 }}>
           <h2 style={{ fontSize: 18, fontWeight: 700, color: '#ffffff', margin: 0 }}>Challenges</h2>
-          <button style={{ background: 'none', border: 'none', color: '#00BCD4', fontSize: 14, fontWeight: 600, cursor: 'pointer', fontFamily: 'Inter, sans-serif', padding: 0 }}>
+          <button style={{ background: 'none', border: 'none', color: '#FFFFFF', fontSize: 14, fontWeight: 600, cursor: 'pointer', fontFamily: 'Inter, sans-serif', padding: 0 }}>
             Browse
           </button>
         </div>

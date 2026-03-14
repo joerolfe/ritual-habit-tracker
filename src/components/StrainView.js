@@ -13,7 +13,7 @@ const strainData = Array.from({ length: 30 }, (_, i) => ({
 
 const CARD_STYLE = {
   boxSizing: 'border-box',
-  background: '#12121F',
+  background: '#111111',
   borderRadius: 16,
   border: '1px solid rgba(255,255,255,0.08)',
   padding: 16,
@@ -31,25 +31,25 @@ const METRIC_CARDS = [
     icon: '❤️',
     label: 'Daytime HR',
     value: '45 bpm',
-    badge: { text: '🔵 Below normal', bg: 'rgba(74,127,212,0.2)', color: '#4A7FD4' },
+    badge: { text: '🔵 Below normal', bg: 'rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.75)' },
     sparkData: [{ v: 52 }, { v: 48 }, { v: 46 }, { v: 45 }, { v: 47 }, { v: 45 }, { v: 44 }],
-    sparkColor: '#4A7FD4',
+    sparkColor: '#FFFFFF',
   },
   {
     icon: '⚡',
     label: 'Total Energy',
     value: '654 kCal',
-    badge: { text: '✅ Normal', bg: 'rgba(76,175,80,0.2)', color: '#4CAF50' },
+    badge: { text: '✅ Normal', bg: 'rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.75)' },
     sparkData: [{ v: 600 }, { v: 620 }, { v: 640 }, { v: 654 }, { v: 630 }, { v: 650 }, { v: 654 }],
-    sparkColor: '#4CAF50',
+    sparkColor: '#FFFFFF',
   },
   {
     icon: '👣',
     label: 'Step Count',
     value: '3,898',
-    badge: { text: '🟠 Below normal', bg: 'rgba(255,140,66,0.2)', color: '#FF8C42' },
+    badge: { text: '🟠 Below normal', bg: 'rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.75)' },
     sparkData: [{ v: 6000 }, { v: 5200 }, { v: 4800 }, { v: 4200 }, { v: 4500 }, { v: 4100 }, { v: 3898 }],
-    sparkColor: '#FF8C42',
+    sparkColor: '#FFFFFF',
   },
 ];
 
@@ -57,7 +57,7 @@ export default function StrainView() {
   const [activeFilter, setActiveFilter] = useState('strain');
 
   return (
-    <div style={{ boxSizing: 'border-box', padding: 16, paddingBottom: 120, background: '#0A0A14', minHeight: '100%' }}>
+    <div style={{ boxSizing: 'border-box', padding: 16, paddingBottom: 120, background: '#000000', minHeight: '100%' }}>
 
       {/* ── Strain Score Card ── */}
       <div style={CARD_STYLE}>
@@ -67,7 +67,7 @@ export default function StrainView() {
           <span style={{ fontSize: 17, fontWeight: 700, color: '#FFFFFF', fontFamily: 'Inter, sans-serif' }}>
             Strain Score
           </span>
-          <span style={{ fontSize: 12, color: '#4CAF50', fontFamily: 'Inter, sans-serif' }}>
+          <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.75)', fontFamily: 'Inter, sans-serif' }}>
             Normal range ≡ 34–67%
           </span>
         </div>
@@ -77,7 +77,7 @@ export default function StrainView() {
           <div style={{ fontSize: 40, fontWeight: 700, color: '#FFFFFF', lineHeight: 1, fontFamily: 'Inter, sans-serif' }}>
             65%
           </div>
-          <div style={{ fontSize: 13, color: '#8888AA', marginTop: 4, fontFamily: 'Inter, sans-serif' }}>
+          <div style={{ fontSize: 13, color: '#888888', marginTop: 4, fontFamily: 'Inter, sans-serif' }}>
             Feb 19, 2025
           </div>
         </div>
@@ -95,8 +95,8 @@ export default function StrainView() {
                 fontSize: 13,
                 fontFamily: 'Inter, sans-serif',
                 cursor: 'pointer',
-                background: activeFilter === f.id ? '#1A1A2E' : 'transparent',
-                color: activeFilter === f.id ? '#FFFFFF' : '#8888AA',
+                background: activeFilter === f.id ? 'rgba(255,255,255,0.1)' : 'transparent',
+                color: activeFilter === f.id ? 'rgba(255,255,255,0.75)' : '#888888',
                 border: activeFilter === f.id ? '1px solid rgba(255,255,255,0.3)' : '1px solid transparent',
               }}
             >
@@ -111,35 +111,35 @@ export default function StrainView() {
             <LineChart data={strainData} margin={{ top: 16, right: 8, bottom: 0, left: 0 }}>
               <defs>
                 <linearGradient id="strainArea" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#FF8C42" stopOpacity={0.3} />
-                  <stop offset="95%" stopColor="#FF8C42" stopOpacity={0} />
+                  <stop offset="5%" stopColor="#FFFFFF" stopOpacity={0.1} />
+                  <stop offset="95%" stopColor="#FFFFFF" stopOpacity={0.03} />
                 </linearGradient>
               </defs>
-              <ReferenceArea y1={34} y2={67} fill="rgba(74,127,212,0.08)" />
+              <ReferenceArea y1={34} y2={67} fill="rgba(255,255,255,0.04)" />
               <ReferenceLine
                 y={66}
-                stroke="rgba(255,255,255,0.2)"
+                stroke="rgba(255,255,255,0.25)"
                 strokeDasharray="4 4"
-                label={{ value: 'Avg 66%', position: 'insideTopRight', fill: '#FF8C42', fontSize: 11 }}
+                label={{ value: 'Avg 66%', position: 'insideTopRight', fill: '#FFFFFF', fontSize: 11 }}
               />
               <Line
                 type="monotone"
                 dataKey="strain"
-                stroke="#FF8C42"
+                stroke="#FFFFFF"
                 strokeWidth={2}
-                dot={{ fill: '#FF8C42', r: 3 }}
+                dot={{ fill: '#FFFFFF', r: 3 }}
                 activeDot={{ r: 5 }}
               />
               <Line
                 type="monotone"
                 dataKey="secondary"
-                stroke="#FFB800"
+                stroke="rgba(255,255,255,0.45)"
                 strokeWidth={2}
-                dot={{ fill: '#FFB800', r: 2 }}
+                dot={{ fill: 'rgba(255,255,255,0.45)', r: 2 }}
               />
               <XAxis
                 dataKey="day"
-                tick={{ fill: '#8888AA', fontSize: 10 }}
+                tick={{ fill: '#888888', fontSize: 10 }}
                 axisLine={false}
                 tickLine={false}
                 interval={6}
@@ -147,7 +147,7 @@ export default function StrainView() {
               <YAxis
                 domain={[0, 100]}
                 ticks={[0, 33, 67, 100]}
-                tick={{ fill: '#8888AA', fontSize: 10 }}
+                tick={{ fill: '#888888', fontSize: 10 }}
                 axisLine={false}
                 tickLine={false}
                 width={28}
@@ -167,7 +167,7 @@ export default function StrainView() {
               {/* Icon + label */}
               <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                 <span style={{ fontSize: 20 }}>{card.icon}</span>
-                <span style={{ fontSize: 12, color: '#8888AA', fontFamily: 'Inter, sans-serif' }}>
+                <span style={{ fontSize: 12, color: '#888888', fontFamily: 'Inter, sans-serif' }}>
                   {card.label}
                 </span>
               </div>

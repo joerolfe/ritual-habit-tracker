@@ -73,10 +73,10 @@ function getWeekDays() {
 
 // ── Stage chart data ──────────────────────────────────────────────────────────
 const stageColors = {
-  awake: '#FF8C42',
-  core:  '#4A7FD4',
-  REM:   '#7B5FF5',
-  deep:  '#1E3A5F',
+  awake: '#FFFFFF',
+  core:  'rgba(255,255,255,0.55)',
+  REM:   'rgba(255,255,255,0.35)',
+  deep:  'rgba(255,255,255,0.15)',
 };
 
 // 34 slots × 15 min = 510 min = 8h30m  (23:29 → 07:59 ≈ 08:00)
@@ -135,7 +135,7 @@ const stageData = buildStageData();
 function ArcRing({ pct, color }) {
   return (
     <svg width="40" height="40">
-      <circle cx="20" cy="20" r="15" fill="none" stroke="#1A1A2E" strokeWidth="3" />
+      <circle cx="20" cy="20" r="15" fill="none" stroke="#1A1A1A" strokeWidth="3" />
       <circle
         cx="20" cy="20" r="15"
         fill="none"
@@ -181,7 +181,7 @@ function LogModal({ existing, onSave, onClose }) {
   };
 
   const timeInputStyle = {
-    background: '#12121F',
+    background: '#111111',
     border: '1px solid rgba(255,255,255,0.08)',
     borderRadius: 12,
     padding: '14px 16px',
@@ -205,7 +205,7 @@ function LogModal({ existing, onSave, onClose }) {
       onClick={e => e.target === e.currentTarget && onClose()}
     >
       <div style={{
-        background: '#0A0A14',
+        background: '#000000',
         borderRadius: '24px 24px 0 0',
         padding: 24,
         paddingBottom: 40,
@@ -223,8 +223,8 @@ function LogModal({ existing, onSave, onClose }) {
 
         {/* Bedtime */}
         <div style={{ marginBottom: 16 }}>
-          <div style={{ fontSize: 12, color: '#8888AA', marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.04em' }}>Bedtime</div>
-          <div style={{ background: '#12121F', borderRadius: 12, border: '1px solid rgba(255,255,255,0.08)', padding: '12px 16px' }}>
+          <div style={{ fontSize: 12, color: '#888888', marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.04em' }}>Bedtime</div>
+          <div style={{ background: '#111111', borderRadius: 12, border: '1px solid rgba(255,255,255,0.08)', padding: '12px 16px' }}>
             <input
               type="time"
               value={bedtime}
@@ -236,8 +236,8 @@ function LogModal({ existing, onSave, onClose }) {
 
         {/* Wake time */}
         <div style={{ marginBottom: 20 }}>
-          <div style={{ fontSize: 12, color: '#8888AA', marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.04em' }}>Wake Time</div>
-          <div style={{ background: '#12121F', borderRadius: 12, border: '1px solid rgba(255,255,255,0.08)', padding: '12px 16px' }}>
+          <div style={{ fontSize: 12, color: '#888888', marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.04em' }}>Wake Time</div>
+          <div style={{ background: '#111111', borderRadius: 12, border: '1px solid rgba(255,255,255,0.08)', padding: '12px 16px' }}>
             <input
               type="time"
               value={wake}
@@ -249,7 +249,7 @@ function LogModal({ existing, onSave, onClose }) {
 
         {/* Quality emojis */}
         <div style={{ marginBottom: 20 }}>
-          <div style={{ fontSize: 12, color: '#8888AA', marginBottom: 12, textTransform: 'uppercase', letterSpacing: '0.04em' }}>Sleep Quality</div>
+          <div style={{ fontSize: 12, color: '#888888', marginBottom: 12, textTransform: 'uppercase', letterSpacing: '0.04em' }}>Sleep Quality</div>
           <div style={{ display: 'flex', gap: 8, justifyContent: 'space-between' }}>
             {qualityEmojis.map((q, i) => (
               <button
@@ -260,16 +260,17 @@ function LogModal({ existing, onSave, onClose }) {
                   padding: '10px 4px',
                   borderRadius: 12,
                   border: 'none',
-                  background: qualityIdx === i ? '#00BCD4' : '#12121F',
+                  background: qualityIdx === i ? 'rgba(255,255,255,0.12)' : '#111111',
                   cursor: 'pointer',
                   display: 'flex',
                   flexDirection: 'column',
                   alignItems: 'center',
                   gap: 4,
+                  ...(qualityIdx === i ? { border: '1px solid rgba(255,255,255,0.35)' } : {}),
                 }}
               >
                 <span style={{ fontSize: 22 }}>{q.emoji}</span>
-                <span style={{ fontSize: 10, color: qualityIdx === i ? '#000000' : '#8888AA', fontWeight: 600 }}>{q.label}</span>
+                <span style={{ fontSize: 10, color: qualityIdx === i ? '#ffffff' : '#888888', fontWeight: 600 }}>{q.label}</span>
               </button>
             ))}
           </div>
@@ -277,7 +278,7 @@ function LogModal({ existing, onSave, onClose }) {
 
         {/* Morning feel chips */}
         <div style={{ marginBottom: 20 }}>
-          <div style={{ fontSize: 12, color: '#8888AA', marginBottom: 10, textTransform: 'uppercase', letterSpacing: '0.04em' }}>Morning Feel</div>
+          <div style={{ fontSize: 12, color: '#888888', marginBottom: 10, textTransform: 'uppercase', letterSpacing: '0.04em' }}>Morning Feel</div>
           <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
             {feelOptions.map(f => (
               <button
@@ -287,9 +288,9 @@ function LogModal({ existing, onSave, onClose }) {
                   padding: '8px 16px',
                   borderRadius: 20,
                   border: '1px solid',
-                  borderColor: feel === f ? '#00BCD4' : 'rgba(255,255,255,0.12)',
-                  background: feel === f ? '#00BCD4' : 'transparent',
-                  color: feel === f ? '#000000' : '#8888AA',
+                  borderColor: feel === f ? 'rgba(255,255,255,0.35)' : 'rgba(255,255,255,0.12)',
+                  background: feel === f ? '#FFFFFF' : 'transparent',
+                  color: feel === f ? '#000000' : '#888888',
                   fontSize: 13,
                   fontWeight: 600,
                   cursor: 'pointer',
@@ -309,7 +310,7 @@ function LogModal({ existing, onSave, onClose }) {
             placeholder="How did you sleep?"
             rows={3}
             style={{
-              background: '#12121F',
+              background: '#111111',
               border: '1px solid rgba(255,255,255,0.08)',
               borderRadius: 12,
               padding: 14,
@@ -332,7 +333,7 @@ function LogModal({ existing, onSave, onClose }) {
             height: 50,
             borderRadius: 25,
             border: 'none',
-            background: '#00BCD4',
+            background: '#FFFFFF',
             color: '#000000',
             fontSize: 16,
             fontWeight: 700,
@@ -362,7 +363,7 @@ export default function SleepView({ sleep, onSetSleep }) {
   const weekDays = useMemo(() => getWeekDays(), []);
 
   const CARD = {
-    background: '#12121F',
+    background: '#111111',
     borderRadius: 16,
     border: '1px solid rgba(255,255,255,0.08)',
     padding: 16,
@@ -372,7 +373,7 @@ export default function SleepView({ sleep, onSetSleep }) {
 
   const ELEVATED = {
     ...CARD,
-    background: '#1A1A2E',
+    background: '#1A1A1A',
   };
 
   // ── Stats for strip ───────────────────────────────────────────────────────
@@ -402,7 +403,7 @@ export default function SleepView({ sleep, onSetSleep }) {
 
   return (
     <div style={{
-      background: '#0A0A14',
+      background: '#000000',
       minHeight: '100vh',
       color: '#FFFFFF',
       fontFamily: 'Inter, sans-serif',
@@ -415,9 +416,9 @@ export default function SleepView({ sleep, onSetSleep }) {
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
           <div style={{ fontSize: 28, fontWeight: 700, color: '#FFFFFF' }}>Sleep</div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <button style={{ background: 'none', border: 'none', color: '#8888AA', fontSize: 16, cursor: 'pointer', padding: 4 }}>←</button>
-            <span style={{ fontSize: 14, color: '#8888AA' }}>{navDateStr}</span>
-            <button style={{ background: 'none', border: 'none', color: '#8888AA', fontSize: 16, cursor: 'pointer', padding: 4 }}>→</button>
+            <button style={{ background: 'none', border: 'none', color: '#888888', fontSize: 16, cursor: 'pointer', padding: 4 }}>←</button>
+            <span style={{ fontSize: 14, color: '#888888' }}>{navDateStr}</span>
+            <button style={{ background: 'none', border: 'none', color: '#888888', fontSize: 16, cursor: 'pointer', padding: 4 }}>→</button>
           </div>
         </div>
 
@@ -435,9 +436,9 @@ export default function SleepView({ sleep, onSetSleep }) {
                   width: 36,
                   height: 36,
                   borderRadius: '50%',
-                  border: isToday ? '2px solid #00BCD4' : '1px solid #333333',
-                  background: isSelected && !isToday ? 'rgba(0,188,212,0.12)' : 'transparent',
-                  color: isToday || isSelected ? '#FFFFFF' : '#8888AA',
+                  border: isToday ? '2px solid #FFFFFF' : '1px solid #333333',
+                  background: isSelected && !isToday ? 'rgba(255,255,255,0.084)' : 'transparent',
+                  color: isToday || isSelected ? '#FFFFFF' : '#888888',
                   fontSize: 13,
                   fontWeight: 600,
                   cursor: 'pointer',
@@ -460,7 +461,7 @@ export default function SleepView({ sleep, onSetSleep }) {
                     width: 4,
                     height: 4,
                     borderRadius: '50%',
-                    background: '#00BCD4',
+                    background: '#FFFFFF',
                   }} />
                 )}
               </button>
@@ -485,14 +486,14 @@ export default function SleepView({ sleep, onSetSleep }) {
             </Bar>
             <XAxis
               dataKey="time"
-              tick={{ fill: '#8888AA', fontSize: 10 }}
+              tick={{ fill: '#888888', fontSize: 10 }}
               axisLine={false}
               tickLine={false}
               interval={7}
             />
           </BarChart>
         </ResponsiveContainer>
-        <div style={{ fontSize: 12, color: '#8888AA', marginTop: 8, textAlign: 'center' }}>
+        <div style={{ fontSize: 12, color: '#888888', marginTop: 8, textAlign: 'center' }}>
           🌙 Duration: 08h 31m ☀️
         </div>
       </div>
@@ -506,15 +507,15 @@ export default function SleepView({ sleep, onSetSleep }) {
           marginBottom: 12,
         }}>
           {[
-            { label: 'Awake',  value: '45m',    pct: 0.10, color: '#FF8C42', textColor: '#FF8C42', pctLabel: '10%' },
-            { label: 'REM',    value: '1h 39m', pct: 0.21, color: '#7B5FF5', textColor: '#7B5FF5', pctLabel: '21%' },
-            { label: 'Core',   value: '4h 28m', pct: 0.57, color: '#4A7FD4', textColor: '#4A7FD4', pctLabel: '57%' },
-            { label: 'Deep',   value: '56m',    pct: 0.15, color: '#1E3A5F', textColor: '#8888AA', pctLabel: '15%' },
+            { label: 'Awake',  value: '45m',    pct: 0.10, color: '#FFFFFF',                  textColor: '#FFFFFF',                  pctLabel: '10%' },
+            { label: 'REM',    value: '1h 39m', pct: 0.21, color: 'rgba(255,255,255,0.35)',   textColor: 'rgba(255,255,255,0.35)',    pctLabel: '21%' },
+            { label: 'Core',   value: '4h 28m', pct: 0.57, color: 'rgba(255,255,255,0.55)',   textColor: 'rgba(255,255,255,0.55)',    pctLabel: '57%' },
+            { label: 'Deep',   value: '56m',    pct: 0.15, color: 'rgba(255,255,255,0.15)',   textColor: '#888888',                  pctLabel: '15%' },
           ].map(s => (
             <div key={s.label} style={{ ...CARD, display: 'flex', alignItems: 'center', gap: 12 }}>
               <ArcRing pct={s.pct} color={s.color} />
               <div>
-                <div style={{ fontSize: 11, color: '#8888AA', marginBottom: 2 }}>{s.label}</div>
+                <div style={{ fontSize: 11, color: '#888888', marginBottom: 2 }}>{s.label}</div>
                 <div style={{ fontSize: 20, fontWeight: 700, color: s.textColor, lineHeight: 1 }}>{s.value}</div>
                 <div style={{ fontSize: 11, color: s.textColor, marginTop: 2 }}>{s.pctLabel}</div>
               </div>
@@ -528,7 +529,7 @@ export default function SleepView({ sleep, onSetSleep }) {
         <div style={{ ...ELEVATED, padding: 20, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div>
             <div style={{ fontSize: 32, fontWeight: 700, color: '#FFFFFF', lineHeight: 1 }}>8h 30m</div>
-            <div style={{ fontSize: 13, color: '#8888AA', marginTop: 6 }}>Sleep Needed</div>
+            <div style={{ fontSize: 13, color: '#888888', marginTop: 6 }}>Sleep Needed</div>
           </div>
           {/* Semicircle dial */}
           <svg width="60" height="60" viewBox="0 0 60 60">
@@ -544,13 +545,13 @@ export default function SleepView({ sleep, onSetSleep }) {
             <path
               d="M 5 55 A 25 25 0 0 1 55 55"
               fill="none"
-              stroke="#00BCD4"
+              stroke="#FFFFFF"
               strokeWidth="5"
               strokeLinecap="round"
               strokeDasharray="70 100"
             />
             {/* Marker dot at 70% position on arc */}
-            <circle cx="47" cy="28" r="4" fill="#00BCD4" />
+            <circle cx="47" cy="28" r="4" fill="#FFFFFF" />
           </svg>
         </div>
       </div>
@@ -559,21 +560,21 @@ export default function SleepView({ sleep, onSetSleep }) {
       <div style={{ padding: '0 16px', marginBottom: 12, boxSizing: 'border-box' }}>
         <div style={CARD}>
           <div style={{ fontSize: 15, fontWeight: 700, color: '#FFFFFF', marginBottom: 12 }}>Time To Fall Asleep</div>
-          <div style={{ fontSize: 13, color: '#00BCD4', textAlign: 'center', marginBottom: 12 }}>15 minutes</div>
+          <div style={{ fontSize: 13, color: '#FFFFFF', textAlign: 'center', marginBottom: 12 }}>15 minutes</div>
           {/* Progress bar (div, not input) */}
           <div style={{
             width: '100%',
             height: 6,
-            background: '#1A1A2E',
+            background: '#1A1A1A',
             borderRadius: 3,
             overflow: 'hidden',
             marginBottom: 6,
           }}>
-            <div style={{ width: '30%', height: '100%', background: '#00BCD4', borderRadius: 3 }} />
+            <div style={{ width: '30%', height: '100%', background: '#FFFFFF', borderRadius: 3 }} />
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <span style={{ fontSize: 11, color: '#8888AA' }}>Fast</span>
-            <span style={{ fontSize: 11, color: '#8888AA' }}>Normal</span>
+            <span style={{ fontSize: 11, color: '#888888' }}>Fast</span>
+            <span style={{ fontSize: 11, color: '#888888' }}>Normal</span>
           </div>
         </div>
       </div>
@@ -587,7 +588,7 @@ export default function SleepView({ sleep, onSetSleep }) {
             height: 50,
             borderRadius: 25,
             border: 'none',
-            background: '#00BCD4',
+            background: '#FFFFFF',
             color: '#000000',
             fontSize: 16,
             fontWeight: 700,
@@ -625,7 +626,7 @@ export default function SleepView({ sleep, onSetSleep }) {
               padding: 14,
             }}>
               <div style={{ fontSize: 22, fontWeight: 700, color: '#FFFFFF', lineHeight: 1, marginBottom: 6 }}>{s.value}</div>
-              <div style={{ fontSize: 11, color: '#8888AA' }}>{s.label}</div>
+              <div style={{ fontSize: 11, color: '#888888' }}>{s.label}</div>
             </div>
           ))}
         </div>
@@ -638,7 +639,7 @@ export default function SleepView({ sleep, onSetSleep }) {
           fontSize: 17,
           fontWeight: 700,
           color: '#FFFFFF',
-          borderLeft: '3px solid #00BCD4',
+          borderLeft: '3px solid #FFFFFF',
           paddingLeft: 12,
           marginBottom: 12,
         }}>
@@ -687,7 +688,7 @@ export default function SleepView({ sleep, onSetSleep }) {
             position: 'absolute',
             top: 16, right: 16,
             fontSize: 12,
-            color: '#8888AA',
+            color: '#888888',
           }}>
             {navDateStr}
           </div>
@@ -711,7 +712,7 @@ export default function SleepView({ sleep, onSetSleep }) {
               <circle
                 cx="60" cy="60" r="50"
                 fill="none"
-                stroke="#4CAF50"
+                stroke="#FFFFFF"
                 strokeWidth="8"
                 strokeDasharray="219.9 314.2"
                 strokeLinecap="round"
@@ -726,36 +727,36 @@ export default function SleepView({ sleep, onSetSleep }) {
         {/* Recovery stat cards */}
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 12 }}>
           <div style={{ ...CARD, padding: 16 }}>
-            <div style={{ fontSize: 13, color: '#8888AA', marginBottom: 6 }}>🔬 Resting HRV</div>
+            <div style={{ fontSize: 13, color: '#888888', marginBottom: 6 }}>🔬 Resting HRV</div>
             <div style={{ fontSize: 24, fontWeight: 700, color: '#FFFFFF', lineHeight: 1, marginBottom: 4 }}>52 ms</div>
-            <div style={{ fontSize: 12, color: '#4A7FD4' }}>▲ Above normal</div>
+            <div style={{ fontSize: 12, color: '#FFFFFF' }}>▲ Above normal</div>
           </div>
           <div style={{ ...CARD, padding: 16 }}>
-            <div style={{ fontSize: 13, color: '#8888AA', marginBottom: 6 }}>❤️ Resting HR</div>
+            <div style={{ fontSize: 13, color: '#888888', marginBottom: 6 }}>❤️ Resting HR</div>
             <div style={{ fontSize: 24, fontWeight: 700, color: '#FFFFFF', lineHeight: 1, marginBottom: 4 }}>61 bpm</div>
-            <div style={{ fontSize: 12, color: '#FF8C42' }}>▼ Below normal</div>
+            <div style={{ fontSize: 12, color: '#888888' }}>▼ Below normal</div>
           </div>
         </div>
 
         {/* Recovery insight card */}
         <div style={{
           ...ELEVATED,
-          borderLeft: '3px solid #00BCD4',
+          borderLeft: '3px solid #FFFFFF',
           borderRadius: 16,
           padding: 16,
           marginBottom: 4,
           position: 'relative',
         }}>
           <div style={{ fontSize: 15, fontWeight: 700, color: '#FFFFFF', marginBottom: 6 }}>Solid recovery today 🌱</div>
-          <div style={{ fontSize: 13, color: '#8888AA', lineHeight: 1.5, paddingRight: 24 }}>
+          <div style={{ fontSize: 13, color: '#888888', lineHeight: 1.5, paddingRight: 24 }}>
             Your HRV is elevated and resting HR is low — you're primed for a strong day.
           </div>
-          <div style={{ position: 'absolute', top: 16, right: 16, fontSize: 20, color: '#8888AA' }}>↗</div>
+          <div style={{ position: 'absolute', top: 16, right: 16, fontSize: 20, color: '#888888' }}>↗</div>
         </div>
 
         {/* View recovery insights link */}
         <div style={{ padding: 16, cursor: 'pointer' }}>
-          <span style={{ fontSize: 14, color: '#00BCD4' }}>✦ View Recovery insights →</span>
+          <span style={{ fontSize: 14, color: '#FFFFFF' }}>✦ View Recovery insights →</span>
         </div>
       </div>
 

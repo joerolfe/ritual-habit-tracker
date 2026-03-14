@@ -25,8 +25,8 @@ const T = {
   bg:     '#000000',
   card:   '#111111',
   inner:  '#1A1A1A',
-  teal:   '#00BCD4',
-  orange: '#FF8C42',
+  teal:   '#FFFFFF',
+  orange: 'rgba(255,255,255,0.65)',
   text:   '#FFFFFF',
   muted:  'rgba(255,255,255,0.45)',
   border: 'rgba(255,255,255,0.08)',
@@ -40,14 +40,14 @@ function Toggle({ on, onChange }) {
       onClick={onChange}
       style={{
         width: 44, height: 26, borderRadius: 13,
-        background: on ? '#00BCD4' : '#333',
+        background: on ? '#FFFFFF' : 'rgba(255,255,255,0.15)',
         position: 'relative', cursor: 'pointer', transition: 'background 0.2s',
         flexShrink: 0,
       }}
     >
       <div style={{
         position: 'absolute', top: 3, left: on ? 21 : 3,
-        width: 20, height: 20, borderRadius: '50%', background: '#fff',
+        width: 20, height: 20, borderRadius: '50%', background: on ? '#000000' : '#888888',
         transition: 'left 0.2s', boxShadow: '0 1px 3px rgba(0,0,0,0.4)',
       }} />
     </div>
@@ -232,9 +232,9 @@ export default function ProfileView({
             ) : (
               <div style={{
                 width: 56, height: 56, borderRadius: '50%',
-                background: T.teal,
+                background: 'rgba(255,255,255,0.15)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: 18, fontWeight: 700, color: '#000',
+                fontSize: 18, fontWeight: 700, color: '#FFFFFF',
                 flexShrink: 0,
               }}>
                 {initials}
@@ -257,8 +257,8 @@ export default function ProfileView({
           <div style={{ marginTop: 12 }}>
             {isSupabaseSynced ? (
               <span style={{
-                fontSize: 12, color: '#4CAF50',
-                background: 'rgba(76,175,80,0.12)', borderRadius: 20,
+                fontSize: 12, color: 'rgba(255,255,255,0.75)',
+                background: 'rgba(255,255,255,0.09)', borderRadius: 20,
                 padding: '4px 10px',
                 display: 'inline-flex', alignItems: 'center', gap: 5,
               }}>
@@ -266,8 +266,8 @@ export default function ProfileView({
               </span>
             ) : (
               <span style={{
-                fontSize: 12, color: '#FF9800',
-                background: 'rgba(255,152,0,0.12)', borderRadius: 20,
+                fontSize: 12, color: 'rgba(255,255,255,0.55)',
+                background: 'rgba(255,255,255,0.09)', borderRadius: 20,
                 padding: '4px 10px',
                 display: 'inline-flex', alignItems: 'center', gap: 5,
               }}>
@@ -286,8 +286,8 @@ export default function ProfileView({
             onClick={onSignIn}
             style={{
               width: '100%', padding: '13px', borderRadius: 12,
-              background: T.teal, border: 'none',
-              color: '#000', fontSize: 15, fontWeight: 700, cursor: 'pointer',
+              background: '#FFFFFF', border: 'none',
+              color: '#000000', fontSize: 15, fontWeight: 700, cursor: 'pointer',
             }}
           >
             Sign in to sync data
@@ -321,7 +321,7 @@ export default function ProfileView({
             }}>
               <span style={{
                 width: 8, height: 8, borderRadius: '50%',
-                background: isSupabaseSynced ? '#4CAF50' : '#FF9800',
+                background: isSupabaseSynced ? 'rgba(255,255,255,0.75)' : 'rgba(255,255,255,0.35)',
                 display: 'inline-block', flexShrink: 0,
               }} />
               {isSupabaseSynced ? 'Synced' : 'Local'}
@@ -376,9 +376,9 @@ export default function ProfileView({
             {/* Upsell banner */}
             <div style={{
               margin: '0 16px 12px', padding: 16, borderRadius: 16,
-              background: 'linear-gradient(135deg, #0a0a0f 0%, #0d1a2e 100%)',
-              border: '1px solid rgba(0,188,212,0.4)',
-              boxShadow: '0 0 20px rgba(0,188,212,0.15)',
+              background: 'linear-gradient(135deg, #000000 0%, #111111 100%)',
+              border: '1px solid rgba(255,255,255,0.28)',
+              boxShadow: '0 0 20px rgba(255,255,255,0.05)',
               display: 'flex', alignItems: 'center',
               justifyContent: 'space-between', gap: 12,
             }}>
@@ -393,7 +393,7 @@ export default function ProfileView({
               <button
                 onClick={onShowPremium}
                 style={{
-                  background: '#fff', color: '#000',
+                  background: '#FFFFFF', color: '#000000',
                   borderRadius: 20, padding: '8px 16px',
                   fontWeight: 700, fontSize: 13,
                   border: 'none', cursor: 'pointer', flexShrink: 0,
@@ -531,7 +531,7 @@ export default function ProfileView({
         <div style={settingsRowStyle}>
           <span style={{ fontSize: 20 }}>⌚</span>
           <span style={settingsLabelStyle}>Health App</span>
-          <span style={{ fontSize: 14, color: T.teal, marginRight: 8 }}>Connect</span>
+          <span style={{ fontSize: 14, color: '#FFFFFF', marginRight: 8 }}>Connect</span>
           {chevron}
         </div>
 
@@ -598,7 +598,7 @@ export default function ProfileView({
           onClick={onDeleteAccount}
         >
           <span style={{ fontSize: 20 }}>🗑️</span>
-          <span style={{ ...settingsLabelStyle, color: '#FF3B30' }}>Delete account</span>
+          <span style={{ ...settingsLabelStyle, color: '#FF4444' }}>Delete account</span>
         </div>
       </div>
 
@@ -644,7 +644,7 @@ export default function ProfileView({
                 onClick={() => setShowAchievements(false)}
                 style={{
                   background: 'none', border: 'none',
-                  color: T.teal, fontSize: 15, cursor: 'pointer',
+                  color: '#FFFFFF', fontSize: 15, cursor: 'pointer',
                   display: 'flex', alignItems: 'center', gap: 4, padding: 0,
                 }}
               >
@@ -670,8 +670,8 @@ export default function ProfileView({
                     padding: '7px 16px', borderRadius: 20, fontSize: 13,
                     fontWeight: 600, cursor: 'pointer', flexShrink: 0,
                     border: 'none',
-                    background: achievementCategory === cat ? T.teal : T.inner,
-                    color: achievementCategory === cat ? '#000' : T.muted,
+                    background: achievementCategory === cat ? '#FFFFFF' : T.inner,
+                    color: achievementCategory === cat ? '#000000' : T.muted,
                     transition: 'background 0.15s, color 0.15s',
                   }}
                 >
@@ -690,10 +690,11 @@ export default function ProfileView({
               <div
                 key={a.id}
                 style={{
-                  background: T.card, borderRadius: 16, padding: 16,
+                  background: a.unlocked ? 'rgba(255,255,255,0.12)' : T.card,
+                  borderRadius: 16, padding: 16,
                   textAlign: 'center',
                   border: a.unlocked
-                    ? '1px solid rgba(0,188,212,0.25)'
+                    ? '1px solid rgba(255,255,255,0.2)'
                     : '1px solid rgba(255,255,255,0.05)',
                 }}
               >
@@ -701,7 +702,7 @@ export default function ProfileView({
                   <>
                     <div style={{
                       fontSize: 36, marginBottom: 8,
-                      textShadow: '0 0 16px rgba(0,188,212,0.7)',
+                      textShadow: '0 0 16px rgba(255,255,255,0.49)',
                     }}>
                       {a.icon}
                     </div>
@@ -716,7 +717,7 @@ export default function ProfileView({
                     </div>
                     <span style={{
                       display: 'inline-block',
-                      background: T.teal, color: '#000',
+                      background: 'rgba(255,255,255,0.15)', color: '#FFFFFF',
                       fontSize: 11, fontWeight: 700,
                       padding: '3px 10px', borderRadius: 20,
                     }}>
@@ -736,7 +737,7 @@ export default function ProfileView({
                     </div>
                     <span style={{
                       display: 'inline-block',
-                      background: 'transparent',
+                      background: 'rgba(255,255,255,0.1)',
                       border: '1px solid rgba(255,255,255,0.2)',
                       color: T.muted,
                       fontSize: 11,

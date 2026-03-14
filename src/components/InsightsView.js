@@ -35,9 +35,9 @@ MOCK_HABITS.forEach((h, hi) => {
 const T = {
   bg:     '#000000',
   card:   '#111111',
-  teal:   '#00BCD4',
-  orange: '#FF8C42',
-  amber:  '#FFA726',
+  teal:   '#FFFFFF',
+  orange: 'rgba(255,255,255,0.65)',
+  amber:  'rgba(255,255,255,0.55)',
   red:    '#FF3B30',
   text:   '#FFFFFF',
   muted:  'rgba(255,255,255,0.45)',
@@ -61,9 +61,9 @@ function getDaysInMonth(year, month) {
 }
 
 function barColor(pct) {
-  if (pct >= 70) return T.teal;
-  if (pct >= 40) return T.amber;
-  return T.red;
+  if (pct >= 70) return '#FFFFFF';
+  if (pct >= 40) return 'rgba(255,255,255,0.55)';
+  return '#FF3B30';
 }
 
 // ── Main component ────────────────────────────────────────────────────────────
@@ -154,11 +154,11 @@ export default function InsightsView({ habits = [], completions = {}, moods = {}
 
   // Smart insights
   const insights = useMemo(() => [
-    { border: '#3B82F6', text: `Your best streak this month: ${perfectDays > 0 ? perfectDays + ' days' : 'Keep going!'} 🔥` },
-    { border: '#22C55E', text: `Overall completion rate: ${overallRate}% — ${overallRate >= 70 ? 'great work!' : 'room to improve'}` },
-    { border: '#FF8C42', text: `${bestHabit?.name || 'Top habit'} leads with ${bestRate}% completion — your strongest habit` },
-    { border: '#3B82F6', text: `You've completed ${totalCompletions} habits this month across all tracked routines` },
-    { border: '#22C55E', text: `Morning habits tend to have higher completion — try front-loading new habits` },
+    { border: 'rgba(255,255,255,0.6)', text: `Your best streak this month: ${perfectDays > 0 ? perfectDays + ' days' : 'Keep going!'} 🔥` },
+    { border: 'rgba(255,255,255,0.75)', text: `Overall completion rate: ${overallRate}% — ${overallRate >= 70 ? 'great work!' : 'room to improve'}` },
+    { border: 'rgba(255,255,255,0.65)', text: `${bestHabit?.name || 'Top habit'} leads with ${bestRate}% completion — your strongest habit` },
+    { border: 'rgba(255,255,255,0.6)', text: `You've completed ${totalCompletions} habits this month across all tracked routines` },
+    { border: 'rgba(255,255,255,0.75)', text: `Morning habits tend to have higher completion — try front-loading new habits` },
   ], [overallRate, perfectDays, bestHabit, bestRate, totalCompletions]);
 
   // Per day-of-week rate for schedule optimizer
@@ -255,11 +255,11 @@ export default function InsightsView({ habits = [], completions = {}, moods = {}
               <div style={{
                 height: '100%', borderRadius: 4,
                 width: `${rate}%`,
-                background: barColor(rate),
+                background: '#FFFFFF',
                 transition: 'width 1s ease',
               }} />
             </div>
-            <span style={{ fontSize: 13, fontWeight: 700, color: barColor(rate), width: 36, textAlign: 'right', flexShrink: 0 }}>
+            <span style={{ fontSize: 13, fontWeight: 700, color: '#FFFFFF', width: 36, textAlign: 'right', flexShrink: 0 }}>
               {rate}%
             </span>
           </div>
@@ -285,14 +285,14 @@ export default function InsightsView({ habits = [], completions = {}, moods = {}
             {/* Average dashed line */}
             <line
               x1={padL} y1={avgY} x2={svgW - padR} y2={avgY}
-              stroke="rgba(255,255,255,0.2)" strokeWidth={1} strokeDasharray="4 4"
+              stroke="rgba(255,255,255,0.4)" strokeWidth={1} strokeDasharray="4 4"
             />
 
             {/* Data line */}
             <polyline
               points={polylinePoints}
               fill="none"
-              stroke={T.teal}
+              stroke="#FFFFFF"
               strokeWidth={2.5}
               strokeLinejoin="round"
               strokeLinecap="round"
@@ -300,7 +300,7 @@ export default function InsightsView({ habits = [], completions = {}, moods = {}
 
             {/* Dots */}
             {weekRates.map((v, i) => (
-              <circle key={i} cx={xPos(i)} cy={yPos(v)} r={5} fill={T.teal} />
+              <circle key={i} cx={xPos(i)} cy={yPos(v)} r={5} fill="#FFFFFF" />
             ))}
 
             {/* X axis labels */}
@@ -339,7 +339,7 @@ export default function InsightsView({ habits = [], completions = {}, moods = {}
             }}>
               <div style={{ fontSize: 28, marginBottom: 8 }}>{card.icon}</div>
               <div style={{ fontSize: 13, color: T.muted, marginBottom: 6 }}>{card.title}</div>
-              <div style={{ fontSize: 18, fontWeight: 700, color: T.teal, marginBottom: 4 }}>{card.value}</div>
+              <div style={{ fontSize: 18, fontWeight: 700, color: '#FFFFFF', marginBottom: 4 }}>{card.value}</div>
               <div style={{ fontSize: 12, color: T.muted }}>{card.sub}</div>
             </div>
           ))}
@@ -370,8 +370,8 @@ export default function InsightsView({ habits = [], completions = {}, moods = {}
                   const barH = Math.max(4, pct * 0.4);
                   const bColor =
                     rate === null ? '#222' :
-                    pct >= 70    ? T.teal :
-                    pct >= 40    ? T.amber :
+                    pct >= 70    ? '#FFFFFF' :
+                    pct >= 40    ? 'rgba(255,255,255,0.55)' :
                                    'rgba(255,59,48,0.6)';
                   return (
                     <div key={di} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>

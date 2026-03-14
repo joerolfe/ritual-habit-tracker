@@ -298,7 +298,7 @@ Keep responses warm, concise (2-3 paragraphs), and actionable.`;
             style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center' }}
             aria-label="Search"
           >
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#00BCD4" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <circle cx="11" cy="11" r="8" />
               <line x1="21" y1="21" x2="16.65" y2="16.65" />
             </svg>
@@ -307,7 +307,7 @@ Keep responses warm, concise (2-3 paragraphs), and actionable.`;
             style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center' }}
             aria-label="Calendar"
           >
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#00BCD4" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
               <line x1="16" y1="2" x2="16" y2="6" />
               <line x1="8" y1="2" x2="8" y2="6" />
@@ -371,7 +371,7 @@ Keep responses warm, concise (2-3 paragraphs), and actionable.`;
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  border: isSelected ? '2px solid #FF8C42' : '2px solid transparent',
+                  border: isSelected ? '2px solid rgba(255,255,255,0.65)' : '2px solid transparent',
                   background: isToday && !isSelected ? 'rgba(255,255,255,0.08)' : 'transparent',
                   color: '#fff',
                   fontSize: 14,
@@ -387,7 +387,7 @@ Keep responses warm, concise (2-3 paragraphs), and actionable.`;
                     width: 6,
                     height: 6,
                     borderRadius: '50%',
-                    background: '#00BCD4',
+                    background: '#FFFFFF',
                   }} />
                 )}
               </button>
@@ -412,8 +412,8 @@ Keep responses warm, concise (2-3 paragraphs), and actionable.`;
                   onClick={() => handleMoodSelect(idx)}
                   title={MOOD_LABELS[idx]}
                   style={{
-                    background: isSelected ? '#00BCD4' : 'transparent',
-                    border: 'none',
+                    background: isSelected ? 'rgba(255,255,255,0.12)' : 'transparent',
+                    border: isSelected ? '2px solid rgba(255,255,255,0.4)' : '2px solid transparent',
                     cursor: 'pointer',
                     width: isSelected ? 40 : 32,
                     height: isSelected ? 40 : 32,
@@ -444,8 +444,8 @@ Keep responses warm, concise (2-3 paragraphs), and actionable.`;
                   key={tag}
                   onClick={() => handleTagToggle(tag)}
                   style={{
-                    background: isSelected ? '#00BCD4' : '#1A1A1A',
-                    color: isSelected ? '#000' : 'rgba(255,255,255,0.55)',
+                    background: isSelected ? '#FFFFFF' : '#1A1A1A',
+                    color: isSelected ? '#000000' : 'rgba(255,255,255,0.55)',
                     fontWeight: isSelected ? 700 : 400,
                     border: isSelected ? 'none' : '1px solid #333',
                     borderRadius: 20,
@@ -467,15 +467,15 @@ Keep responses warm, concise (2-3 paragraphs), and actionable.`;
         {/* 4c. Writing prompt card */}
         {!promptSkipped && (
           <div style={{
-            background: '#0d1f24',
-            borderLeft: '3px solid #00BCD4',
+            background: '#111111',
+            borderLeft: '3px solid rgba(255,255,255,0.3)',
             borderRadius: 10,
             padding: '12px 14px',
             marginBottom: 12,
           }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
               <div style={{ flex: 1 }}>
-                <div style={{ fontSize: 11, color: '#00BCD4', marginBottom: 4 }}>✨ Today's prompt:</div>
+                <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.55)', marginBottom: 4 }}>✨ Today's prompt:</div>
                 <div style={{ fontSize: 13, color: '#fff' }}>{todayPrompt}</div>
               </div>
               <button
@@ -597,8 +597,8 @@ Keep responses warm, concise (2-3 paragraphs), and actionable.`;
           onClick={handleSave}
           style={{
             width: '100%',
-            background: isDirty ? '#00BCD4' : '#1A1A1A',
-            color: isDirty ? '#000' : 'rgba(255,255,255,0.45)',
+            background: isDirty ? '#FFFFFF' : '#1A1A1A',
+            color: isDirty ? '#000000' : 'rgba(255,255,255,0.45)',
             borderRadius: 30,
             padding: 14,
             fontWeight: 700,
@@ -619,7 +619,7 @@ Keep responses warm, concise (2-3 paragraphs), and actionable.`;
         borderRadius: 16,
         margin: '0 16px 16px',
         padding: 16,
-        border: '1px solid rgba(0,188,212,0.3)',
+        border: '1px solid rgba(255,255,255,0.21)',
       }}>
         <div style={{ marginBottom: 12 }}>
           <div style={{ fontSize: 15, fontWeight: 700, marginBottom: 2 }}>🤖 Ritual AI</div>
@@ -635,11 +635,11 @@ Keep responses warm, concise (2-3 paragraphs), and actionable.`;
                 onClick={() => { setShowAIChat(true); setTimeout(() => handleSendChat(chip), 100); }}
                 style={{
                   background: 'transparent',
-                  border: '1px solid #00BCD4',
+                  border: '1px solid #FFFFFF',
                   borderRadius: 20,
                   padding: '6px 14px',
                   fontSize: 12,
-                  color: '#00BCD4',
+                  color: '#FFFFFF',
                   cursor: 'pointer',
                   whiteSpace: 'nowrap',
                   fontFamily: 'inherit',
@@ -683,7 +683,7 @@ Keep responses warm, concise (2-3 paragraphs), and actionable.`;
                 width: 40,
                 height: 40,
                 borderRadius: '50%',
-                background: '#00BCD4',
+                background: '#FFFFFF',
                 border: 'none',
                 cursor: 'pointer',
                 display: 'flex',
@@ -692,7 +692,7 @@ Keep responses warm, concise (2-3 paragraphs), and actionable.`;
                 flexShrink: 0,
               }}
             >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#000" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#000000" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <line x1="5" y1="12" x2="19" y2="12" />
                 <polyline points="12 5 19 12 12 19" />
               </svg>
@@ -857,7 +857,7 @@ Keep responses warm, concise (2-3 paragraphs), and actionable.`;
                 border: 'none',
                 cursor: 'pointer',
                 fontSize: 20,
-                color: '#00BCD4',
+                color: '#FFFFFF',
                 padding: '0 12px 0 0',
                 lineHeight: 1,
               }}
@@ -870,11 +870,11 @@ Keep responses warm, concise (2-3 paragraphs), and actionable.`;
               onClick={handleWeeklySummary}
               style={{
                 background: 'transparent',
-                border: '1px solid #00BCD4',
+                border: '1px solid #FFFFFF',
                 borderRadius: 20,
                 padding: '6px 12px',
                 fontSize: 12,
-                color: '#00BCD4',
+                color: '#FFFFFF',
                 cursor: 'pointer',
                 whiteSpace: 'nowrap',
                 fontFamily: 'inherit',
@@ -893,13 +893,13 @@ Keep responses warm, concise (2-3 paragraphs), and actionable.`;
                   width: 72,
                   height: 72,
                   borderRadius: '50%',
-                  background: 'rgba(0,188,212,0.15)',
+                  background: 'rgba(255,255,255,0.105)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   fontSize: 36,
                   marginBottom: 16,
-                  border: '2px solid rgba(0,188,212,0.3)',
+                  border: '2px solid rgba(255,255,255,0.21)',
                 }}>
                   🤖
                 </div>
@@ -921,11 +921,11 @@ Keep responses warm, concise (2-3 paragraphs), and actionable.`;
                       onClick={() => handleSendChat(chip)}
                       style={{
                         background: 'transparent',
-                        border: '1px solid #00BCD4',
+                        border: '1px solid #FFFFFF',
                         borderRadius: 20,
                         padding: '10px 14px',
                         fontSize: 13,
-                        color: '#00BCD4',
+                        color: '#FFFFFF',
                         cursor: 'pointer',
                         textAlign: 'center',
                         fontFamily: 'inherit',
@@ -949,8 +949,8 @@ Keep responses warm, concise (2-3 paragraphs), and actionable.`;
                     }}
                   >
                     <div style={{
-                      background: msg.role === 'user' ? '#00BCD4' : '#111111',
-                      color: msg.role === 'user' ? '#000' : '#fff',
+                      background: msg.role === 'user' ? 'rgba(255,255,255,0.12)' : '#111111',
+                      color: '#FFFFFF',
                       borderRadius: msg.role === 'user' ? '18px 18px 4px 18px' : '18px 18px 18px 4px',
                       maxWidth: msg.role === 'user' ? '80%' : '85%',
                       padding: '10px 14px',
@@ -974,7 +974,7 @@ Keep responses warm, concise (2-3 paragraphs), and actionable.`;
                             width: 8,
                             height: 8,
                             borderRadius: '50%',
-                            background: '#00BCD4',
+                            background: '#FFFFFF',
                             animation: 'dotBounce 1.2s ease-in-out infinite',
                             animationDelay: `${n * 0.2}s`,
                           }}
@@ -1030,7 +1030,7 @@ Keep responses warm, concise (2-3 paragraphs), and actionable.`;
                 width: 40,
                 height: 40,
                 borderRadius: '50%',
-                background: chatLoading || !chatInput.trim() ? '#333' : '#00BCD4',
+                background: chatLoading || !chatInput.trim() ? '#333' : '#FFFFFF',
                 border: 'none',
                 cursor: chatLoading || !chatInput.trim() ? 'not-allowed' : 'pointer',
                 display: 'flex',
@@ -1041,7 +1041,7 @@ Keep responses warm, concise (2-3 paragraphs), and actionable.`;
               }}
               aria-label="Send"
             >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={chatLoading || !chatInput.trim() ? '#666' : '#000'} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={chatLoading || !chatInput.trim() ? '#666' : '#000000'} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <line x1="5" y1="12" x2="19" y2="12" />
                 <polyline points="12 5 19 12 12 19" />
               </svg>

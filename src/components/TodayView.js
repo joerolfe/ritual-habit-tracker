@@ -100,8 +100,8 @@ function LifeScoreRing({ score, onClick }) {
       <svg width={size} height={size} style={{ transform: 'rotate(-90deg)', display: 'block' }}>
         <defs>
           <linearGradient id="scoreGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%"   stopColor="#C8A96E" />
-            <stop offset="100%" stopColor="#FFD580" />
+            <stop offset="0%"   stopColor="#FFFFFF" />
+            <stop offset="100%" stopColor="#FFFFFF" />
           </linearGradient>
         </defs>
         <circle cx={size/2} cy={size/2} r={radius} fill="none" stroke="#1A1A1A" strokeWidth={stroke} />
@@ -152,7 +152,7 @@ function BreakdownModal({ components, onClose }) {
                 <div className="tv-breakdown-bar">
                   <div
                     className="tv-breakdown-fill"
-                    style={{ width: `${c.score}%`, background: c.color || '#FF8C42' }}
+                    style={{ width: `${c.score}%`, background: c.color || 'rgba(255,255,255,0.65)' }}
                   />
                 </div>
               </div>
@@ -281,7 +281,7 @@ function QuickLogModal({ type, dateKey, moods, water, sleep, gratitude, screenTi
             </div>
             {sleepEntry.bedtime && sleepEntry.wake && (() => {
               const dur = calcSleepDuration(sleepEntry.bedtime, sleepEntry.wake);
-              return dur ? <p style={{ textAlign: 'center', color: '#00BCD4', fontWeight: 600, marginTop: 12 }}>{dur.label} logged ✓</p> : null;
+              return dur ? <p style={{ textAlign: 'center', color: '#FFFFFF', fontWeight: 600, marginTop: 12 }}>{dur.label} logged ✓</p> : null;
             })()}
             <button className="tv-modal-close-btn" style={{ marginTop: 20 }} onClick={onClose}>Done</button>
           </div>
@@ -449,20 +449,20 @@ export default function TodayView({
   const { lifeScore, scoreComponents } = useMemo(() => {
     const comps = [];
     const habitScore = scheduledToday.length > 0 ? todayPct : 0;
-    comps.push({ label: 'Habits', icon: '✅', score: habitScore, color: '#C8A96E' });
+    comps.push({ label: 'Habits', icon: '✅', score: habitScore, color: '#FFFFFF' });
 
     const sleepEntry = sleep?.[dateKey];
     if (sleepEntry?.bedtime && sleepEntry?.wake) {
       const dur = calcSleepDuration(sleepEntry.bedtime, sleepEntry.wake);
       if (dur) {
         const s = Math.min(100, Math.round((dur.total / 8) * 100));
-        comps.push({ label: 'Sleep', icon: '😴', score: s, color: '#7B2FF7' });
+        comps.push({ label: 'Sleep', icon: '😴', score: s, color: 'rgba(255,255,255,0.75)' });
       }
     }
     const moodScore = moods?.[dateKey]?.score;
-    if (moodScore) comps.push({ label: 'Mood', icon: '😊', score: Math.round((moodScore / 5) * 100), color: '#FF8C42' });
+    if (moodScore) comps.push({ label: 'Mood', icon: '😊', score: Math.round((moodScore / 5) * 100), color: 'rgba(255,255,255,0.65)' });
     const wCount = water?.[dateKey] || 0;
-    if (wCount > 0) comps.push({ label: 'Water', icon: '💧', score: Math.round((wCount / 8) * 100), color: '#00BCD4' });
+    if (wCount > 0) comps.push({ label: 'Water', icon: '💧', score: Math.round((wCount / 8) * 100), color: '#FFFFFF' });
 
     // Weighted: habits = 60%, others split remaining 40%
     const otherComps = comps.filter(c => c.label !== 'Habits');
@@ -565,7 +565,7 @@ export default function TodayView({
 
   // ── RENDER ──────────────────────────────────────────────────────────────────
   return (
-    <div className="today-view">
+    <div className="today-view" style={{ minHeight: '100%', overflow: 'visible', paddingBottom: 'calc(100px + env(safe-area-inset-bottom, 0px))' }}>
       {showConfetti && <Confetti />}
 
       {/* Stack overlays */}
@@ -647,7 +647,7 @@ export default function TodayView({
           <span className="tv-widget-icon">💧</span>
           <span className="tv-widget-value">{todayWater}<span style={{ fontSize: 13, color: '#888' }}>/8</span></span>
           <div className="tv-widget-bar">
-            <div className="tv-widget-bar-fill" style={{ width: `${(todayWater / 8) * 100}%`, background: '#00BCD4' }} />
+            <div className="tv-widget-bar-fill" style={{ width: `${(todayWater / 8) * 100}%`, background: 'rgba(255,255,255,0.49)' }} />
           </div>
           <span className="tv-widget-label">Water</span>
         </button>
@@ -663,7 +663,7 @@ export default function TodayView({
           <span className="tv-widget-icon">🙏</span>
           <span className="tv-widget-value">{gratCount}<span style={{ fontSize: 13, color: '#888' }}>/3</span></span>
           <div className="tv-widget-bar">
-            <div className="tv-widget-bar-fill" style={{ width: `${(gratCount / 3) * 100}%`, background: '#FFA726' }} />
+            <div className="tv-widget-bar-fill" style={{ width: `${(gratCount / 3) * 100}%`, background: 'rgba(255,255,255,0.65)' }} />
           </div>
           <span className="tv-widget-label">Gratitude</span>
         </button>
@@ -672,7 +672,7 @@ export default function TodayView({
           <span className="tv-widget-icon">📱</span>
           <span className="tv-widget-value" style={{ fontSize: 16 }}>{screenHas ? `${screenEntry.actual}h` : '—'}</span>
           <span className="tv-widget-label">Screen</span>
-          {screenHas && <span className="tv-widget-cta" style={{ color: screenEntry.actual > (screenGoal || 3) ? '#FF5252' : '#4CAF50' }}>
+          {screenHas && <span className="tv-widget-cta" style={{ color: screenEntry.actual > (screenGoal || 3) ? '#FF5252' : 'rgba(255,255,255,0.75)' }}>
             {screenEntry.actual > (screenGoal || 3) ? 'Over' : 'Under'} goal
           </span>}
         </button>
@@ -751,7 +751,7 @@ export default function TodayView({
                             {/* Left: icon circle */}
                             <div
                               className="tv-habit-icon-circle"
-                              style={{ background: done ? (habit.color || '#C8A96E') : 'rgba(255,255,255,0.07)', color: done ? '#000' : (habit.color || '#C8A96E') }}
+                              style={{ background: done ? (habit.color || '#FFFFFF') : 'rgba(255,255,255,0.07)', color: done ? '#000' : (habit.color || '#FFFFFF') }}
                             >
                               {habit.icon || '⭐'}
                             </div>
@@ -783,7 +783,7 @@ export default function TodayView({
                               )}
                               <button
                                 className={`tv-check-btn ${done ? 'done' : ''}`}
-                                style={done ? { background: habit.color || '#C8A96E', borderColor: habit.color || '#C8A96E' } : { borderColor: atRisk ? '#FF9F0A' : 'rgba(255,255,255,0.18)' }}
+                                style={done ? { background: habit.color || '#FFFFFF', borderColor: habit.color || '#FFFFFF' } : { borderColor: atRisk ? '#FF9F0A' : 'rgba(255,255,255,0.18)' }}
                                 onClick={() => onToggle(habit.id, y, m, d)}
                               >
                                 <AnimatePresence>
@@ -835,8 +835,7 @@ export default function TodayView({
         />
       </div>
 
-      {/* bottom spacer so intention clears the nav pill */}
-      <div style={{ height: 24 }} />
+      {/* bottom padding is handled by the root container paddingBottom */}
 
       {/* ── MODALS ── */}
       {showBreakdown && (

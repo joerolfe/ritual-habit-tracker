@@ -20,9 +20,9 @@ export default function BottomNav({ view, onSetView }) {
             onClick={() => onSetView(tab.id)}
             aria-label={tab.label}
             style={active ? {
-              color: '#00BCD4',
-              background: 'rgba(0,188,212,0.12)',
-              boxShadow: '0 0 12px rgba(0,188,212,0.25)',
+              color: '#FFFFFF',
+              background: 'rgba(255,255,255,0.10)',
+              boxShadow: '0 0 18px rgba(255,255,255,0.07)',
             } : { color: '#555555' }}
           >
             <span className="bnav-pill-icon">{tab.icon}</span>
